@@ -6,6 +6,11 @@ plugins {
 }
 
 android {
+
+    buildFeatures {
+        viewBinding = true
+    }
+
     namespace = "ru.practicum.android.diploma"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
