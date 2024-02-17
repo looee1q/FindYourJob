@@ -6,21 +6,25 @@ import retrofit2.http.Path
 import retrofit2.http.QueryMap
 import ru.practicum.android.diploma.BuildConfig
 import ru.practicum.android.diploma.data.dto.Response
+import ru.practicum.android.diploma.data.dto.ResponseVacanciesListDto
+import ru.practicum.android.diploma.data.dto.VacancyDto
 
 interface HHApiService {
+
     @Headers("Authorization: Bearer ${BuildConfig.HH_ACCESS_TOKEN}",
         "HH-User-Agent: Find Your Job/1.0 (goaltenders@yandex.ru)")
     @GET("/vacancies")
-    suspend fun searchVacancies(@QueryMap options: Map<String, String>): Response<List<ResponseVacanciesListDto>>
+    suspend fun searchVacancies(@QueryMap options: Map<String, String>): Response<ResponseVacanciesListDto>
+
     @Headers("Authorization: Bearer ${BuildConfig.HH_ACCESS_TOKEN}",
         "HH-User-Agent: Find Your Job/1.0 (goaltenders@yandex.ru)")
     @GET("/vacancies/{vacancy_id}")
-    suspend fun getVacancy(@Path("vacancy_id") id: String): Response<Any?>
+    suspend fun getVacancy(@Path("vacancy_id") id: String): Response<VacancyDto>
 
     @Headers("Authorization: Bearer ${BuildConfig.HH_ACCESS_TOKEN}",
         "HH-User-Agent: Find Your Job/1.0 (goaltenders@yandex.ru)")
     @GET("/vacancies/{vacancy_id}/similar_vacancies")
-    suspend fun getSimilarVacancies(@Path("vacancy_id") id: String): Response<List<ResponseVacanciesListDto>>
+    suspend fun getSimilarVacancies(@Path("vacancy_id") id: String): Response<ResponseVacanciesListDto>
 
     //@GET("/industries")
     //suspend fun getIndustries(): Response<List<CountriesDTO>>
