@@ -25,10 +25,29 @@ staticAnalysis-detektTwitterComposeRules = { module = "com.twitter.compose.rules
 # AndroidX
 androidX-core = "androidx.core:core-ktx:1.12.0"
 androidX-appCompat = "androidx.appcompat:appcompat:1.6.1"
+androidX-fragmetnKtx = "androidx.fragment:fragment-ktx:1.6.2"
 
 # UI layer libraries
 ui-material = "com.google.android.material:material:1.10.0"
 ui-constraintLayout = "androidx.constraintlayout:constraintlayout:2.1.4"
+ui-glide = "com.github.bumptech.glide:glide:4.15.1"
+
+# Network
+network-retrofit = "com.squareup.retrofit2:retrofit:2.9.0"
+network-gsonConverter = "com.squareup.retrofit2:converter-gson:2.9.0"
+
+# DI
+di-koinCore = "io.insert-koin:koin-core:3.4.3"
+di-koinAndroid = "io.insert-koin:koin-android:3.4.3"
+
+# Navigation
+navigation-fragmentKtx = "androidx.navigation:navigation-fragment-ktx:2.7.7"
+navigation-uiKtx = "androidx.navigation:navigation-ui-ktx:2.7.7"
+
+# Room
+database-roomRuntime = "androidx.room:room-runtime:2.6.1"
+database-roomKtx = "androidx.room:room-ktx:2.6.1"
+database-roomCompiler = "androidx.room:room-compiler:2.6.1"
 
 # Unit tests
 unitTests-junit = "junit:junit:4.13.2"
