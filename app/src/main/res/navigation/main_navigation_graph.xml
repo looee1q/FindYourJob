@@ -28,7 +28,7 @@
         android:label="AboutFragment" />
     <fragment
         android:id="@+id/filterSettingsFragment"
-        android:name="ru.practicum.android.diploma.ui.filter_settings.FilterSettingsFragment"
+        android:name="ru.practicum.android.diploma.ui.filter.FilterSettingsFragment"
         android:label="FilterSettingsFragment">
         <action
             android:id="@+id/action_filterSettingsFragment_to_industrySelectionFragment"
@@ -39,7 +39,7 @@
     </fragment>
     <fragment
         android:id="@+id/areaSelectionFragment"
-        android:name="ru.practicum.android.diploma.ui.area_selection.AreaSelectionFragment"
+        android:name="ru.practicum.android.diploma.ui.selections.area.AreaSelectionFragment"
         android:label="AreaSelectionFragment">
         <action
             android:id="@+id/action_areaSelectionFragment_to_countrySelectionFragment"
@@ -50,15 +50,15 @@
     </fragment>
     <fragment
         android:id="@+id/industrySelectionFragment"
-        android:name="ru.practicum.android.diploma.ui.industry_selection.IndustrySelectionFragment"
+        android:name="ru.practicum.android.diploma.ui.selections.industry.IndustrySelectionFragment"
         android:label="IndustrySelectionFragment" />
     <fragment
         android:id="@+id/countrySelectionFragment"
-        android:name="ru.practicum.android.diploma.ui.country_selection.CountrySelectionFragment"
+        android:name="ru.practicum.android.diploma.ui.selections.country.CountrySelectionFragment"
         android:label="CountrySelectionFragment" />
     <fragment
         android:id="@+id/regionSelectionFragment"
-        android:name="ru.practicum.android.diploma.ui.region_selection.RegionSelectionFragment"
+        android:name="ru.practicum.android.diploma.ui.selections.region.RegionSelectionFragment"
         android:label="RegionSelectionFragment" />
     <fragment
         android:id="@+id/vacancyFragment"
@@ -70,6 +70,6 @@
     </fragment>
     <fragment
         android:id="@+id/similarVacancyFragment"
-        android:name="ru.practicum.android.diploma.ui.similar_vacancy.SimilarVacancyFragment"
+        android:name="ru.practicum.android.diploma.ui.similar.SimilarVacancyFragment"
         android:label="SimilarVacancyFragment" />
 </navigation>

@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.ui.area_selection
+package ru.practicum.android.diploma.ui.selections.area
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,7 +18,5 @@ class AreaSelectionFragment : BindingFragment<FragmentAreaSelectionBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
     }
 }
