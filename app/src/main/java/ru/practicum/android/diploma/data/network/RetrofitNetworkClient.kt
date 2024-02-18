@@ -11,30 +11,19 @@ import ru.practicum.android.diploma.data.dto.RequestVacanciesListSearch
 import ru.practicum.android.diploma.data.dto.RequestVacancySearch
 import ru.practicum.android.diploma.data.dto.Response
 
-class RetrofitNetworkClient(
-
-    private val hhApiService: HHApiService,
-    private val context: Context,
-
-    ) : NetworkClient {
+class RetrofitNetworkClient(private val hhApiService: HHApiService, private val context: Context) : NetworkClient {
 
     override suspend fun doRequest(dto: Any): Response<out Any> {
-
         if (!isConnected()) {
             return Response<Any>().apply { resultCode = NO_INTERNET_CONNECTION }
         }
 
-        if (dto !is RequestVacanciesListSearch
-            && dto !is RequestVacancySearch
-            && dto !is RequestSimilarVacancySearch // && dto !is RequestGetFiltersValues
-        ) {
+        if (dto !is RequestVacanciesListSearch && dto !is RequestVacancySearch && dto !is RequestSimilarVacancySearch) { // && dto !is RequestGetFiltersValues
             return Response<Any>().apply { resultCode = BAD_REQUEST }
         }
 
         return withContext(Dispatchers.IO) {
-
             try {
-
                 when (dto) {
                     is RequestVacanciesListSearch -> {
                         // заменить на реализацию options в RepositoryImpl при наличии фильтров

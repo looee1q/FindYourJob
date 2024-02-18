@@ -11,8 +11,10 @@ import ru.practicum.android.diploma.data.dto.VacancyDto
 
 interface HHApiService {
 
-    @Headers("Authorization: Bearer ${BuildConfig.HH_ACCESS_TOKEN}",
-        "HH-User-Agent: Find Your Job/1.0 (goaltenders@yandex.ru)")
+    @Headers(
+        "Authorization: Bearer ${BuildConfig.HH_ACCESS_TOKEN}",
+        "HH-User-Agent: Find Your Job/1.0 (goaltenders@yandex.ru)"
+    )
     @GET("/vacancies")
     suspend fun searchVacancies(@QueryMap options: Map<String, String>): Response<ResponseVacanciesListDto>
 
