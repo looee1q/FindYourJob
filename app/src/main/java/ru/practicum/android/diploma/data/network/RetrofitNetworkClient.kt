@@ -14,45 +14,41 @@ import ru.practicum.android.diploma.data.dto.Response
 class RetrofitNetworkClient(private val hhApiService: HHApiService, private val context: Context) : NetworkClient {
 
     override suspend fun doRequest(dto: Any): Response<out Any> {
-        if (!isConnected()) {
-            return Response<Any>().apply { resultCode = NO_INTERNET_CONNECTION }
-        }
-
-        if (dto !is RequestVacanciesListSearch && dto !is RequestVacancySearch && dto !is RequestSimilarVacancySearch) { // && dto !is RequestGetFiltersValues
-            return Response<Any>().apply { resultCode = BAD_REQUEST }
-        }
-
         return withContext(Dispatchers.IO) {
-            try {
-                when (dto) {
-                    is RequestVacanciesListSearch -> {
-                        // заменить на реализацию options в RepositoryImpl при наличии фильтров
-                        val options: Map<String, String> = emptyMap()
-                        val response = hhApiService.searchVacancies(options.mapValues { dto.toString() })
-                        response.apply { resultCode = SUCCESS_RESPONSE }
-                    }
+            if (!isConnected()) {
+                Response<Any>().apply { resultCode = NO_INTERNET_CONNECTION }
+            }
 
-                    is RequestVacancySearch -> {
-                        val response = hhApiService.getVacancy(dto.id)
-                        response.apply { resultCode = SUCCESS_RESPONSE }
-                    }
+            if (dto !is RequestVacanciesListSearch && dto !is RequestVacancySearch && dto !is RequestSimilarVacancySearch) {
+                // && dto !is RequestGetFiltersValues
+                Response<Any>().apply { resultCode = BAD_REQUEST }
+            }
 
-                    is RequestSimilarVacancySearch -> {
-                        val response = hhApiService.getSimilarVacancies(dto.id)
-                        response.apply { resultCode = SUCCESS_RESPONSE }
-                    }
-
-                    else -> {
-                        // далее заменить на реализацию получения значений для фильтров
-                        Response<Any>().apply { resultCode = BAD_REQUEST }
-                    }
+            when (dto) {
+                is RequestVacanciesListSearch -> {
+                    // заменить на реализацию options в RepositoryImpl при наличии фильтров
+                    val options: Map<String, String> = emptyMap()
+                    val response = hhApiService.searchVacancies(options.mapValues { dto.toString() })
+                    response.apply { resultCode = SUCCESS_RESPONSE }
                 }
 
-            } catch (e: Throwable) {
-                Response<Any>().apply { resultCode = UNEXPECTED_ERROR }
+                is RequestVacancySearch -> {
+                    val response = hhApiService.getVacancy(dto.id)
+                    response.apply { resultCode = SUCCESS_RESPONSE }
+                }
+
+                is RequestSimilarVacancySearch -> {
+                    val response = hhApiService.getSimilarVacancies(dto.id)
+                    response.apply { resultCode = SUCCESS_RESPONSE }
+                }
+
+                else -> {
+                    Response<Any>().apply { resultCode = UNEXPECTED_ERROR }
+                }
             }
         }
     }
+
 
     private fun isConnected(): Boolean {
         val connectivityManager = context.getSystemService(
