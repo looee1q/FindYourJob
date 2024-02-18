@@ -30,6 +30,7 @@ data class FavoriteVacancyEntity(
     val keySkills: List<String>,
     val alternateUrl: String,
     val schedule: String,
+    val timeAddToFav: Long = System.currentTimeMillis(),
 )
 
 
