@@ -26,7 +26,8 @@ data class AreaResponse(
 data class EmployerResponse(
     val id: String,
     val name: String,
-    val logo_urls: LogoUrlsResponse
+    @SerializedName("logo_urls")
+    val logoUrls: LogoUrlsResponse
 )
 
 data class LogoUrlsResponse(

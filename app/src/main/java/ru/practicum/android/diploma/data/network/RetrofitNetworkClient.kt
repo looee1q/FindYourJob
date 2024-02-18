@@ -18,14 +18,14 @@ class RetrofitNetworkClient(
 
     override suspend fun doRequest(dto: Any): Response<out Any> {
         if (!isConnected()) {
-            return Response<Any>().apply { resultCode = -1 }
+            return Response<Any>().apply { resultCode = NO_INTERNET_CONNECTION }
         }
-        if ((dto !is RequestVacanciesListSearch)
-            && (dto !is RequestVacancySearch)
-            && (dto !is RequestSimilarVacancySearch)
-            //&& (dto !is RequestGetFiltersValues)
+        if (dto !is RequestVacanciesListSearch
+            && dto !is RequestVacancySearch
+            && dto !is RequestSimilarVacancySearch
+        // && dto !is RequestGetFiltersValues
         ) {
-            return Response<Any>().apply { resultCode = 400 }
+            return Response<Any>().apply { resultCode = BAD_REQUEST }
         }
 
         try {
@@ -33,28 +33,31 @@ class RetrofitNetworkClient(
             {
                 when (dto) {
                     is RequestVacanciesListSearch -> {
-                        val options: Map<String, String> = emptyMap() //заменить на реализацию options в RepositoryImpl при наличии фильтров
+                        // заменить на реализацию options в RepositoryImpl при наличии фильтров
+                        val options: Map<String, String> = emptyMap()
                         val response = hhApiService.searchVacancies(options.mapValues { dto.toString() })
-                        response.apply { resultCode = 200 }
+                        response.apply { resultCode = SUCCESS_RESPONSE }
                     }
 
                     is RequestVacancySearch -> {
                         val response = hhApiService.getVacancy(dto.id)
-                        response.apply { resultCode = 200 }
+                        response.apply { resultCode = SUCCESS_RESPONSE }
                     }
 
                     is RequestSimilarVacancySearch -> {
                         val response = hhApiService.getSimilarVacancies(dto.id)
-                        response.apply { resultCode = 200 }
+                        response.apply { resultCode = SUCCESS_RESPONSE }
                     }
+
                     else -> {
                         // далее заменить на реализацию получения значений для фильтров
-                        Response<Any>().apply { resultCode = 400 }
+                        Response<Any>().apply { resultCode = BAD_REQUEST }
                     }
                 }
             }
+
         } catch (e: Throwable) {
-            return withContext(Dispatchers.IO){Response<Any>().apply { resultCode = 500 }}
+            return withContext(Dispatchers.IO) { Response<Any>().apply { resultCode = UNEXPECTED_ERROR } }
         }
     }
 
@@ -72,5 +75,12 @@ class RetrofitNetworkClient(
             }
         }
         return false
+    }
+
+    companion object {
+        var NO_INTERNET_CONNECTION = -1
+        var SUCCESS_RESPONSE = 200
+        var BAD_REQUEST = 400
+        var UNEXPECTED_ERROR = 500
     }
 }
