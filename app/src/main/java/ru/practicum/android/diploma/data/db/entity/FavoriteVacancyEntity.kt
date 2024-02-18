@@ -32,5 +32,3 @@ data class FavoriteVacancyEntity(
     val schedule: String,
     val timeAddToFav: Long = System.currentTimeMillis(),
 )
-
-
