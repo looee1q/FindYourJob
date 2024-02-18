@@ -13,14 +13,13 @@ import ru.practicum.android.diploma.data.dto.Response
 
 class RetrofitNetworkClient(private val hhApiService: HHApiService, private val context: Context) : NetworkClient {
 
-    override suspend fun doRequest(dto: Any): Response<out Any> {
+    override suspend fun doRequestSearchVacancies(dto: Any): Response<out Any> {
         return withContext(Dispatchers.IO) {
             if (!isConnected()) {
                 Response<Any>().apply { resultCode = NO_INTERNET_CONNECTION }
             }
 
-            if (dto !is RequestVacanciesListSearch && dto !is RequestVacancySearch && dto !is RequestSimilarVacancySearch) {
-                // && dto !is RequestGetFiltersValues
+            if (dto !is RequestVacanciesListSearch) {
                 Response<Any>().apply { resultCode = BAD_REQUEST }
             }
 
@@ -32,11 +31,47 @@ class RetrofitNetworkClient(private val hhApiService: HHApiService, private val 
                     response.apply { resultCode = SUCCESS_RESPONSE }
                 }
 
+                else -> {
+                    Response<Any>().apply { resultCode = UNEXPECTED_ERROR }
+                }
+            }
+        }
+    }
+
+    override suspend fun doRequestGetVacancy(dto: Any): Response<out Any> {
+        return withContext(Dispatchers.IO) {
+            if (!isConnected()) {
+                Response<Any>().apply { resultCode = NO_INTERNET_CONNECTION }
+            }
+
+            if (dto !is RequestVacancySearch) {
+                Response<Any>().apply { resultCode = BAD_REQUEST }
+            }
+
+            when (dto) {
                 is RequestVacancySearch -> {
                     val response = hhApiService.getVacancy(dto.id)
                     response.apply { resultCode = SUCCESS_RESPONSE }
                 }
 
+                else -> {
+                    Response<Any>().apply { resultCode = UNEXPECTED_ERROR }
+                }
+            }
+        }
+    }
+
+    override suspend fun doRequestGetSimilarVacancies(dto: Any): Response<out Any> {
+        return withContext(Dispatchers.IO) {
+            if (!isConnected()) {
+                Response<Any>().apply { resultCode = NO_INTERNET_CONNECTION }
+            }
+
+            if (dto !is RequestSimilarVacancySearch) {
+                Response<Any>().apply { resultCode = BAD_REQUEST }
+            }
+
+            when (dto) {
                 is RequestSimilarVacancySearch -> {
                     val response = hhApiService.getSimilarVacancies(dto.id)
                     response.apply { resultCode = SUCCESS_RESPONSE }
@@ -48,7 +83,6 @@ class RetrofitNetworkClient(private val hhApiService: HHApiService, private val 
             }
         }
     }
-
 
     private fun isConnected(): Boolean {
         val connectivityManager = context.getSystemService(
