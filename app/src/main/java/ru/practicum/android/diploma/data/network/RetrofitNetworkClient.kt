@@ -11,9 +11,10 @@ import ru.practicum.android.diploma.data.dto.RequestVacanciesListSearch
 import ru.practicum.android.diploma.data.dto.RequestVacancySearch
 import ru.practicum.android.diploma.data.dto.Response
 
-class RetrofitNetworkClient(
+class RetrofitNetworkClient
+    (
     private val hhApiService: HHApiService,
-    private val context: Context
+    private val context: Context,
 ) : NetworkClient {
 
     override suspend fun doRequest(dto: Any): Response<out Any> {
@@ -28,9 +29,10 @@ class RetrofitNetworkClient(
             return Response<Any>().apply { resultCode = BAD_REQUEST }
         }
 
-        try {
-            return withContext(Dispatchers.IO)
-            {
+        return withContext(Dispatchers.IO) {
+
+            try {
+
                 when (dto) {
                     is RequestVacanciesListSearch -> {
                         // заменить на реализацию options в RepositoryImpl при наличии фильтров
@@ -54,10 +56,10 @@ class RetrofitNetworkClient(
                         Response<Any>().apply { resultCode = BAD_REQUEST }
                     }
                 }
-            }
 
-        } catch (e: Throwable) {
-            return withContext(Dispatchers.IO) { Response<Any>().apply { resultCode = UNEXPECTED_ERROR } }
+            } catch (e: Throwable) {
+                Response<Any>().apply { resultCode = UNEXPECTED_ERROR }
+            }
         }
     }
 
