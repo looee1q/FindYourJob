@@ -27,7 +27,7 @@ data class FavoriteVacancyEntity(
     val description: String,
     val employment: String,
     val experience: String,
-    val keySkills: List<String>,
+    val keySkills: String,
     val alternateUrl: String,
     val schedule: String,
     val timeAddToFav: Long = System.currentTimeMillis(),
