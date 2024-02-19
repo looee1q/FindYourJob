@@ -11,83 +11,48 @@ import ru.practicum.android.diploma.data.dto.RequestVacanciesListSearch
 import ru.practicum.android.diploma.data.dto.RequestVacancySearch
 import ru.practicum.android.diploma.data.dto.Response
 
-class RetrofitNetworkClient(private val hhApiService: HHApiService, private val context: Context) : NetworkClient {
+class RetrofitNetworkClient(
+    private val hhApiService: HHApiService,
+    private val context: Context,
+    private val connectivityManager: ConnectivityManager,
+) : NetworkClient {
 
-    override suspend fun doRequestSearchVacancies(dto: Any): Response<out Any> {
-        return withContext(Dispatchers.IO) {
-            if (!isConnected()) {
-                Response<Any>().apply { resultCode = NO_INTERNET_CONNECTION }
-            }
-
-            if (dto !is RequestVacanciesListSearch) {
-                Response<Any>().apply { resultCode = BAD_REQUEST }
-            }
-
-            when (dto) {
-                is RequestVacanciesListSearch -> {
-                    // заменить на реализацию options в RepositoryImpl при наличии фильтров
-                    val options: Map<String, String> = emptyMap()
-                    val response = hhApiService.searchVacancies(options.mapValues { dto.toString() })
-                    response.apply { resultCode = SUCCESS_RESPONSE }
-                }
-
-                else -> {
-                    Response<Any>().apply { resultCode = UNEXPECTED_ERROR }
-                }
+    override suspend fun doRequestSearchVacancies(dto: RequestVacanciesListSearch): Response {
+        if (!isConnected()) {
+            return Response().apply { resultCode = NO_INTERNET_CONNECTION }
+        } else {
+            return withContext(Dispatchers.IO) {
+                // заменить на реализацию options в RepositoryImpl при наличии фильтров
+                val options: Map<String, String> = emptyMap()
+                val response = hhApiService.searchVacancies(options.mapValues { dto.toString() })
+                response.apply { resultCode = SUCCESS_RESPONSE }
             }
         }
     }
 
-    override suspend fun doRequestGetVacancy(dto: Any): Response<out Any> {
-        return withContext(Dispatchers.IO) {
-            if (!isConnected()) {
-                Response<Any>().apply { resultCode = NO_INTERNET_CONNECTION }
-            }
-
-            if (dto !is RequestVacancySearch) {
-                Response<Any>().apply { resultCode = BAD_REQUEST }
-            }
-
-            when (dto) {
-                is RequestVacancySearch -> {
-                    val response = hhApiService.getVacancy(dto.id)
-                    response.apply { resultCode = SUCCESS_RESPONSE }
-                }
-
-                else -> {
-                    Response<Any>().apply { resultCode = UNEXPECTED_ERROR }
-                }
+    override suspend fun doRequestGetVacancy(dto: RequestVacancySearch): Response {
+        if (!isConnected()) {
+            return Response().apply { resultCode = NO_INTERNET_CONNECTION }
+        } else {
+            return withContext(Dispatchers.IO) {
+                val response = hhApiService.getVacancy(dto.id)
+                response.apply { resultCode = SUCCESS_RESPONSE }
             }
         }
     }
 
-    override suspend fun doRequestGetSimilarVacancies(dto: Any): Response<out Any> {
-        return withContext(Dispatchers.IO) {
-            if (!isConnected()) {
-                Response<Any>().apply { resultCode = NO_INTERNET_CONNECTION }
-            }
-
-            if (dto !is RequestSimilarVacancySearch) {
-                Response<Any>().apply { resultCode = BAD_REQUEST }
-            }
-
-            when (dto) {
-                is RequestSimilarVacancySearch -> {
-                    val response = hhApiService.getSimilarVacancies(dto.id)
-                    response.apply { resultCode = SUCCESS_RESPONSE }
-                }
-
-                else -> {
-                    Response<Any>().apply { resultCode = UNEXPECTED_ERROR }
-                }
+    override suspend fun doRequestGetSimilarVacancies(dto: RequestSimilarVacancySearch): Response {
+        if (!isConnected()) {
+            return Response().apply { resultCode = NO_INTERNET_CONNECTION }
+        } else {
+            return withContext(Dispatchers.IO) {
+                val response = hhApiService.getSimilarVacancies(dto.id)
+                response.apply { resultCode = SUCCESS_RESPONSE }
             }
         }
     }
 
     private fun isConnected(): Boolean {
-        val connectivityManager = context.getSystemService(
-            Context.CONNECTIVITY_SERVICE
-        ) as ConnectivityManager
         val capabilities =
             connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
         if (capabilities != null) {

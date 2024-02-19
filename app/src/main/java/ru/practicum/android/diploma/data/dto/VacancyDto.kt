@@ -9,7 +9,6 @@ data class VacancyDto(
     val employer: EmployerResponseDto,
     val salary: SalaryResponseDto,
     val contacts: ContactsResponseDto,
-    val comment: String,
     val description: String,
     val employment: EmploymentResponseDto,
     val experience: ExperienceResponseDto,
@@ -18,7 +17,7 @@ data class VacancyDto(
     @SerializedName("alternate_url")
     val alternateUrl: String,
     val schedule: ScheduleResponseDto,
-)
+) : Response()
 
 data class AreaResponseDto(
     val id: String,
@@ -39,7 +38,6 @@ data class LogoUrlsResponseDto(
 data class SalaryResponseDto(
     val currency: String,
     val from: Int,
-    val gross: Boolean,
     val to: Int
 )
 

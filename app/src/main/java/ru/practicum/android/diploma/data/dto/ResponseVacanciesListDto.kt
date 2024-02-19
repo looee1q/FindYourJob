@@ -8,7 +8,7 @@ data class ResponseVacanciesListDto(
     val page: Int,
     @SerializedName("items")
     val listVacancies: ArrayList<Vacancy>
-)
+) : Response()
 
 data class Vacancy(
     val id: String,
@@ -37,6 +37,5 @@ data class LogoUrlsResponse(
 data class SalaryResponse(
     val currency: String,
     val from: Int,
-    val gross: Boolean,
     val to: Int
 )
