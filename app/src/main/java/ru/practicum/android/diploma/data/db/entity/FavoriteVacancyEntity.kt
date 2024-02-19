@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey
 data class FavoriteVacancyEntity(
     @PrimaryKey
     val id: String,
-    val areaId: String,
     val areaName: String,
     val name: String,
     val employerId: String,
@@ -15,7 +14,6 @@ data class FavoriteVacancyEntity(
     val employerLogoUrls: String,
     val salaryCurrency: String,
     val salaryFrom: Int,
-    val salaryGross: Boolean,
     val salaryTo: Int,
     val contactsEmail: String,
     val contactsName: String,
