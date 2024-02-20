@@ -24,7 +24,6 @@
         android:layout_height="wrap_content"
         android:text="@string/team"
         style="@style/Medium22"
-        android:textColor="@color/black_day_white_night"
         android:layout_marginTop="19dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"/>
@@ -35,7 +34,6 @@
         android:layout_height="wrap_content"
         android:text="@string/worked_by"
         style="@style/Bold32"
-        android:textColor="@color/black_day_white_night"
         android:layout_marginTop="51dp"
         app:layout_constraintTop_toBottomOf="@+id/team"
         app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
@@ -54,7 +52,6 @@
         android:id="@+id/dasha"
         android:text="@string/dasha"
         style="@style/TeamMember"
-        android:layout_marginTop="@dimen/_16dp"
         app:layout_constraintTop_toBottomOf="@id/pasha"
         app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
         app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"/>
