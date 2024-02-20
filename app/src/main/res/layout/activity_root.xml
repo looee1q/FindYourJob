@@ -21,7 +21,7 @@
     <View
         android:id="@+id/divider"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="@color/gray"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,11 +29,9 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
+        style="@style/MainBottomNavigationView"
         android:layout_width="0dp"
-        android:layout_height="56dp"
-        app:itemIconTint="@drawable/bottom_navigation_selector"
-        app:itemTextAppearanceActiveBoldEnabled="false"
-        app:itemTextColor="@drawable/bottom_navigation_selector"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
