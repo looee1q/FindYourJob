@@ -8,9 +8,9 @@ data class RequestVacanciesListSearch(
     val perPage: Int,
     val text: String,
     val area: String,
-    val parentArea: String,
     val industry: String,
     val currency: String,
     val salary: Int,
+    @SerializedName("only_with_salary")
     val onlyWithSalary: Boolean = false,
 )

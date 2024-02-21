@@ -1,8 +1,8 @@
 package ru.practicum.android.diploma.data.network
 
-import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.practicum.android.diploma.data.NetworkClient
@@ -13,18 +13,36 @@ import ru.practicum.android.diploma.data.dto.Response
 
 class RetrofitNetworkClient(
     private val hhApiService: HHApiService,
-    private val context: Context,
     private val connectivityManager: ConnectivityManager,
 ) : NetworkClient {
 
     override suspend fun doRequestSearchVacancies(dto: RequestVacanciesListSearch): Response {
+
+        Log.d("doRequestSearchVacancies", "Начинаю выполнять метод doRequestSearchVacancies(dto: RequestVacanciesListSearch): Response")
+
         if (!isConnected()) {
             return Response().apply { resultCode = NO_INTERNET_CONNECTION }
         } else {
             return withContext(Dispatchers.IO) {
                 // заменить на реализацию options в RepositoryImpl при наличии фильтров
-                val options: Map<String, String> = emptyMap()
-                val response = hhApiService.searchVacancies(options.mapValues { dto.toString() })
+                val options: MutableMap<String, String> = mutableMapOf(
+                    "page" to dto.page.toString(),
+                    "per_page" to dto.perPage.toString(),
+                    "only_with_salary" to dto.onlyWithSalary.toString()
+                )
+
+                if (dto.text.isNotEmpty()) options.put("text", dto.text)
+                if (dto.area.isNotEmpty()) options.put("area", dto.area)
+                if (dto.industry.isNotEmpty()) options.put("industry", dto.industry)
+                if (dto.currency.isNotEmpty()) options.put("currency", dto.currency)
+                if (dto.salary != -1) options.put("salary", dto.salary.toString())
+
+                Log.d("RetrofitNetworkClient","Запрос таков: ${options.toString()}")
+
+                val response = hhApiService.searchVacancies(options)
+
+                Log.d("RetrofitNetworkClient","Получил response: $response")
+
                 response.apply { resultCode = SUCCESS_RESPONSE }
             }
         }
