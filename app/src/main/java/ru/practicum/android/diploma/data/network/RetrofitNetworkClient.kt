@@ -16,33 +16,18 @@ class RetrofitNetworkClient(
     private val connectivityManager: ConnectivityManager,
 ) : NetworkClient {
 
-    override suspend fun doRequestSearchVacancies(dto: RequestVacanciesListSearch): Response {
-
-        Log.d("doRequestSearchVacancies", "Начинаю выполнять метод doRequestSearchVacancies(dto: RequestVacanciesListSearch): Response")
-
-        if (!isConnected()) {
-            return Response().apply { resultCode = NO_INTERNET_CONNECTION }
+    override suspend fun doRequestSearchVacancies(requestDto: RequestVacanciesListSearch): Response {
+        return if (!isConnected()) {
+            Response().apply { resultCode = NO_INTERNET_CONNECTION }
         } else {
-            return withContext(Dispatchers.IO) {
-                // заменить на реализацию options в RepositoryImpl при наличии фильтров
-                val options: MutableMap<String, String> = mutableMapOf(
-                    "page" to dto.page.toString(),
-                    "per_page" to dto.perPage.toString(),
-                    "only_with_salary" to dto.onlyWithSalary.toString()
-                )
+            withContext(Dispatchers.IO) {
 
-                if (dto.text.isNotEmpty()) options.put("text", dto.text)
-                if (dto.area.isNotEmpty()) options.put("area", dto.area)
-                if (dto.industry.isNotEmpty()) options.put("industry", dto.industry)
-                if (dto.currency.isNotEmpty()) options.put("currency", dto.currency)
-                if (dto.salary != -1) options.put("salary", dto.salary.toString())
+                val options = formQueryMapToSearchVacancies(requestDto)
 
-                Log.d("RetrofitNetworkClient","Запрос таков: ${options.toString()}")
+                //Лог для просмотра информации запроса поиска вакансий, который уходит на сервер
+                Log.d("RetrofitNetworkClient","Запрос таков: $options")
 
                 val response = hhApiService.searchVacancies(options)
-
-                Log.d("RetrofitNetworkClient","Получил response: $response")
-
                 response.apply { resultCode = SUCCESS_RESPONSE }
             }
         }
@@ -86,10 +71,33 @@ class RetrofitNetworkClient(
         return false
     }
 
+    private fun formQueryMapToSearchVacancies(
+        dto: RequestVacanciesListSearch
+    ): Map<String, String> = mutableMapOf(
+        QUERY_MAP_KEY_PAGE to dto.page.toString(),
+        QUERY_MAP_KEY_PER_PAGE to dto.perPage.toString(),
+        QUERY_MAP_KEY_ONLY_WITH_SALARY to dto.onlyWithSalary.toString()
+    ).apply {
+        dto.text?.let { put(QUERY_MAP_KEY_TEXT, it) }
+        dto.area?.let { put(QUERY_MAP_KEY_AREA, it) }
+        dto.industry?.let { put(QUERY_MAP_KEY_INDUSTRY, it) }
+        dto.currency?.let { put(QUERY_MAP_KEY_CURRENCY, it) }
+        dto.salary?.let { put(QUERY_MAP_KEY_SALARY, it.toString()) }
+    }
+
     companion object {
         var NO_INTERNET_CONNECTION = -1
         var SUCCESS_RESPONSE = 200
         var BAD_REQUEST = 400
         var UNEXPECTED_ERROR = 500
+
+        const val QUERY_MAP_KEY_PAGE = "page"
+        const val QUERY_MAP_KEY_PER_PAGE = "per_page"
+        const val QUERY_MAP_KEY_ONLY_WITH_SALARY = "only_with_salary"
+        const val QUERY_MAP_KEY_TEXT = "text"
+        const val QUERY_MAP_KEY_AREA = "area"
+        const val QUERY_MAP_KEY_INDUSTRY = "industry"
+        const val QUERY_MAP_KEY_CURRENCY = "currency"
+        const val QUERY_MAP_KEY_SALARY = "salary"
     }
 }

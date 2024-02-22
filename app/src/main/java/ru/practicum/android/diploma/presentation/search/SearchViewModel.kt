@@ -12,22 +12,21 @@ class SearchViewModel(
     private val vacanciesInteractor: VacanciesInteractor
 ): ViewModel() {
 
-    private val vacanciesRequest = VacanciesRequest(
-        page = 0,
+    //Класс с входными для имитации запроса
+    private val vacanciesRequestMock = VacanciesRequest(
+        page = 2,
         text = "разработчик",
         area = "1",
-        industry = null,
+        industry = "5",
         currency = "RUR",
-        salary = 300000,
+        salary = 240000,
         onlyWithSalary = true
     )
 
     fun makeRequest() {
-
-        Log.d("SearchViewModel", "сейчас буду лаунчить!!!")
-
         viewModelScope.launch(Dispatchers.IO) {
-            val searchVacancies = vacanciesInteractor.searchVacancies(vacanciesRequest)
+            val searchVacancies = vacanciesInteractor.searchVacancies(vacanciesRequestMock)
+            //Лог для отображения найденных результатов по запросу
             Log.d("SearchViewModel", "foundVacancies: $searchVacancies")
         }
     }

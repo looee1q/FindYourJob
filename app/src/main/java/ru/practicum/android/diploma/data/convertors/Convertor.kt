@@ -15,11 +15,11 @@ object Convertor {
         return RequestVacanciesListSearch(
             page = vacanciesRequest.page,
             perPage = vacanciesRequest.perPage,
-            text = vacanciesRequest.text.orEmpty(),
-            area = vacanciesRequest.area.orEmpty(),
-            industry = vacanciesRequest.industry.orEmpty(),
-            currency = vacanciesRequest.currency.orEmpty(),
-            salary = vacanciesRequest.salary ?: -1,
+            text = vacanciesRequest.text,
+            area = vacanciesRequest.area,
+            industry = vacanciesRequest.industry,
+            currency = vacanciesRequest.currency,
+            salary = vacanciesRequest.salary,
             onlyWithSalary = vacanciesRequest.onlyWithSalary,
         )
     }
