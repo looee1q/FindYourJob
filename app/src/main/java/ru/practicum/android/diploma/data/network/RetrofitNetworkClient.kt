@@ -21,11 +21,10 @@ class RetrofitNetworkClient(
             Response().apply { resultCode = NO_INTERNET_CONNECTION }
         } else {
             withContext(Dispatchers.IO) {
-
                 val options = formQueryMapToSearchVacancies(requestDto)
 
-                //Лог для просмотра информации запроса поиска вакансий, который уходит на сервер
-                Log.d("RetrofitNetworkClient","Запрос таков: $options")
+                // Лог для просмотра информации запроса поиска вакансий, который уходит на сервер
+                Log.d("RetrofitNetworkClient", "Запрос таков: $options")
 
                 val response = hhApiService.searchVacancies(options)
                 response.apply { resultCode = SUCCESS_RESPONSE }

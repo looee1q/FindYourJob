@@ -11,7 +11,9 @@ import ru.practicum.android.diploma.domain.models.VacancyBriefInfo
 
 object Convertor {
 
-    fun fromVacanciesRequestToRequestVacanciesListSearch(vacanciesRequest: VacanciesRequest): RequestVacanciesListSearch {
+    fun fromVacanciesRequestToRequestVacanciesListSearch(
+        vacanciesRequest: VacanciesRequest
+    ): RequestVacanciesListSearch {
         return RequestVacanciesListSearch(
             page = vacanciesRequest.page,
             perPage = vacanciesRequest.perPage,
@@ -45,12 +47,15 @@ object Convertor {
     }
 
     private fun fromSalaryResponseToSalary(salaryResponse: SalaryResponse?): Salary? {
-        return if (salaryResponse == null) null
-        else Salary(
-            currency = salaryResponse.currency,
-            from = salaryResponse.from,
-            to = salaryResponse.to
-        )
+        return if (salaryResponse == null) {
+            null
+        } else {
+            Salary(
+                currency = salaryResponse.currency,
+                from = salaryResponse.from,
+                to = salaryResponse.to
+            )
+        }
     }
 
 }
