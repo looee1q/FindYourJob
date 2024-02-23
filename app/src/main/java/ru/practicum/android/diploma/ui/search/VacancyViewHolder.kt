@@ -32,12 +32,10 @@ class VacancyViewHolder(
     }
 
     private fun createVacancyTitle(name: String, place: String): String {
-        val vacancyTitle = ""
-        return vacancyTitle
+        return "$name, $place"
     }
 
     private fun createVacancySalary(salary: SalaryResponse?): String {
-        val vacancySalary = ""
-        return vacancySalary
+        return itemView.context.getString(R.string.salary_from_to, salary?.from.toString(), salary?.to.toString())
     }
 }
