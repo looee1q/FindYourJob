@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:src="@drawable/png_search"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
         app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
