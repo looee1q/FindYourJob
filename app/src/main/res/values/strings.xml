@@ -10,4 +10,11 @@
     <string name="dasha">Попова Дарья Владимировна</string>
     <string name="sasha">Кашкаров Александр Владимирович</string>
     <string name="valera">Севостьянов Валерий Андреевич</string>
+    <string name="search_vacancy">Поиск вакансий</string>
+    <string name="search">Введите запрос</string>
+    <string name="no_internet">Нет интернета</string>
+    <string name="nothing_found">Таких вакансий нет</string>
+    <string name="nothing_found_description">Не удалось получить список вакансий</string>
+    <string name="count_found_vacancies">Найдено "%s" вакансий</string>
+    <string name="salary_no_value">Зарплата не указана</string>
 </resources>
