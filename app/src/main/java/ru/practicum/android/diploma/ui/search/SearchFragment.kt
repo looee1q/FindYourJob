@@ -21,14 +21,7 @@ import ru.practicum.android.diploma.util.debounce
 class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
     private val vacancyList: ArrayList<Vacancy> = arrayListOf()
-    private var adapter = VacancyAdapter(vacancyList, null)
-    // private val onVacancyClickDebounce =
-    //    debounce<Vacancy>(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { openVacancyFragment(it) }
-    // private val adapter = VacancyAdapter(vacancyList, object : VacancyAdapter.VacancyClickListener {
-    //    override fun onVacancyClick(vacancy: Vacancy) {
-    //        onVacancyClickDebounce(vacancy)
-    //    }
-    // })
+    private var adapter: VacancyAdapter? = null
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -152,9 +145,12 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         binding.messageFound.text = getString(R.string.count_found_vacancies)
         binding.recyclerViewFoundVacancies.visibility = View.VISIBLE
         hideKeyBoard()
-        adapter.vacancyList.clear()
-        adapter.vacancyList.addAll(vacancyList)
-        adapter.notifyDataSetChanged()
+        adapter?.let {
+            vacancyList.clear()
+            vacancyList.addAll(vacancyList)
+            adapter?.notifyDataSetChanged()
+        }
+
     }
 
     private fun hideKeyBoard() {
