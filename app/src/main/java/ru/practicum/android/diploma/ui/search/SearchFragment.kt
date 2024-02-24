@@ -61,16 +61,16 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.placeHolderError.visibility = View.GONE
-                //binding.icClose.visibility = clearButtonVisibility(s)
                 //viewModel.searchDebounce(changedText = s?.toString() ?: inputText, false)
 
                 if (binding.InputEditText.hasFocus() && s?.isEmpty() == true) {
                     binding.recyclerViewFoundVacancies.visibility = View.GONE
-                    binding.icClose.visibility = View.GONE
+                    binding.icClose.setImageResource(R.drawable.ic_search)
+                    binding.icClose.isClickable = false
                 } else {
                     binding.recyclerViewFoundVacancies.visibility = View.VISIBLE
-                    binding.icClose.visibility = View.VISIBLE
-
+                    binding.icClose.isClickable = true
+                    binding.icClose.setImageResource(R.drawable.ic_close)
                 }
             }
 

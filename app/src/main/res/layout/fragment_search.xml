@@ -36,18 +36,18 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:src="@drawable/ic_filter_off"
-        app:tint="@color/black_day_white_night"
         app:layout_constraintBottom_toBottomOf="@id/search"
         app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
         app:layout_constraintTop_toTopOf="@id/search"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintVertical_bias="0.5"
+        app:tint="@color/black_day_white_night" />
 
     <EditText
         android:id="@+id/InputEditText"
         style="@style/InputEditText"
+        android:layout_width="@dimen/_0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:drawableEnd="@drawable/ic_search"
         android:hint="@string/search"
         android:imeOptions="actionDone"
         android:singleLine="true"
@@ -61,8 +61,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginEnd="@dimen/_20dp"
-        android:src="@drawable/ic_close"
-        android:visibility="gone"
+        android:src="@drawable/ic_search"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/InputEditText"
         app:layout_constraintEnd_toEndOf="@id/InputEditText"
         app:layout_constraintTop_toTopOf="@id/InputEditText" />
