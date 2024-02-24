@@ -50,8 +50,8 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
             hideKeyBoard()
             binding.placeHolderError.visibility = View.GONE
             binding.progressBar.visibility = View.GONE
-            //adapter.clear()
-            //adapter.notifyDataSetChanged()
+            adapter.vacancyList.clear()
+            adapter.notifyDataSetChanged()
         }
 
         binding.InputEditText.addTextChangedListener(object : TextWatcher {
@@ -82,6 +82,61 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         binding.recyclerViewFoundVacancies.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerViewFoundVacancies.adapter = adapter
+    }
+
+    private fun render(state: SearchFragmentScreenState) {
+        when (state) {
+            is SearchFragmentScreenState.Content -> showContent(state.vacancy)
+            is SearchFragmentScreenState.Empty -> showEmpty()
+            is SearchFragmentScreenState.Error -> showError()
+            is SearchFragmentScreenState.Loading -> showLoading()
+
+        }
+    }
+
+    private fun showLoading() {
+        binding.progressBar.visibility = View.VISIBLE
+        binding.recyclerViewFoundVacancies.visibility = View.GONE
+        binding.ImageSearch.visibility = View.GONE
+        binding.messageFound.visibility = View.GONE
+        binding.placeHolderError.visibility = View.GONE
+    }
+
+    private fun showError() {
+        binding.progressBar.visibility = View.GONE
+        binding.recyclerViewFoundVacancies.visibility = View.GONE
+        binding.ImageSearch.visibility = View.GONE
+        binding.messageFound.visibility = View.GONE
+        binding.placeHolderError.visibility = View.VISIBLE
+        binding.messageError.text = getString(R.string.no_internet)
+        binding.imageError.setImageResource(R.drawable.png_no_internet)
+        hideKeyBoard()
+    }
+
+    private fun showEmpty() {
+        binding.progressBar.visibility = View.GONE
+        binding.recyclerViewFoundVacancies.visibility = View.GONE
+        binding.ImageSearch.visibility = View.GONE
+        binding.messageFound.visibility = View.VISIBLE
+        binding.messageFound.text = getString(R.string.nothing_found)
+        binding.placeHolderError.visibility = View.VISIBLE
+        binding.messageError.text = getString(R.string.nothing_found_description)
+        binding.imageError.setImageResource(R.drawable.png_nothing_found)
+        hideKeyBoard()
+    }
+
+    private fun showContent(vacancyList: ArrayList<Vacancy>) {
+        binding.progressBar.visibility = View.GONE
+        binding.recyclerViewFoundVacancies.visibility = View.GONE
+        binding.ImageSearch.visibility = View.GONE
+        binding.placeHolderError.visibility = View.GONE
+        binding.messageFound.visibility = View.VISIBLE
+        binding.messageFound.text = getString(R.string.count_found_vacancies)
+        binding.recyclerViewFoundVacancies.visibility = View.VISIBLE
+        hideKeyBoard()
+        adapter.vacancyList.clear()
+        adapter.vacancyList.addAll(vacancyList)
+        adapter.notifyDataSetChanged()
     }
 
     private fun hideKeyBoard() {
