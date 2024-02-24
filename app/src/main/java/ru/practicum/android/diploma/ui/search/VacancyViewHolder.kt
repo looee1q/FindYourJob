@@ -12,7 +12,7 @@ class VacancyViewHolder(
     private val binding: ItemFoundVacancyBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(vacancy: Vacancy, vacancyClickListener: VacancyAdapter.VacancyClickListener) {
+    fun bind(vacancy: Vacancy, vacancyClickListener: VacancyAdapter.VacancyClickListener?) {
         binding.vacancyName.text = createVacancyTitle(vacancy.name, vacancy.area.name)
         binding.employerName.text = vacancy.employer.name
         binding.salary.text = createVacancySalary(vacancy.salary)
@@ -26,7 +26,7 @@ class VacancyViewHolder(
             .into(binding.employerLogo)
 
         itemView.setOnClickListener {
-            vacancyClickListener.onVacancyClick(vacancy)
+            vacancyClickListener?.onVacancyClick(vacancy)
         }
 
     }

@@ -21,14 +21,14 @@ import ru.practicum.android.diploma.util.debounce
 class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
     private val vacancyList: ArrayList<Vacancy> = arrayListOf()
-    private lateinit var onVacancyClickDebounce: (Vacancy) -> Unit
-    private val adapter = VacancyAdapter(vacancyList,
-        object : VacancyAdapter.VacancyClickListener {
-            override fun onVacancyClick(vacancy: Vacancy) {
-                onVacancyClickDebounce(vacancy)
-            }
-        }
-    )
+    private var adapter = VacancyAdapter(vacancyList, null)
+    // private val onVacancyClickDebounce =
+    //    debounce<Vacancy>(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { openVacancyFragment(it) }
+    // private val adapter = VacancyAdapter(vacancyList, object : VacancyAdapter.VacancyClickListener {
+    //    override fun onVacancyClick(vacancy: Vacancy) {
+    //        onVacancyClickDebounce(vacancy)
+    //    }
+    // })
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -40,29 +40,24 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        onVacancyClickDebounce =
-            debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) {
-                openVacancyFragment(it)
-            }
+        val onVacancyClickDebounce =
+            debounce<Vacancy>(
+                CLICK_DEBOUNCE_DELAY,
+                viewLifecycleOwner.lifecycleScope,
+                false
+            ) { openVacancyFragment(it) }
 
-        binding.icClose.setOnClickListener {
-            binding.InputEditText.setText("")
-            hideKeyBoard()
-            binding.placeHolderError.visibility = View.GONE
-            binding.progressBar.visibility = View.GONE
-            adapter.vacancyList.clear()
-            adapter.notifyDataSetChanged()
-        }
+        val start = SearchFragmentScreenState.Start()
+        render(start)
 
         binding.InputEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
+                TODO("Not yet implemented")
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.placeHolderError.visibility = View.GONE
-                //viewModel.searchDebounce(changedText = s?.toString() ?: inputText, false)
-
+                // viewModel.searchDebounce(changedText = s?.toString() ?: inputText, false)
                 if (binding.InputEditText.hasFocus() && s?.isEmpty() == true) {
                     binding.recyclerViewFoundVacancies.visibility = View.GONE
                     binding.icClose.setImageResource(R.drawable.ic_search)
@@ -75,13 +70,28 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
             }
 
             override fun afterTextChanged(s: Editable?) {
+                TODO("Not yet implemented")
+            }
+        })
 
+        val adapter = VacancyAdapter(vacancyList, object : VacancyAdapter.VacancyClickListener {
+            override fun onVacancyClick(vacancy: Vacancy) {
+                onVacancyClickDebounce(vacancy)
             }
         })
 
         binding.recyclerViewFoundVacancies.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerViewFoundVacancies.adapter = adapter
+
+        binding.icClose.setOnClickListener {
+            binding.InputEditText.setText("")
+            hideKeyBoard()
+            binding.placeHolderError.visibility = View.GONE
+            binding.progressBar.visibility = View.GONE
+            adapter.vacancyList.clear()
+            adapter.notifyDataSetChanged()
+        }
     }
 
     private fun render(state: SearchFragmentScreenState) {
@@ -90,8 +100,16 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
             is SearchFragmentScreenState.Empty -> showEmpty()
             is SearchFragmentScreenState.Error -> showError()
             is SearchFragmentScreenState.Loading -> showLoading()
-
+            is SearchFragmentScreenState.Start -> showStart() // Удалить когда добавится ViewModel
         }
+    }
+
+    private fun showStart() {
+        binding.progressBar.visibility = View.GONE
+        binding.recyclerViewFoundVacancies.visibility = View.GONE
+        binding.ImageSearch.visibility = View.VISIBLE
+        binding.messageFound.visibility = View.GONE
+        binding.placeHolderError.visibility = View.GONE
     }
 
     private fun showLoading() {

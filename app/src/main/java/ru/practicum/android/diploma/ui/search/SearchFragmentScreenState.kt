@@ -7,7 +7,9 @@ sealed interface SearchFragmentScreenState {
 
     data class Content(val vacancy: ArrayList<Vacancy>) : SearchFragmentScreenState
 
-    class Error() : SearchFragmentScreenState
+    class Error : SearchFragmentScreenState
 
-    class Empty() : SearchFragmentScreenState
+    class Empty : SearchFragmentScreenState
+
+    class Start : SearchFragmentScreenState
 }

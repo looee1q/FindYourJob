@@ -8,7 +8,7 @@ import ru.practicum.android.diploma.databinding.ItemFoundVacancyBinding
 
 class VacancyAdapter(
     val vacancyList: ArrayList<Vacancy>,
-    private val clickListener: VacancyClickListener
+    private val clickListener: VacancyClickListener?
 ) : RecyclerView.Adapter<VacancyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VacancyViewHolder {
