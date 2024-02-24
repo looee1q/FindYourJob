@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.data.dto.Vacancy
 import ru.practicum.android.diploma.databinding.FragmentSearchBinding
-import ru.practicum.android.diploma.ui.about.AboutFragment
 import ru.practicum.android.diploma.ui.fragment.BindingFragment
+import ru.practicum.android.diploma.ui.vacancy.VacancyFragment
 import ru.practicum.android.diploma.util.debounce
 
 class SearchFragment : BindingFragment<FragmentSearchBinding>() {
@@ -45,7 +45,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
         binding.InputEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                TODO("Not yet implemented")
+                // empty
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -63,7 +63,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                TODO("Not yet implemented")
+                // empty
             }
         })
 
@@ -148,7 +148,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         adapter?.let {
             vacancyList.clear()
             vacancyList.addAll(vacancyList)
-            adapter?.notifyDataSetChanged()
+            it.notifyDataSetChanged()
         }
 
     }
@@ -162,11 +162,11 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     private fun openVacancyFragment(vacancy: Vacancy) {
         findNavController().navigate(
             R.id.action_searchFragment_to_vacancyFragment,
-            AboutFragment.createArgs(vacancy.id)
+            VacancyFragment.createArgs(vacancy.id)
         )
     }
 
     companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val CLICK_DEBOUNCE_DELAY = 0L
     }
 }
