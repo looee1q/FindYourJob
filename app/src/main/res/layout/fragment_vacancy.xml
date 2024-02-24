@@ -1,16 +1,434 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Vacancy Fragment"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="@dimen/_48dp"
+            android:layout_height="@dimen/_48dp"
+            android:layout_marginStart="@dimen/_4dp"
+            android:backgroundTint="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_arrow_back" />
+
+        <TextView
+            style="@style/Medium22"
+            android:layout_width="@dimen/_0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/vacancy"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_share"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/btn_back"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_4dp"
+            android:backgroundTint="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_favorite"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_sharing" />
+
+        <ImageButton
+            android:id="@+id/btn_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_8dp"
+            android:backgroundTint="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_favorites_off" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="@dimen/_48dp"
+            android:layout_height="@dimen/_48dp"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/blue" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_error_server"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_224dp"
+            android:paddingHorizontal="@dimen/_16dp"
+            android:src="@drawable/error_server_vacancy" />
+
+        <TextView
+            style="@style/Medium22"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16dp"
+            android:textAlignment="center"
+            tools:text="@string/error_server" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/sv_vacancy"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/left_16dp_boundary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="16dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/right_16dp_boundary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="@dimen/_16dp" />
+
+            <TextView
+                android:id="@+id/tv_vacancy_name"
+                style="@style/Bold32"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_32dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Android-разработчик" />
+
+            <TextView
+                android:id="@+id/tv_salary"
+                style="@style/Medium22"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/tv_vacancy_name"
+                tools:text="от 100 000р" />
+
+            <View
+                android:id="@+id/v_employer_card"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="@dimen/_32dp"
+                android:background="@drawable/rounded_rectangle_gray"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/tv_salary" />
+
+            <ImageView
+                android:id="@+id/iv_employer_logo"
+                android:layout_width="@dimen/_48dp"
+                android:layout_height="@dimen/_48dp"
+                android:layout_marginStart="@dimen/_16dp"
+                app:layout_constraintBottom_toBottomOf="@id/v_employer_card"
+                app:layout_constraintStart_toStartOf="@id/v_employer_card"
+                app:layout_constraintTop_toTopOf="@id/v_employer_card"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/tv_employer_name"
+                style="@style/Medium22"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_8dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:layout_constraintBottom_toTopOf="@id/tv_area_name"
+                app:layout_constraintEnd_toEndOf="@id/v_employer_card"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@id/iv_employer_logo"
+                app:layout_constraintTop_toTopOf="@id/v_employer_card"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="Еда" />
+
+            <TextView
+                android:id="@+id/tv_area_name"
+                style="@style/Regular16"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_8dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:layout_constraintBottom_toBottomOf="@id/v_employer_card"
+                app:layout_constraintEnd_toEndOf="@id/v_employer_card"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@id/iv_employer_logo"
+                app:layout_constraintTop_toBottomOf="@id/tv_employer_name"
+                tools:text="Москва" />
+
+            <TextView
+                android:id="@+id/tv_experience_caption"
+                style="@style/Medium16"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_24dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/experience"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/v_employer_card" />
+
+            <TextView
+                android:id="@+id/tv_experience_name"
+                style="@style/Regular16"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/tv_experience_caption"
+                tools:text="От 1 года до 3 лет" />
+
+            <TextView
+                android:id="@+id/tv_employment_schedule"
+                style="@style/Regular16"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_8dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/tv_experience_name"
+                tools:text="Полная занятость, Удаленная работа" />
+
+            <TextView
+                android:id="@+id/tv_description_caption"
+                style="@style/Medium22"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_32dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/description"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/tv_employment_schedule" />
+
+            <TextView
+                android:id="@+id/tv_description"
+                style="@style/Regular16"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_16dp"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/tv_description_caption"
+                tools:text="Много\nВсякого\nТекста\n\nв HTML\nФормате" />
+
+            <TextView
+                android:id="@+id/tv_skills_caption"
+                style="@style/Medium22"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_24dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/skills"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/tv_description" />
+
+            <TextView
+                android:id="@+id/tv_skills"
+                style="@style/Regular16"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12dp"
+                android:layout_marginTop="@dimen/_16dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/tv_skills_caption"
+                tools:text="  •  Vacancy Fragment\n  •  Чтото еще" />
+
+            <TextView
+                android:id="@+id/tv_contacts"
+                style="@style/Medium22"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_24dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/contacts"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/tv_skills" />
+
+            <TextView
+                android:id="@+id/tv_contact_caption"
+                style="@style/Medium16"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_16dp"
+                android:text="@string/contact"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/tv_contacts" />
+
+            <TextView
+                android:id="@+id/tv_contact"
+                style="@style/Regular16"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4dp"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/tv_contact_caption"
+                tools:text="Ирина" />
+
+            <TextView
+                android:id="@+id/tv_email_caption"
+                style="@style/Medium16"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_16dp"
+                android:text="@string/email"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/tv_contact" />
+
+            <TextView
+                android:id="@+id/tv_email"
+                style="@style/Regular16"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4dp"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/tv_email_caption"
+                tools:text="i.lozgkina@yandex.ru" />
+
+            <TextView
+                android:id="@+id/tv_phone_caption"
+                style="@style/Medium16"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_16dp"
+                android:text="@string/phone"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/tv_email" />
+
+            <TextView
+                android:id="@+id/tv_phone"
+                style="@style/Regular16"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4dp"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/tv_phone_caption"
+                tools:text="+7 (904) 329-27-71" />
+
+            <TextView
+                android:id="@+id/tv_comment_caption"
+                style="@style/Medium16"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_16dp"
+                android:text="@string/comment"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/tv_phone" />
+
+            <TextView
+                android:id="@+id/tv_comment"
+                style="@style/Regular16"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4dp"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/tv_comment_caption"
+                tools:text="Заполнить анкету по форме можно на нашем сайте" />
+
+            <Button
+                style="@style/PrimaryButton"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="@dimen/_60dp"
+                android:layout_marginVertical="@dimen/_24dp"
+                android:text="@string/similar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+                app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+                app:layout_constraintTop_toBottomOf="@id/tv_comment" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
