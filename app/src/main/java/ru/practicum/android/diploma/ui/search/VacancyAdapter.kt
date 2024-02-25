@@ -3,11 +3,11 @@ package ru.practicum.android.diploma.ui.search
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import ru.practicum.android.diploma.data.dto.Vacancy
 import ru.practicum.android.diploma.databinding.ItemFoundVacancyBinding
+import ru.practicum.android.diploma.domain.models.Vacancy
 
 class VacancyAdapter(
-    val vacancyList: ArrayList<Vacancy>,
+    private val vacancyList: ArrayList<Vacancy>,
     private val clickListener: VacancyClickListener?
 ) : RecyclerView.Adapter<VacancyViewHolder>() {
 
