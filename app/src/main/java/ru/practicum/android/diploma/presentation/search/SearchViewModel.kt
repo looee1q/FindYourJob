@@ -31,8 +31,8 @@ class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor) : Vi
                 vacanciesInteractor
                     .searchVacancies(vacanciesRequest)
                     .collect {
-                        if (it.isNotEmpty()) {
-                            renderSearchFragmentScreenState(SearchFragmentScreenState.Content(it))
+                        if (it.items.isNotEmpty()) {
+                            renderSearchFragmentScreenState(SearchFragmentScreenState.Content(it.items))
                         } else {
                             renderSearchFragmentScreenState(SearchFragmentScreenState.Empty)
                         }
