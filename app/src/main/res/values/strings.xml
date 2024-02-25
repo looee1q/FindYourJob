@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Find Your Job</string>
-
-    <!--    bottom navigation menu-->
     <string name="main">Главная</string>
     <string name="favorite">Избранное</string>
     <string name="team">Команда</string>
@@ -10,4 +8,25 @@
     <string name="dasha">Попова Дарья Владимировна</string>
     <string name="sasha">Кашкаров Александр Владимирович</string>
     <string name="valera">Севостьянов Валерий Андреевич</string>
+    <string name="vacancy">Вакансия</string>
+    <string name="experience">Требуемый опыт</string>
+    <string name="description">Описание вакансии</string>
+    <string name="skills">Ключевые навыки</string>
+    <string name="contacts">Контакты</string>
+    <string name="contact">Контактное лицо</string>
+    <string name="email">E-mail</string>
+    <string name="phone">Телефон</string>
+    <string name="comment">Комментарий</string>
+    <string name="similar">Похожие вакансии</string>
+    <string name="error_server">Ошибка сервера</string>
+    <string name="search_vacancy">Поиск вакансий</string>
+    <string name="search">Введите запрос</string>
+    <string name="no_internet">Нет интернета</string>
+    <string name="nothing_found">Таких вакансий нет</string>
+    <string name="nothing_found_description">Не удалось получить список вакансий</string>
+    <string name="count_found_vacancies">Найдено "%s" вакансий</string>
+    <string name="salary_no_value">Зарплата не указана</string>
+    <string name="salary_from_to">от"%s" до"%s"</string>
+    <string name="favorites_are_empty">Список пуст</string>
+    <string name="error_favorites">Не удалось получить список вакансий</string>
 </resources>
