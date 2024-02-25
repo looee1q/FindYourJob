@@ -22,4 +22,12 @@
     <string name="comment">Комментарий</string>
     <string name="similar">Похожие вакансии</string>
     <string name="error_server">Ошибка сервера</string>
+    <string name="search_vacancy">Поиск вакансий</string>
+    <string name="search">Введите запрос</string>
+    <string name="no_internet">Нет интернета</string>
+    <string name="nothing_found">Таких вакансий нет</string>
+    <string name="nothing_found_description">Не удалось получить список вакансий</string>
+    <string name="count_found_vacancies">Найдено "%s" вакансий</string>
+    <string name="salary_no_value">Зарплата не указана</string>
+    <string name="salary_from_to">от"%s" до"%s"</string>
 </resources>
