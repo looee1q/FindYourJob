@@ -150,4 +150,5 @@
             android:text="@string/no_internet"
             android:visibility="visible" />
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
