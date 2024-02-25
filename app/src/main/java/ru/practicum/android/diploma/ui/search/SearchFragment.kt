@@ -49,7 +49,9 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         render(start)
 
         binding.InputEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Empty
+            }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.placeHolderError.visibility = View.GONE
@@ -65,7 +67,9 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
                 }
             }
 
-            override fun afterTextChanged(s: Editable?) {}
+            override fun afterTextChanged(s: Editable?) {
+                // Empty
+            }
         })
 
         adapter = VacancyAdapter(vacancyList, object : VacancyAdapter.VacancyClickListener {
