@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">Practicum-Android-Diploma</string>
+    <string name="app_name">Find Your Job</string>
+
+    <!--    bottom navigation menu-->
+    <string name="main">Главная</string>
+    <string name="favorite">Избранное</string>
+    <string name="team">Команда</string>
+    <string name="worked_by">Над приложением работали</string>
+    <string name="pasha">Иванов Павел Александрович</string>
+    <string name="dasha">Попова Дарья Владимировна</string>
+    <string name="sasha">Кашкаров Александр Владимирович</string>
+    <string name="valera">Севостьянов Валерий Андреевич</string>
 </resources>

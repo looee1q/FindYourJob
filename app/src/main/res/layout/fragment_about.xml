@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/left_16dp_boundary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/_16dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/right_16dp_boundary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/_16dp" />
+
+    <TextView
+        android:id="@+id/team"
+        style="@style/Medium22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
+        android:text="@string/team"
+        app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/worked_by"
+        style="@style/Bold32"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="51dp"
+        android:text="@string/worked_by"
+        app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+        app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+        app:layout_constraintTop_toBottomOf="@+id/team" />
+
+    <TextView
+        android:id="@+id/pasha"
+        style="@style/Medium16"
+        android:layout_width="@dimen/_0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_32dp"
+        android:text="@string/pasha"
+        app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+        app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+        app:layout_constraintTop_toBottomOf="@id/worked_by" />
+
+    <TextView
+        android:id="@+id/dasha"
+        style="@style/Medium16"
+        android:layout_width="@dimen/_0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_16dp"
+        android:text="@string/dasha"
+        app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+        app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+        app:layout_constraintTop_toBottomOf="@id/pasha" />
+
+    <TextView
+        android:id="@+id/sasha"
+        style="@style/Medium16"
+        android:layout_width="@dimen/_0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_16dp"
+        android:text="@string/sasha"
+        app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+        app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+        app:layout_constraintTop_toBottomOf="@id/dasha" />
+
+    <TextView
+        android:id="@+id/valera"
+        style="@style/Medium16"
+        android:layout_width="@dimen/_0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_16dp"
+        android:text="@string/valera"
+        app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+        app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+        app:layout_constraintTop_toBottomOf="@id/sasha" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

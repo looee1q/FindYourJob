@@ -2,9 +2,15 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("ru.practicum.android.diploma.plugins.developproperties")
+    id("kotlin-kapt")
 }
 
 android {
+
+    buildFeatures {
+        viewBinding = true
+    }
+
     namespace = "ru.practicum.android.diploma"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
@@ -40,12 +46,36 @@ android {
 }
 
 dependencies {
+    // Annotation processors
+    annotationProcessor(libs.ui.glide)
+
+    // Kotlin annotation processing
+    kapt(libs.database.roomCompiler)
+
     implementation(libs.androidX.core)
     implementation(libs.androidX.appCompat)
+    implementation(libs.androidX.fragmetnKtx)
 
     // UI layer libraries
     implementation(libs.ui.material)
     implementation(libs.ui.constraintLayout)
+    implementation(libs.ui.glide)
+
+    // Network
+    implementation(libs.network.retrofit)
+    implementation(libs.network.gsonConverter)
+
+    // DI
+    implementation(libs.di.koinCore)
+    implementation(libs.di.koinAndroid)
+
+    // Navigation
+    implementation(libs.navigation.fragmentKtx)
+    implementation(libs.navigation.uiKtx)
+
+    // Database
+    implementation(libs.database.roomRuntime)
+    implementation(libs.database.roomKtx)
 
     // region Unit tests
     testImplementation(libs.unitTests.junit)
