@@ -4,11 +4,12 @@ package ru.practicum.android.diploma.domain.models
  * Детали вакансии.
  *
  * @param id идентификатор вакансии
+ * @param address адрес
  * @param alternateUrl ссылка на представление вакансии на сайте
  * @param areaName название региона
  * @param contactEmail электронная почта контакта
  * @param contactName имя контакта
- * @param contactPhone телефон контакта
+ * @param contactPhones телефон контакта
  * @param description описание в html, не менее 200 символов
  * @param employerName название компании
  * @param employment тип занятости
@@ -22,6 +23,7 @@ package ru.practicum.android.diploma.domain.models
  */
 data class VacancyDetails(
     val id: String,
+    val address: String,
     val alternateUrl: String,
     val areaName: String,
     val contactEmail: String,

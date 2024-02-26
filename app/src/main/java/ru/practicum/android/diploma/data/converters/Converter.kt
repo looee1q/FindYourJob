@@ -55,6 +55,7 @@ object Converter {
     fun fromVacancyDtoToVacancyDetails(vacancyDto: VacancyDto): VacancyDetails {
         return VacancyDetails(
             id = vacancyDto.id,
+            address = vacancyDto.address.let { "${it.city}, ${it.street}, ${it.building}" },
             alternateUrl = vacancyDto.alternateUrl,
             areaName = vacancyDto.area.name,
             contactEmail = vacancyDto.contacts.email,
