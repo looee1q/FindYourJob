@@ -19,7 +19,6 @@ import ru.practicum.android.diploma.presentation.search.SearchViewModel
 import ru.practicum.android.diploma.presentation.search.state.SearchFragmentScreenState
 import ru.practicum.android.diploma.ui.fragment.BindingFragment
 import ru.practicum.android.diploma.ui.vacancy.VacancyFragment
-import ru.practicum.android.diploma.util.StringUtils.convertVacanciesNumToString
 import ru.practicum.android.diploma.util.debounce
 
 class SearchFragment : BindingFragment<FragmentSearchBinding>() {
@@ -138,11 +137,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         binding.placeHolderError.visibility = View.GONE
         binding.messageFound.visibility = View.VISIBLE
         binding.messageFound.text =
-            getString(
-                R.string.count_found_vacancies,
-                vacancies.found,
-                convertVacanciesNumToString(vacancies.found)
-            )
+            resources.getQuantityString(R.plurals.vacancy_plurals, vacancies.found, vacancies.found)
         binding.recyclerViewFoundVacancies.visibility = View.VISIBLE
         hideKeyBoard()
         adapter?.let {

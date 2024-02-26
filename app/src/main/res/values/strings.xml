@@ -31,4 +31,11 @@
     <string name="salary_from_to">от "%s" до "%s"</string>
     <string name="favorites_are_empty">Список пуст</string>
     <string name="error_favorites">Не удалось получить список вакансий</string>
+
+    <plurals name="vacancy_plurals">
+        <item quantity="one">Найдена %1$d вакансия</item>
+        <item quantity="few">Найдено %1$d вакансии</item>
+        <item quantity="many">Найдено %1$d вакансий</item>
+        <item quantity="other">Найдено %1$d вакансий</item>
+    </plurals>
 </resources>

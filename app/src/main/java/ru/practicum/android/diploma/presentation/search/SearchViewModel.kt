@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.VacanciesInteractor
 import ru.practicum.android.diploma.domain.models.VacanciesRequest
@@ -33,6 +34,9 @@ class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor) : Vi
             viewModelScope.launch {
                 vacanciesInteractor
                     .searchVacancies(vacanciesRequest)
+                    .catch {
+                        emit(SearchResult.Error())
+                    }
                     .collect { result ->
 
                         when (result) {
