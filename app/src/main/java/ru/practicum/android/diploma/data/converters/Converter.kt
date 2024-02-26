@@ -2,10 +2,12 @@ package ru.practicum.android.diploma.data.converters
 
 import ru.practicum.android.diploma.data.dto.RequestVacanciesListSearch
 import ru.practicum.android.diploma.data.dto.ResponseVacanciesListDto
+import ru.practicum.android.diploma.data.dto.VacancyDto
 import ru.practicum.android.diploma.domain.models.Salary
 import ru.practicum.android.diploma.domain.models.Vacancies
 import ru.practicum.android.diploma.domain.models.VacanciesRequest
 import ru.practicum.android.diploma.domain.models.Vacancy
+import ru.practicum.android.diploma.domain.models.VacancyDetails
 
 object Converter {
 
@@ -46,6 +48,26 @@ object Converter {
                     )
                 }
                 .toList()
+        )
+    }
+
+    fun fromVacancyDtoToVacancyDetails(vacancyDto: VacancyDto): VacancyDetails {
+        return VacancyDetails(
+            id = vacancyDto.id,
+            alternateUrl = vacancyDto.alternateUrl,
+            areaName = vacancyDto.area.name,
+            description = vacancyDto.description,
+            employerName = vacancyDto.employer.name,
+            employment = vacancyDto.employment.name,
+            experience = vacancyDto.experience.name,
+            keySkills = vacancyDto.keySkills.map { keySkillsResponseDto -> keySkillsResponseDto.name },
+            name = vacancyDto.name,
+            salary = Salary(
+                currency = vacancyDto.salary.currency,
+                from = vacancyDto.salary.from,
+                to = vacancyDto.salary.to
+            ),
+            schedule = vacancyDto.schedule.name
         )
     }
 }
