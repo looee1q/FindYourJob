@@ -8,11 +8,13 @@ import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.VacanciesInteractor
 import ru.practicum.android.diploma.domain.models.VacanciesRequest
 import ru.practicum.android.diploma.presentation.search.state.SearchFragmentScreenState
+import ru.practicum.android.diploma.util.SearchResult
 import ru.practicum.android.diploma.util.debounce
 
 class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor) : ViewModel() {
 
-    private val searchFragmentScreenState = MutableLiveData<SearchFragmentScreenState>()
+    private var latestSearchText: String? = null
+    private val searchFragmentScreenState = MutableLiveData<SearchFragmentScreenState>(SearchFragmentScreenState.Start)
     private val searchDebounce = debounce<String>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) {
         makeRequest(it)
     }
@@ -24,17 +26,33 @@ class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor) : Vi
     }
 
     private fun makeRequest(text: String) {
-        if (text.isNotEmpty()) {
+        if (text.isNotEmpty() && text != latestSearchText) {
+            latestSearchText = text
             renderSearchFragmentScreenState(SearchFragmentScreenState.Loading)
             val vacanciesRequest = VacanciesRequest(text = text)
             viewModelScope.launch {
                 vacanciesInteractor
                     .searchVacancies(vacanciesRequest)
-                    .collect {
-                        if (it.items.isNotEmpty()) {
-                            renderSearchFragmentScreenState(SearchFragmentScreenState.Content(it.items))
-                        } else {
-                            renderSearchFragmentScreenState(SearchFragmentScreenState.Empty)
+                    .collect { result ->
+
+                        when (result) {
+                            is SearchResult.NoInternet -> {
+                                renderSearchFragmentScreenState(SearchFragmentScreenState.NoInternet)
+                            }
+
+                            is SearchResult.Error -> {
+                                renderSearchFragmentScreenState(SearchFragmentScreenState.Error)
+                            }
+
+                            is SearchResult.Success -> {
+                                if (result.data != null) {
+                                    if (result.data.items.isEmpty()) {
+                                        renderSearchFragmentScreenState(SearchFragmentScreenState.Empty)
+                                    } else {
+                                        renderSearchFragmentScreenState(SearchFragmentScreenState.Content(result.data))
+                                    }
+                                }
+                            }
                         }
                     }
             }
