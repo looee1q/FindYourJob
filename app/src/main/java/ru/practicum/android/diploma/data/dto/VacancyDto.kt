@@ -44,8 +44,8 @@ data class SalaryResponseDto(
 data class ContactsResponseDto(
     val email: String,
     val name: String,
-    val phones: PhonesResponseDto
-
+    @SerializedName("phones")
+    val phones: List<PhonesResponseDto>
 )
 
 data class PhonesResponseDto(

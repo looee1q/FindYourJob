@@ -3,6 +3,7 @@ package ru.practicum.android.diploma.data.converters
 import ru.practicum.android.diploma.data.dto.RequestVacanciesListSearch
 import ru.practicum.android.diploma.data.dto.ResponseVacanciesListDto
 import ru.practicum.android.diploma.data.dto.VacancyDto
+import ru.practicum.android.diploma.domain.models.Phone
 import ru.practicum.android.diploma.domain.models.Salary
 import ru.practicum.android.diploma.domain.models.Vacancies
 import ru.practicum.android.diploma.domain.models.VacanciesRequest
@@ -58,7 +59,12 @@ object Converter {
             areaName = vacancyDto.area.name,
             contactEmail = vacancyDto.contacts.email,
             contactName = vacancyDto.contacts.name,
-            contactPhone = vacancyDto.contacts.phones.let { "+${it.country} (${it.city}) ${it.number}" },
+            contactPhones = vacancyDto.contacts.phones.map { phonesResponseDto ->
+                Phone(
+                    comment = phonesResponseDto.comment,
+                    phone = "+${phonesResponseDto.country} (${phonesResponseDto.city}) ${phonesResponseDto.number}"
+                )
+            },
             description = vacancyDto.description,
             employerLogoUrl = vacancyDto.employer.logoUrls.original,
             employerName = vacancyDto.employer.name,

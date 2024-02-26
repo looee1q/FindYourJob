@@ -26,7 +26,7 @@ data class VacancyDetails(
     val areaName: String,
     val contactEmail: String,
     val contactName: String,
-    val contactPhone: String,
+    val contactPhones: List<Phone>,
     val description: String,
     val employerLogoUrl: String,
     val employerName: String,
