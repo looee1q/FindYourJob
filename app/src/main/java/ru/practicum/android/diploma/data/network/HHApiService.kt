@@ -30,16 +30,4 @@ interface HHApiService {
     )
     @GET("/vacancies/{vacancy_id}/similar_vacancies")
     suspend fun getSimilarVacancies(@Path("vacancy_id") id: String): ResponseVacanciesListDto
-
-    // @GET("/industries")
-    // suspend fun getIndustries(): Response<List<CountriesDTO>>
-
-    // @GET("/areas/countries")
-    // suspend fun getCountries(): Response<List<CountriesDTO>>
-
-    // ?@GET("/areas/{area_id}")
-    // ?suspend fun getAreasById(@Path("area_id") id: String): Response<List<AreasDTO>>
-
-    // @GET("/areas/")
-    // suspend fun getAreas(): Response<List<AreasDTO>>
 }

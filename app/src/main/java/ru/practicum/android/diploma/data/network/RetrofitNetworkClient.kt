@@ -2,10 +2,8 @@ package ru.practicum.android.diploma.data.network
 
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import ru.practicum.android.diploma.data.NetworkClient
 import ru.practicum.android.diploma.data.dto.RequestSimilarVacancySearch
 import ru.practicum.android.diploma.data.dto.RequestVacanciesListSearch
 import ru.practicum.android.diploma.data.dto.RequestVacancySearch
@@ -22,10 +20,6 @@ class RetrofitNetworkClient(
         } else {
             withContext(Dispatchers.IO) {
                 val options = formQueryMapToSearchVacancies(requestDto)
-
-                // Лог для просмотра информации запроса поиска вакансий, который уходит на сервер
-                Log.d("RetrofitNetworkClient", "Запрос таков: $options")
-
                 val response = hhApiService.searchVacancies(options)
                 response.apply { resultCode = SUCCESS_RESPONSE }
             }
@@ -33,10 +27,10 @@ class RetrofitNetworkClient(
     }
 
     override suspend fun doRequestGetVacancy(dto: RequestVacancySearch): Response {
-        if (!isConnected()) {
-            return Response().apply { resultCode = NO_INTERNET_CONNECTION }
+        return if (!isConnected()) {
+            Response().apply { resultCode = NO_INTERNET_CONNECTION }
         } else {
-            return withContext(Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
                 val response = hhApiService.getVacancy(dto.id)
                 response.apply { resultCode = SUCCESS_RESPONSE }
             }
@@ -44,10 +38,10 @@ class RetrofitNetworkClient(
     }
 
     override suspend fun doRequestGetSimilarVacancies(dto: RequestSimilarVacancySearch): Response {
-        if (!isConnected()) {
-            return Response().apply { resultCode = NO_INTERNET_CONNECTION }
+        return if (!isConnected()) {
+            Response().apply { resultCode = NO_INTERNET_CONNECTION }
         } else {
-            return withContext(Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
                 val response = hhApiService.getSimilarVacancies(dto.id)
                 response.apply { resultCode = SUCCESS_RESPONSE }
             }
