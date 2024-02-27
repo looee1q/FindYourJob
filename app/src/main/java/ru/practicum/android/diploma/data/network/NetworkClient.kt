@@ -7,7 +7,7 @@ import ru.practicum.android.diploma.data.dto.Response
 
 interface NetworkClient {
 
-    suspend fun doRequestSearchVacancies(dto: RequestVacanciesListSearch): Response
+    suspend fun doRequestSearchVacancies(requestDto: RequestVacanciesListSearch): Response
 
     suspend fun doRequestGetVacancy(dto: RequestVacancySearch): Response
 
