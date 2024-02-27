@@ -122,6 +122,23 @@ object Converter {
         )
     }
 
+    fun fromFavoriteVacancyEntityToVacancy(
+        favoriteVacancyEntity: FavoriteVacancyEntity
+    ): Vacancy {
+        return Vacancy(
+            id = favoriteVacancyEntity.id,
+            areaName = favoriteVacancyEntity.areaName,
+            employerLogoUrl = favoriteVacancyEntity.employerLogoUrl,
+            employerName = favoriteVacancyEntity.employerName,
+            name = favoriteVacancyEntity.name,
+            salary = Salary(
+                currency = favoriteVacancyEntity.salaryCurrency,
+                from = favoriteVacancyEntity.salaryFrom,
+                to = favoriteVacancyEntity.salaryTo
+            )
+        )
+    }
+
     fun fromVacancyDetailsToFavoriteVacancyEntity(vacancyDetails: VacancyDetails): FavoriteVacancyEntity {
         return FavoriteVacancyEntity(
             id = vacancyDetails.id,
@@ -144,4 +161,5 @@ object Converter {
             schedule = vacancyDetails.schedule
         )
     }
+
 }

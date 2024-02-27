@@ -5,6 +5,7 @@ import ru.practicum.android.diploma.domain.api.VacanciesInteractor
 import ru.practicum.android.diploma.domain.api.VacanciesRepository
 import ru.practicum.android.diploma.domain.models.Vacancies
 import ru.practicum.android.diploma.domain.models.VacanciesRequest
+import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.models.VacancyDetails
 import ru.practicum.android.diploma.util.SearchResult
 
@@ -30,7 +31,7 @@ class VacanciesInteractorImpl(private val vacanciesRepository: VacanciesReposito
         vacanciesRepository.removeVacancyFromFavorites(vacancyId)
     }
 
-    override fun getFavoriteVacancies(): Flow<List<VacancyDetails>> {
+    override fun getFavoriteVacancies(): Flow<List<Vacancy>> {
         return vacanciesRepository.getFavoriteVacancies()
     }
 }
