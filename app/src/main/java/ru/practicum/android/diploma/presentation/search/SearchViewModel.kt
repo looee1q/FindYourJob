@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.VacanciesInteractor
 import ru.practicum.android.diploma.domain.models.VacanciesRequest
@@ -26,6 +28,12 @@ class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor) : Vi
         searchDebounce(text)
     }
 
+    fun cancelSearch() {
+        viewModelScope.coroutineContext.cancelChildren()
+        latestSearchText = ""
+        renderSearchFragmentScreenState(SearchFragmentScreenState.Start)
+    }
+
     private fun makeRequest(text: String) {
         if (text.isNotEmpty() && text != latestSearchText) {
             latestSearchText = text
@@ -38,22 +46,23 @@ class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor) : Vi
                         emit(SearchResult.Error())
                     }
                     .collect { result ->
+                        if (isActive) {
+                            when (result) {
+                                is SearchResult.NoInternet -> {
+                                    renderSearchFragmentScreenState(SearchFragmentScreenState.NoInternet)
+                                }
 
-                        when (result) {
-                            is SearchResult.NoInternet -> {
-                                renderSearchFragmentScreenState(SearchFragmentScreenState.NoInternet)
-                            }
+                                is SearchResult.Error -> {
+                                    renderSearchFragmentScreenState(SearchFragmentScreenState.Error)
+                                }
 
-                            is SearchResult.Error -> {
-                                renderSearchFragmentScreenState(SearchFragmentScreenState.Error)
-                            }
-
-                            is SearchResult.Success -> {
-                                if (result.data != null) {
-                                    if (result.data.items.isEmpty()) {
-                                        renderSearchFragmentScreenState(SearchFragmentScreenState.Empty)
-                                    } else {
-                                        renderSearchFragmentScreenState(SearchFragmentScreenState.Content(result.data))
+                                is SearchResult.Success -> {
+                                    if (result.data != null) {
+                                        if (result.data.items.isEmpty()) {
+                                            renderSearchFragmentScreenState(SearchFragmentScreenState.Empty)
+                                        } else {
+                                            renderSearchFragmentScreenState(SearchFragmentScreenState.Content(result.data))
+                                        }
                                     }
                                 }
                             }

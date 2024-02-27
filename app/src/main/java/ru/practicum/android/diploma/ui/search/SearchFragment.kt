@@ -48,10 +48,9 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         binding.InputEditText.doOnTextChanged { text, _, _, _ ->
             binding.placeHolderError.visibility = View.GONE
             viewModel.search(binding.InputEditText.text.toString())
-            if (binding.InputEditText.hasFocus() && text.isNullOrEmpty()) {
-                binding.progressBar.visibility = View.GONE
-                binding.messageFound.visibility = View.GONE
-                binding.recyclerViewFoundVacancies.visibility = View.GONE
+
+            if (text.isNullOrEmpty()) {
+                viewModel.cancelSearch()
                 binding.icClose.setImageResource(R.drawable.ic_search)
                 binding.icClose.isClickable = false
             } else {
@@ -73,6 +72,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         binding.icClose.setOnClickListener {
             binding.InputEditText.setText("")
         }
+
         viewModel.getSearchFragmentScreenState().observe(viewLifecycleOwner) {
             render(it)
         }
