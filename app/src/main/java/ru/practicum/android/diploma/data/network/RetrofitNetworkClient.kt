@@ -79,10 +79,8 @@ class RetrofitNetworkClient(
     }
 
     companion object {
-        var NO_INTERNET_CONNECTION = -1
-        var SUCCESS_RESPONSE = 200
-        var BAD_REQUEST = 400
-        var UNEXPECTED_ERROR = 500
+        const val NO_INTERNET_CONNECTION = -1
+        const val SUCCESS_RESPONSE = 200
 
         const val QUERY_MAP_KEY_PAGE = "page"
         const val QUERY_MAP_KEY_PER_PAGE = "per_page"

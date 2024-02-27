@@ -12,13 +12,30 @@ import ru.practicum.android.diploma.domain.api.VacanciesRepository
 import ru.practicum.android.diploma.domain.models.Vacancies
 import ru.practicum.android.diploma.domain.models.VacanciesRequest
 import ru.practicum.android.diploma.domain.models.VacancyDetails
+import ru.practicum.android.diploma.util.SearchResult
 
 class VacanciesRepositoryImpl(private val networkClient: NetworkClient) : VacanciesRepository {
 
-    override suspend fun searchVacancies(vacanciesRequest: VacanciesRequest): Flow<Vacancies> = flow {
+    override suspend fun searchVacancies(vacanciesRequest: VacanciesRequest): Flow<SearchResult<Vacancies>> = flow {
         val requestVacanciesListSearch = Converter.fromVacanciesRequestToRequestVacanciesListSearch(vacanciesRequest)
-        val response = networkClient.doRequestSearchVacancies(requestVacanciesListSearch) as ResponseVacanciesListDto
-        emit(Converter.fromResponseVacanciesListDtoToVacancies(response))
+        val response = networkClient.doRequestSearchVacancies(requestVacanciesListSearch)
+        when (response.resultCode) {
+            SUCCESS_RESPONSE -> {
+                emit(
+                    SearchResult.Success(
+                        Converter.fromResponseVacanciesListDtoToVacancies(response as ResponseVacanciesListDto)
+                    )
+                )
+            }
+
+            NO_INTERNET_CONNECTION -> {
+                emit(SearchResult.NoInternet())
+            }
+
+            else -> {
+                emit(SearchResult.Error())
+            }
+        }
     }
 
     override suspend fun getVacancyDetails(vacancyId: String): Flow<VacancyDetails> = flow {
@@ -32,5 +49,10 @@ class VacanciesRepositoryImpl(private val networkClient: NetworkClient) : Vacanc
         val response =
             networkClient.doRequestGetSimilarVacancies(requestSimilarVacancySearch) as ResponseVacanciesListDto
         emit(Converter.fromResponseVacanciesListDtoToVacancies(response))
+    }
+
+    companion object {
+        private const val SUCCESS_RESPONSE = 200
+        private const val NO_INTERNET_CONNECTION = -1
     }
 }
