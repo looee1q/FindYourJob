@@ -16,7 +16,7 @@ import ru.practicum.android.diploma.databinding.FragmentSearchBinding
 import ru.practicum.android.diploma.domain.models.Vacancies
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.presentation.search.SearchViewModel
-import ru.practicum.android.diploma.presentation.search.state.SearchFragmentScreenState
+import ru.practicum.android.diploma.presentation.search.state.SearchFragmentState
 import ru.practicum.android.diploma.ui.fragment.BindingFragment
 import ru.practicum.android.diploma.ui.vacancy.VacancyFragment
 import ru.practicum.android.diploma.util.debounce
@@ -78,14 +78,14 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         }
     }
 
-    private fun render(state: SearchFragmentScreenState) {
+    private fun render(state: SearchFragmentState) {
         when (state) {
-            is SearchFragmentScreenState.Content -> showContent(state.content)
-            is SearchFragmentScreenState.Empty -> showEmpty()
-            is SearchFragmentScreenState.Error -> showError(getString(R.string.error_server), R.drawable.error_server)
-            is SearchFragmentScreenState.Loading -> showLoading()
-            is SearchFragmentScreenState.Start -> showStart()
-            is SearchFragmentScreenState.NoInternet -> showError(
+            is SearchFragmentState.Content -> showContent(state.content)
+            is SearchFragmentState.Empty -> showEmpty()
+            is SearchFragmentState.Error -> showError(getString(R.string.error_server), R.drawable.error_server)
+            is SearchFragmentState.Loading -> showLoading()
+            is SearchFragmentState.Start -> showStart()
+            is SearchFragmentState.NoInternet -> showError(
                 getString(R.string.no_internet),
                 R.drawable.png_no_internet
             )
