@@ -24,7 +24,7 @@
     <string name="no_internet">Нет интернета</string>
     <string name="nothing_found">Таких вакансий нет</string>
     <string name="nothing_found_description">Не удалось получить список вакансий</string>
-    <string name="count_found_vacancies">Найдено "%s" вакансий</string>
+    <string name="count_found_vacancies">Найдено %1$d %2$s</string>
     <string name="salary_no_value">Зарплата не указана</string>
     <string name="salary_from">от "%s" "%s"</string>
     <string name="salary_to">до "%s" "%s"</string>
@@ -32,4 +32,11 @@
     <string name="favorites_are_empty">Список пуст</string>
     <string name="error_favorites">Не удалось получить список вакансий</string>
     <string name="employment_schedule">"%s", "%s"</string>
+
+    <plurals name="vacancy_plurals">
+        <item quantity="one">Найдена %1$d вакансия</item>
+        <item quantity="few">Найдено %1$d вакансии</item>
+        <item quantity="many">Найдено %1$d вакансий</item>
+        <item quantity="other">Найдено %1$d вакансий</item>
+    </plurals>
 </resources>
