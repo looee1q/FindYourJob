@@ -21,4 +21,16 @@ class VacanciesInteractorImpl(private val vacanciesRepository: VacanciesReposito
     override suspend fun getSimilarVacancies(vacancyId: String): Flow<Vacancies> {
         return vacanciesRepository.getSimilarVacancies(vacancyId = vacancyId)
     }
+
+    override suspend fun addVacancyToFavorites(vacancy: VacancyDetails) {
+        vacanciesRepository.addVacancyToFavorites(vacancy)
+    }
+
+    override suspend fun removeVacancyFromFavorites(vacancyId: String) {
+        vacanciesRepository.removeVacancyFromFavorites(vacancyId)
+    }
+
+    override fun getFavoriteVacancies(): Flow<List<VacancyDetails>> {
+        return vacanciesRepository.getFavoriteVacancies()
+    }
 }

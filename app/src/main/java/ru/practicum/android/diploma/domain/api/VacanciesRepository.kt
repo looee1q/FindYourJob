@@ -13,4 +13,10 @@ interface VacanciesRepository {
     suspend fun getVacancyDetails(vacancyId: String): Flow<VacancyDetails>
 
     suspend fun getSimilarVacancies(vacancyId: String): Flow<Vacancies>
+
+    suspend fun addVacancyToFavorites(vacancy: VacancyDetails)
+
+    suspend fun removeVacancyFromFavorites(vacancyId: String)
+
+    fun getFavoriteVacancies() : Flow<List<VacancyDetails>>
 }
