@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.VacanciesInteractor
+import ru.practicum.android.diploma.domain.models.Vacancies
 import ru.practicum.android.diploma.domain.models.VacanciesRequest
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.presentation.search.state.SearchFragmentState
@@ -70,32 +71,36 @@ class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor) : Vi
                 }
                 .collect { result ->
                     if (isActive) {
-                        when (result) {
-                            is SearchResult.NoInternet -> {
-                                renderState(SearchFragmentState.NoInternet(isFirstPage, vacanciesList, found))
-                            }
-
-                            is SearchResult.Error -> {
-                                renderState(SearchFragmentState.Error(isFirstPage, vacanciesList, found))
-                            }
-
-                            is SearchResult.Success -> {
-                                if (result.data != null) {
-                                    maxPages = result.data.pages
-                                    currentPage = result.data.page
-                                    found = result.data.found
-                                    if (result.data.items.isEmpty()) {
-                                        renderState(SearchFragmentState.Empty)
-                                    } else {
-                                        vacanciesList.addAll(filterDuplicateVacancy(result.data.items))
-                                        renderState(SearchFragmentState.Content(vacanciesList, found))
-                                    }
-                                }
-                            }
-                        }
+                        parsingResultSearch(result, isFirstPage)
                         isNextPageLoading = false
                     }
                 }
+        }
+    }
+
+    private fun parsingResultSearch(result: SearchResult<Vacancies>, isFirstPage: Boolean) {
+        when (result) {
+            is SearchResult.NoInternet -> {
+                renderState(SearchFragmentState.NoInternet(isFirstPage, vacanciesList, found))
+            }
+
+            is SearchResult.Error -> {
+                renderState(SearchFragmentState.Error(isFirstPage, vacanciesList, found))
+            }
+
+            is SearchResult.Success -> {
+                if (result.data != null) {
+                    maxPages = result.data.pages
+                    currentPage = result.data.page
+                    found = result.data.found
+                    if (result.data.items.isEmpty()) {
+                        renderState(SearchFragmentState.Empty)
+                    } else {
+                        vacanciesList.addAll(filterDuplicateVacancy(result.data.items))
+                        renderState(SearchFragmentState.Content(vacanciesList, found))
+                    }
+                }
+            }
         }
     }
 
