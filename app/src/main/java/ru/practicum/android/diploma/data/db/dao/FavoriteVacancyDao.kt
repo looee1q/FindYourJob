@@ -18,6 +18,6 @@ interface FavoriteVacancyDao {
     @Query("SELECT * FROM fav_vacancy_table ORDER BY timeAddToFav DESC")
     fun getAllVacancies(): Flow<List<FavoriteVacancyEntity>>
 
-    @Query("SELECT id FROM fav_vacancy_table")
-    suspend fun getVacancyId(): List<String>
+    @Query("SELECT * FROM fav_vacancy_table WHERE id = :vacancyId")
+    fun getVacancyById(vacancyId: String): FavoriteVacancyEntity
 }

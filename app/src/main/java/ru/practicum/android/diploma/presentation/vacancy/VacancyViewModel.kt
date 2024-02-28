@@ -19,12 +19,26 @@ class VacancyViewModel(
     private val vacancyFragmentScreenState = MutableLiveData<VacancyFragmentScreenState>()
     fun getVacancyFragmentScreenState(): LiveData<VacancyFragmentScreenState> = vacancyFragmentScreenState
 
-    fun getVacancyDetails(text: String) {
-        if (text.isNotEmpty()) {
+    fun getVacancyDetails(vacancyId: String) {
+        if (vacancyId.isNotEmpty()) {
             renderVacancyFragmentScreenState(VacancyFragmentScreenState.Loading)
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 vacanciesInteractor
-                    .getVacancyDetails(text)
+                    .getVacancyDetails(vacancyId)
+                    .collect {
+                        renderVacancyFragmentScreenState(VacancyFragmentScreenState.Content(it))
+                        setInitialVacancyFavoriteStatus(it)
+                    }
+            }
+        }
+    }
+
+    fun getVacancyDetailsFromLocalStorage(vacancyId: String) {
+        if (vacancyId.isNotEmpty()) {
+            renderVacancyFragmentScreenState(VacancyFragmentScreenState.Loading)
+            viewModelScope.launch(Dispatchers.IO) {
+                vacanciesInteractor
+                    .getVacancyDetailsFromLocalStorage(vacancyId)
                     .collect {
                         renderVacancyFragmentScreenState(VacancyFragmentScreenState.Content(it))
                         setInitialVacancyFavoriteStatus(it)
@@ -76,16 +90,17 @@ class VacancyViewModel(
     fun removeVacancyFromFavorites(vacancyDetails: VacancyDetails) {
         viewModelScope.launch(Dispatchers.IO) {
             vacanciesInteractor.removeVacancyFromFavorites(vacancyDetails.id)
+            renderVacancyFragmentScreenState(
+                VacancyFragmentScreenState.Content(vacancyDetails.copy(isFavorite = false))
+            )
         }
-        renderVacancyFragmentScreenState(
-            VacancyFragmentScreenState.Content(vacancyDetails.copy(isFavorite = false))
-        )
+
     }
 
     private fun setInitialVacancyFavoriteStatus(vacancyDetails: VacancyDetails) {
         viewModelScope.launch(Dispatchers.IO) {
             vacanciesInteractor.getFavoriteVacancies().collect {
-                val vacanciesId = it.map { it.id } //вынести мапу наверх
+                val vacanciesId = it.map { it.id }
                 if (vacanciesId.contains(vacancyDetails.id)) {
                     renderVacancyFragmentScreenState(
                         VacancyFragmentScreenState.Content(vacancyDetails.copy(isFavorite = true))

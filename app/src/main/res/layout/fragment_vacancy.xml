@@ -57,8 +57,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_favorites_off"
-            app:tint="@color/black_day_white_night" />
+            app:srcCompat="@drawable/ic_favorites_off" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout

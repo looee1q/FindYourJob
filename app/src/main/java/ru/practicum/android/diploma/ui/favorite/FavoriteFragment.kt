@@ -51,7 +51,9 @@ class FavoriteFragment : BindingFragment<FragmentFavoriteBinding>() {
         )
 
         binding.favoritesRecyclerView.adapter = adapter
-        binding.favoritesRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.favoritesRecyclerView.layoutManager = LinearLayoutManager(
+            requireContext(), LinearLayoutManager.VERTICAL, false
+        )
 
         viewModel.favoritesStateLiveData.observe(viewLifecycleOwner) {
             render(it)
@@ -84,7 +86,7 @@ class FavoriteFragment : BindingFragment<FragmentFavoriteBinding>() {
     private fun openVacancyFragment(vacancy: Vacancy) {
         findNavController().navigate(
             R.id.action_favoriteFragment_to_vacancyFragment,
-            VacancyFragment.createArgs(vacancy.id)
+            VacancyFragment.createArgs(vacancy.id, VacancyFragment.FAVORITE_FRAGMENT_ORIGIN)
         )
     }
 

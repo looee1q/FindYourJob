@@ -50,6 +50,16 @@ class VacanciesRepositoryImpl(
         emit(Converter.fromVacancyDtoToVacancyDetails(response))
     }
 
+    override suspend fun getVacancyDetailsFromLocalStorage(vacancyId: String): Flow<VacancyDetails> {
+        return flow {
+            emit(
+                Converter.fromFavoriteVacancyEntityToVacancyDetails(
+                    appDatabase.favoriteVacancyDao().getVacancyById(vacancyId)
+                )
+            )
+        }
+    }
+
     override suspend fun getSimilarVacancies(vacancyId: String): Flow<Vacancies> = flow {
         val requestSimilarVacancySearch = RequestSimilarVacancySearch(id = vacancyId)
         val response =

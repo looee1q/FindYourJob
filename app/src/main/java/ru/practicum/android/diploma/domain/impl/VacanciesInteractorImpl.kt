@@ -19,6 +19,10 @@ class VacanciesInteractorImpl(private val vacanciesRepository: VacanciesReposito
         return vacanciesRepository.getVacancyDetails(vacancyId = vacancyId)
     }
 
+    override suspend fun getVacancyDetailsFromLocalStorage(vacancyId: String): Flow<VacancyDetails> {
+        return vacanciesRepository.getVacancyDetailsFromLocalStorage(vacancyId = vacancyId)
+    }
+
     override suspend fun getSimilarVacancies(vacancyId: String): Flow<Vacancies> {
         return vacanciesRepository.getSimilarVacancies(vacancyId = vacancyId)
     }
