@@ -6,14 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentSearchBinding
-import ru.practicum.android.diploma.domain.models.Vacancies
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.presentation.search.SearchViewModel
 import ru.practicum.android.diploma.presentation.search.state.SearchFragmentState
@@ -24,8 +25,6 @@ import ru.practicum.android.diploma.util.debounce
 class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
     private val viewModel by viewModel<SearchViewModel>()
-    private val vacancyList: ArrayList<Vacancy> = arrayListOf()
-
     private var adapter: VacancyAdapter? = null
 
     override fun createBinding(
@@ -47,7 +46,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
         binding.InputEditText.doOnTextChanged { text, _, _, _ ->
             binding.placeHolderError.visibility = View.GONE
-            viewModel.search(binding.InputEditText.text.toString())
+            viewModel.searchByText(binding.InputEditText.text.toString())
 
             if (text.isNullOrEmpty()) {
                 viewModel.cancelSearch()
@@ -59,7 +58,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
             }
         }
 
-        adapter = VacancyAdapter(vacancyList, object : VacancyAdapter.VacancyClickListener {
+        adapter = VacancyAdapter(object : VacancyAdapter.VacancyClickListener {
             override fun onVacancyClick(vacancy: Vacancy) {
                 onVacancyClickDebounce(vacancy)
             }
@@ -68,6 +67,22 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         binding.recyclerViewFoundVacancies.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerViewFoundVacancies.adapter = adapter
+
+        binding.recyclerViewFoundVacancies.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                if (dy > 0) {
+                    val pos =
+                        (binding.recyclerViewFoundVacancies.layoutManager as LinearLayoutManager)
+                            .findLastVisibleItemPosition()
+                    val itemsCount = adapter!!.itemCount
+                    if (pos >= itemsCount - 1) {
+                        viewModel.getNextPage()
+                    }
+                }
+            }
+        })
 
         binding.icClose.setOnClickListener {
             binding.InputEditText.setText("")
@@ -80,71 +95,102 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
     private fun render(state: SearchFragmentState) {
         when (state) {
-            is SearchFragmentState.Content -> showContent(state.content)
+            is SearchFragmentState.Content -> showContent(state.vacancies, state.found)
             is SearchFragmentState.Empty -> showEmpty()
-            is SearchFragmentState.Error -> showError(getString(R.string.error_server), R.drawable.error_server)
-            is SearchFragmentState.Loading -> showLoading()
+            is SearchFragmentState.Error -> showError(state.isFirstPage, state.vacancies, state.found)
+            is SearchFragmentState.NoInternet -> showNoInternet(state.isFirstPage, state.vacancies, state.found)
+            is SearchFragmentState.Loading -> showLoading(state.isFirstPage)
             is SearchFragmentState.Start -> showStart()
-            is SearchFragmentState.NoInternet -> showError(
-                getString(R.string.no_internet),
-                R.drawable.png_no_internet
-            )
         }
     }
 
     private fun showStart() {
-        binding.progressBar.visibility = View.GONE
+        binding.progressBarMain.visibility = View.GONE
+        binding.progressBarPaging.visibility = View.GONE
         binding.recyclerViewFoundVacancies.visibility = View.GONE
         binding.ImageSearch.visibility = View.VISIBLE
         binding.messageFound.visibility = View.GONE
         binding.placeHolderError.visibility = View.GONE
     }
 
-    private fun showLoading() {
-        binding.progressBar.visibility = View.VISIBLE
-        binding.recyclerViewFoundVacancies.visibility = View.GONE
-        binding.ImageSearch.visibility = View.GONE
-        binding.messageFound.visibility = View.GONE
+    private fun showLoading(isFirstPage: Boolean) {
+        hideKeyBoard()
         binding.placeHolderError.visibility = View.GONE
+        binding.ImageSearch.visibility = View.GONE
+        if (isFirstPage) {
+            binding.recyclerViewFoundVacancies.visibility = View.GONE
+            binding.messageFound.visibility = View.GONE
+            binding.progressBarMain.visibility = View.VISIBLE
+        } else {
+            binding.progressBarPaging.visibility = View.VISIBLE
+        }
     }
 
-    private fun showError(message: String, placeholder: Int) {
-        binding.progressBar.visibility = View.GONE
-        binding.recyclerViewFoundVacancies.visibility = View.GONE
+    private fun showError(isFirstPage: Boolean, vacanciesList: List<Vacancy>, found: Int) {
+        hideViews()
+        if (isFirstPage) {
+            binding.recyclerViewFoundVacancies.visibility = View.GONE
+            binding.placeHolderError.visibility = View.VISIBLE
+            binding.messageError.text = getString(R.string.error_server)
+            binding.imageError.setImageResource(R.drawable.error_server)
+        } else {
+            Toast.makeText(
+                requireContext(),
+                resources.getString(R.string.error_occurred),
+                Toast.LENGTH_SHORT
+            ).show()
+            showContent(vacanciesList, found)
+        }
+    }
+
+    private fun showNoInternet(isFirstPage: Boolean, vacanciesList: List<Vacancy>, found: Int) {
+        hideViews()
+        if (isFirstPage) {
+            binding.recyclerViewFoundVacancies.visibility = View.GONE
+            binding.placeHolderError.visibility = View.VISIBLE
+            binding.messageError.text = getString(R.string.no_internet)
+            binding.imageError.setImageResource(R.drawable.png_no_internet)
+        } else {
+            Toast.makeText(
+                requireContext(),
+                resources.getString(R.string.check_internet),
+                Toast.LENGTH_SHORT
+            ).show()
+            showContent(vacanciesList, found)
+        }
+    }
+
+    private fun hideViews() {
+        hideKeyBoard()
+        binding.progressBarMain.visibility = View.GONE
+        binding.progressBarPaging.visibility = View.GONE
         binding.ImageSearch.visibility = View.GONE
         binding.messageFound.visibility = View.GONE
-        binding.placeHolderError.visibility = View.VISIBLE
-        binding.messageError.text = message
-        binding.imageError.setImageResource(placeholder)
-        hideKeyBoard()
     }
 
     private fun showEmpty() {
-        binding.progressBar.visibility = View.GONE
+        binding.progressBarMain.visibility = View.GONE
+        binding.progressBarPaging.visibility = View.GONE
         binding.recyclerViewFoundVacancies.visibility = View.GONE
         binding.ImageSearch.visibility = View.GONE
-        binding.messageFound.visibility = View.VISIBLE
         binding.messageFound.text = getString(R.string.nothing_found)
-        binding.placeHolderError.visibility = View.VISIBLE
+        binding.messageFound.visibility = View.VISIBLE
         binding.messageError.text = getString(R.string.nothing_found_description)
         binding.imageError.setImageResource(R.drawable.png_nothing_found)
-        hideKeyBoard()
+        binding.placeHolderError.visibility = View.VISIBLE
     }
 
-    private fun showContent(vacancies: Vacancies) {
-        binding.progressBar.visibility = View.GONE
+    private fun showContent(vacancies: List<Vacancy>, found: Int) {
+        hideKeyBoard()
+        binding.progressBarMain.visibility = View.GONE
+        binding.progressBarPaging.visibility = View.GONE
         binding.ImageSearch.visibility = View.GONE
         binding.placeHolderError.visibility = View.GONE
-        binding.messageFound.visibility = View.VISIBLE
         binding.messageFound.text =
-            resources.getQuantityString(R.plurals.vacancy_plurals, vacancies.found, vacancies.found)
+            resources.getQuantityString(R.plurals.vacancy_plurals, found, found)
+        binding.messageFound.visibility = View.VISIBLE
+        adapter?.setVacancyList(vacancies)
         binding.recyclerViewFoundVacancies.visibility = View.VISIBLE
-        hideKeyBoard()
-        adapter?.let {
-            vacancyList.clear()
-            vacancyList.addAll(vacancies.items)
-            it.notifyDataSetChanged()
-        }
     }
 
     private fun hideKeyBoard() {
