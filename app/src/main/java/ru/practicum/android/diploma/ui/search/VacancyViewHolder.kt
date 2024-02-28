@@ -5,8 +5,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.ItemFoundVacancyBinding
-import ru.practicum.android.diploma.domain.models.Salary
 import ru.practicum.android.diploma.domain.models.Vacancy
+import ru.practicum.android.diploma.util.getSalaryStringAndSymbol
 
 class VacancyViewHolder(
     private val binding: ItemFoundVacancyBinding
@@ -15,7 +15,7 @@ class VacancyViewHolder(
     fun bind(vacancy: Vacancy, vacancyClickListener: VacancyAdapter.VacancyClickListener?) {
         binding.vacancyName.text = createVacancyTitle(vacancy.name, vacancy.areaName)
         binding.employerName.text = vacancy.employerName
-        binding.salary.text = createVacancySalary(vacancy.salary)
+        binding.salary.text = getSalaryStringAndSymbol(vacancy.salary, itemView.context)
         Glide
             .with(itemView)
             .load(vacancy.employerLogoUrl)
@@ -30,17 +30,5 @@ class VacancyViewHolder(
 
     private fun createVacancyTitle(name: String, place: String): String {
         return "$name, $place"
-    }
-
-    private fun createVacancySalary(salary: Salary): String {
-        return if (salary.from != null && salary.to == null) {
-            itemView.context.getString(R.string.salary_from, salary.from.toString())
-        } else if (salary.from == null && salary.to != null) {
-            itemView.context.getString(R.string.salary_to, salary.to.toString())
-        } else if (salary.from != null && salary.to != null) {
-            itemView.context.getString(R.string.salary_from_to, salary.from.toString(), salary.to.toString())
-        } else {
-            itemView.context.getString(R.string.salary_no_value)
-        }
     }
 }

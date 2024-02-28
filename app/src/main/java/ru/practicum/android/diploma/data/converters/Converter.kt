@@ -58,28 +58,28 @@ object Converter {
     fun fromVacancyDtoToVacancyDetails(vacancyDto: VacancyDto): VacancyDetails {
         return VacancyDetails(
             id = vacancyDto.id,
-            address = vacancyDto.address.let { "${it.city}, ${it.street}, ${it.building}" },
+            address = vacancyDto.address?.let { "${it.city}, ${it.street}, ${it.building}" }.orEmpty(),
             alternateUrl = vacancyDto.alternateUrl,
             areaName = vacancyDto.area.name,
-            contactEmail = vacancyDto.contacts.email,
-            contactName = vacancyDto.contacts.name,
-            contactPhones = vacancyDto.contacts.phones.map { phonesResponseDto ->
+            contactEmail = vacancyDto.contacts?.email,
+            contactName = vacancyDto.contacts?.name,
+            contactPhones = vacancyDto.contacts?.phones?.map { phonesResponseDto ->
                 Phone(
-                    comment = phonesResponseDto.comment,
-                    phone = "+${phonesResponseDto.country} (${phonesResponseDto.city}) ${phonesResponseDto.number}"
+                    comment = phonesResponseDto?.comment,
+                    phone = "+${phonesResponseDto?.country} (${phonesResponseDto?.city}) ${phonesResponseDto?.number}"
                 )
             },
             description = vacancyDto.description,
-            employerLogoUrl = vacancyDto.employer.logoUrls.original,
+            employerLogoUrl = vacancyDto.employer.logoUrls?.original.orEmpty(),
             employerName = vacancyDto.employer.name,
             employment = vacancyDto.employment.name,
             experience = vacancyDto.experience.name,
             keySkills = vacancyDto.keySkills.map { keySkillsResponseDto -> keySkillsResponseDto.name },
             name = vacancyDto.name,
             salary = Salary(
-                currency = vacancyDto.salary.currency,
-                from = vacancyDto.salary.from,
-                to = vacancyDto.salary.to
+                currency = vacancyDto.salary?.currency,
+                from = vacancyDto.salary?.from,
+                to = vacancyDto.salary?.to
             ),
             schedule = vacancyDto.schedule.name
         )
