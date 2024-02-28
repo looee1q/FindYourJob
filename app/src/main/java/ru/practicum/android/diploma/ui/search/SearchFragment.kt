@@ -202,7 +202,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     private fun openVacancyFragment(vacancy: Vacancy) {
         findNavController().navigate(
             R.id.action_searchFragment_to_vacancyFragment,
-            VacancyFragment.createArgs(vacancy.id)
+            VacancyFragment.createArgs(vacancy.id, VacancyFragment.SEARCH_FRAGMENT_ORIGIN)
         )
     }
 

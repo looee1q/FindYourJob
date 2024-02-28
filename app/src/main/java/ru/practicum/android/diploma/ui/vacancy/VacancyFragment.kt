@@ -43,7 +43,15 @@ class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
         }
 
         vacancyId = requireArguments().getString(ARGS_VACANCY).toString()
-        viewModel.getVacancyDetails(vacancyId)
+
+        when (requireArguments().getString(ARGS_ORIGIN)) {
+            SEARCH_FRAGMENT_ORIGIN -> {
+                viewModel.getVacancyDetails(vacancyId)
+            }
+            FAVORITE_FRAGMENT_ORIGIN -> {
+                viewModel.getVacancyDetailsFromLocalStorage(vacancyId)
+            }
+        }
 
         binding.btnBack.setOnClickListener {
             findNavController().navigateUp()
@@ -66,6 +74,10 @@ class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
         binding.phoneAndCommentRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.phoneAndCommentRecyclerView.adapter = adapter
+
+        binding.btnFavorite.setOnClickListener {
+            changeVacancyFavoriteStatus()
+        }
     }
 
     private fun render(state: VacancyFragmentScreenState) {
@@ -94,6 +106,8 @@ class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
         binding.llErrorServer.visibility = View.GONE
         binding.flProgressBar.visibility = View.GONE
         installVacancyDetails(vacancy)
+        val favoriteButton = if (vacancy.isFavorite) R.drawable.ic_favorites_on else R.drawable.ic_favorites_off
+        binding.btnFavorite.setImageDrawable(resources.getDrawable(favoriteButton, null))
     }
 
     private fun installVacancyDetails(vacancy: VacancyDetails) {
@@ -157,9 +171,26 @@ class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
         }
     }
 
+    private fun changeVacancyFavoriteStatus() {
+        val vacancy = (viewModel.getVacancyFragmentScreenState().value as? VacancyFragmentScreenState.Content)?.vacancy
+        vacancy?.let {
+            if (vacancy.isFavorite) {
+                viewModel.removeVacancyFromFavorites(it)
+            } else {
+                viewModel.addVacancyToFavorites(it)
+            }
+        }
+    }
+
     companion object {
         private const val ARGS_VACANCY = "ARGS_VACANCY_ID"
+        private const val ARGS_ORIGIN = "ARGS_ORIGIN"
+        const val SEARCH_FRAGMENT_ORIGIN = "SEARCH_FRAGMENT_ORIGIN"
+        const val FAVORITE_FRAGMENT_ORIGIN = "FAVORITE_FRAGMENT_ORIGIN"
 
-        fun createArgs(vacancyId: String): Bundle = bundleOf(ARGS_VACANCY to vacancyId)
+        fun createArgs(vacancyId: String, origin: String): Bundle = bundleOf(
+            ARGS_VACANCY to vacancyId,
+            ARGS_ORIGIN to origin
+        )
     }
 }

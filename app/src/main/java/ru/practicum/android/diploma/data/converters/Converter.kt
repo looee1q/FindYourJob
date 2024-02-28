@@ -1,5 +1,8 @@
 package ru.practicum.android.diploma.data.converters
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import ru.practicum.android.diploma.data.db.entity.FavoriteVacancyEntity
 import ru.practicum.android.diploma.data.dto.RequestVacanciesListSearch
 import ru.practicum.android.diploma.data.dto.ResponseVacanciesListDto
 import ru.practicum.android.diploma.data.dto.VacancyDto
@@ -81,4 +84,86 @@ object Converter {
             schedule = vacancyDto.schedule.name
         )
     }
+
+    fun fromFavoriteVacancyEntityToVacancyDetails(
+        favoriteVacancyEntity: FavoriteVacancyEntity
+    ): VacancyDetails {
+        return VacancyDetails(
+            id = favoriteVacancyEntity.id,
+            address = favoriteVacancyEntity.address,
+            alternateUrl = favoriteVacancyEntity.alternateUrl,
+            areaName = favoriteVacancyEntity.areaName,
+            contactEmail = favoriteVacancyEntity.contactsEmail,
+            contactName = favoriteVacancyEntity.contactsName,
+            contactPhones = if (favoriteVacancyEntity.contactsPhonesInJson == null) {
+                null
+            } else {
+                mutableListOf<Phone>().also {
+                    val listType = object : TypeToken<List<Phone>>() {}.type
+                    it.addAll(
+                        Gson().fromJson<List<Phone>>(favoriteVacancyEntity.contactsPhonesInJson, listType)
+                    )
+                }
+            },
+            description = favoriteVacancyEntity.description,
+            employerLogoUrl = favoriteVacancyEntity.employerLogoUrl,
+            employerName = favoriteVacancyEntity.employerName,
+            employment = favoriteVacancyEntity.employment,
+            experience = favoriteVacancyEntity.experience,
+            keySkills = mutableListOf<String>().also {
+                val listType = object : TypeToken<List<String>>() {}.type
+                it.addAll(
+                    Gson().fromJson<List<String>>(favoriteVacancyEntity.keySkillsInJson, listType)
+                )
+            },
+            name = favoriteVacancyEntity.name,
+            salary = Salary(
+                currency = favoriteVacancyEntity.salaryCurrency,
+                from = favoriteVacancyEntity.salaryFrom,
+                to = favoriteVacancyEntity.salaryTo
+            ),
+            schedule = favoriteVacancyEntity.schedule
+        )
+    }
+
+    fun fromFavoriteVacancyEntityToVacancy(
+        favoriteVacancyEntity: FavoriteVacancyEntity
+    ): Vacancy {
+        return Vacancy(
+            id = favoriteVacancyEntity.id,
+            areaName = favoriteVacancyEntity.areaName,
+            employerLogoUrl = favoriteVacancyEntity.employerLogoUrl,
+            employerName = favoriteVacancyEntity.employerName,
+            name = favoriteVacancyEntity.name,
+            salary = Salary(
+                currency = favoriteVacancyEntity.salaryCurrency,
+                from = favoriteVacancyEntity.salaryFrom,
+                to = favoriteVacancyEntity.salaryTo
+            )
+        )
+    }
+
+    fun fromVacancyDetailsToFavoriteVacancyEntity(vacancyDetails: VacancyDetails): FavoriteVacancyEntity {
+        return FavoriteVacancyEntity(
+            id = vacancyDetails.id,
+            address = vacancyDetails.address,
+            areaName = vacancyDetails.areaName,
+            name = vacancyDetails.name,
+            employerName = vacancyDetails.employerName,
+            employerLogoUrl = vacancyDetails.employerLogoUrl,
+            salaryCurrency = vacancyDetails.salary.currency,
+            salaryFrom = vacancyDetails.salary.from,
+            salaryTo = vacancyDetails.salary.to,
+            contactsEmail = vacancyDetails.contactEmail,
+            contactsName = vacancyDetails.contactName,
+            contactsPhonesInJson = vacancyDetails.contactPhones?.let { Gson().toJson(it) },
+            description = vacancyDetails.description,
+            employment = vacancyDetails.employment,
+            experience = vacancyDetails.experience,
+            keySkillsInJson = Gson().toJson(vacancyDetails.keySkills),
+            alternateUrl = vacancyDetails.alternateUrl,
+            schedule = vacancyDetails.schedule
+        )
+    }
+
 }
