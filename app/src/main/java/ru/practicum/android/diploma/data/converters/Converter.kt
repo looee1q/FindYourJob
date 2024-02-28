@@ -95,11 +95,15 @@ object Converter {
             areaName = favoriteVacancyEntity.areaName,
             contactEmail = favoriteVacancyEntity.contactsEmail,
             contactName = favoriteVacancyEntity.contactsName,
-            contactPhones = mutableListOf<Phone>().also {
-                val listType = object : TypeToken<List<Phone>>() {}.type
-                it.addAll(
-                    Gson().fromJson<List<Phone>>(favoriteVacancyEntity.contactsPhonesInJson, listType)
-                )
+            contactPhones = if (favoriteVacancyEntity.contactsPhonesInJson == null) {
+                null
+            } else {
+                mutableListOf<Phone>().also {
+                    val listType = object : TypeToken<List<Phone>>() {}.type
+                    it.addAll(
+                        Gson().fromJson<List<Phone>>(favoriteVacancyEntity.contactsPhonesInJson, listType)
+                    )
+                }
             },
             description = favoriteVacancyEntity.description,
             employerLogoUrl = favoriteVacancyEntity.employerLogoUrl,
@@ -147,12 +151,12 @@ object Converter {
             name = vacancyDetails.name,
             employerName = vacancyDetails.employerName,
             employerLogoUrl = vacancyDetails.employerLogoUrl,
-            salaryCurrency = vacancyDetails.salary.currency.orEmpty(),
-            salaryFrom = vacancyDetails.salary.from ?: -1,
-            salaryTo = vacancyDetails.salary.to ?: -1,
+            salaryCurrency = vacancyDetails.salary.currency,
+            salaryFrom = vacancyDetails.salary.from,
+            salaryTo = vacancyDetails.salary.to,
             contactsEmail = vacancyDetails.contactEmail,
             contactsName = vacancyDetails.contactName,
-            contactsPhonesInJson = Gson().toJson(vacancyDetails.contactPhones),
+            contactsPhonesInJson = vacancyDetails.contactPhones?.let { Gson().toJson(it) },
             description = vacancyDetails.description,
             employment = vacancyDetails.employment,
             experience = vacancyDetails.experience,

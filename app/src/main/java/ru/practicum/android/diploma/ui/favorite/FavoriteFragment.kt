@@ -43,7 +43,6 @@ class FavoriteFragment : BindingFragment<FragmentFavoriteBinding>() {
             ) { openVacancyFragment(it) }
 
         adapter = VacancyAdapter(
-            viewModel.favoritesLiveData.value!!,
             object : VacancyAdapter.VacancyClickListener {
                 override fun onVacancyClick(vacancy: Vacancy) {
                     onVacancyClickDebounce.invoke(vacancy)
@@ -63,6 +62,7 @@ class FavoriteFragment : BindingFragment<FragmentFavoriteBinding>() {
         with(binding) {
             when (favoritesState) {
                 is FavoritesState.Content -> {
+                    adapter?.setVacancyList(favoritesState.favorites)
                     favoritesRecyclerView.isVisible = true
                     emptyFavoritesConstraintLayout.isVisible = false
                     errorFavoritesConstraintLayout.isVisible = false

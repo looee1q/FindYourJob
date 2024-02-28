@@ -66,6 +66,10 @@ class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
         binding.phoneAndCommentRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.phoneAndCommentRecyclerView.adapter = adapter
+
+        binding.btnFavorite.setOnClickListener {
+            changeVacancyFavoriteStatus()
+        }
     }
 
     private fun render(state: VacancyFragmentScreenState) {
@@ -94,6 +98,8 @@ class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
         binding.llErrorServer.visibility = View.GONE
         binding.flProgressBar.visibility = View.GONE
         installVacancyDetails(vacancy)
+        val favoriteButton = if (vacancy.isFavorite) R.drawable.ic_favorites_on else R.drawable.ic_favorites_off
+        binding.btnFavorite.setImageDrawable(resources.getDrawable(favoriteButton, null))
     }
 
     private fun installVacancyDetails(vacancy: VacancyDetails) {
@@ -153,6 +159,17 @@ class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
                     phoneList.addAll(vacancy.contactPhones)
                     it.notifyDataSetChanged()
                 }
+            }
+        }
+    }
+
+    private fun changeVacancyFavoriteStatus() {
+        val vacancy = (viewModel.getVacancyFragmentScreenState().value as? VacancyFragmentScreenState.Content)?.vacancy
+        vacancy?.let {
+            if (vacancy.isFavorite) {
+                viewModel.removeVacancyFromFavorites(it)
+            } else {
+                viewModel.addVacancyToFavorites(it)
             }
         }
     }

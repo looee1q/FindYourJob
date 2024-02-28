@@ -37,5 +37,6 @@ data class VacancyDetails(
     val keySkills: List<String>,
     val name: String,
     val salary: Salary,
-    val schedule: String
+    val schedule: String,
+    val isFavorite: Boolean = false
 )
