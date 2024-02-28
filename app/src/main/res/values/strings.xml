@@ -32,6 +32,8 @@
     <string name="favorites_are_empty">Список пуст</string>
     <string name="error_favorites">Не удалось получить список вакансий</string>
     <string name="employment_schedule">"%s", "%s"</string>
+    <string name="check_internet">Проверьте подключение к интернету</string>
+    <string name="error_occurred">Произошла ошибка</string>
 
     <plurals name="vacancy_plurals">
         <item quantity="one">Найдена %1$d вакансия</item>
