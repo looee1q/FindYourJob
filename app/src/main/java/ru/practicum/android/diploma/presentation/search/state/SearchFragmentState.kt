@@ -1,18 +1,18 @@
 package ru.practicum.android.diploma.presentation.search.state
 
-import ru.practicum.android.diploma.domain.models.Vacancies
+import ru.practicum.android.diploma.domain.models.Vacancy
 
 sealed interface SearchFragmentState {
 
-    data object Loading : SearchFragmentState
+    data class Loading(val isFirstPage: Boolean) : SearchFragmentState
 
-    data class Content(val content: Vacancies) : SearchFragmentState
+    data class Content(val vacancies: List<Vacancy>, val found: Int) : SearchFragmentState
 
-    data object Error : SearchFragmentState
+    data class Error(val isFirstPage: Boolean, val vacancies: List<Vacancy>, val found: Int) : SearchFragmentState
+
+    data class NoInternet(val isFirstPage: Boolean, val vacancies: List<Vacancy>, val found: Int) : SearchFragmentState
 
     data object Empty : SearchFragmentState
 
     data object Start : SearchFragmentState
-
-    data object NoInternet : SearchFragmentState
 }
