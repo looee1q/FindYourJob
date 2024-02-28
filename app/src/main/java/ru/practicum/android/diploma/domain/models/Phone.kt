@@ -9,6 +9,6 @@ package ru.practicum.android.diploma.domain.models
  * @author Иванов Павел Александрович
  */
 data class Phone(
-    val comment: String,
-    val phone: String
+    val comment: String?,
+    val phone: String?
 )
