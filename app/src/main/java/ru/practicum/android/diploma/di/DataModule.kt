@@ -53,7 +53,7 @@ val dataModule = module {
     }
 
     single<VacanciesRepository> {
-        VacanciesRepositoryImpl(networkClient = get())
+        VacanciesRepositoryImpl(networkClient = get(), appDatabase = get())
     }
 
     single<ExternalNavigator> {

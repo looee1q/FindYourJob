@@ -2,7 +2,9 @@ package ru.practicum.android.diploma.data.repository
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import ru.practicum.android.diploma.data.converters.Converter
+import ru.practicum.android.diploma.data.db.AppDatabase
 import ru.practicum.android.diploma.data.dto.RequestSimilarVacancySearch
 import ru.practicum.android.diploma.data.dto.RequestVacancySearch
 import ru.practicum.android.diploma.data.dto.ResponseVacanciesListDto
@@ -11,10 +13,14 @@ import ru.practicum.android.diploma.data.network.NetworkClient
 import ru.practicum.android.diploma.domain.api.VacanciesRepository
 import ru.practicum.android.diploma.domain.models.Vacancies
 import ru.practicum.android.diploma.domain.models.VacanciesRequest
+import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.models.VacancyDetails
 import ru.practicum.android.diploma.util.SearchResult
 
-class VacanciesRepositoryImpl(private val networkClient: NetworkClient) : VacanciesRepository {
+class VacanciesRepositoryImpl(
+    private val networkClient: NetworkClient,
+    private val appDatabase: AppDatabase
+) : VacanciesRepository {
 
     override suspend fun searchVacancies(vacanciesRequest: VacanciesRequest): Flow<SearchResult<Vacancies>> = flow {
         val requestVacanciesListSearch = Converter.fromVacanciesRequestToRequestVacanciesListSearch(vacanciesRequest)
@@ -49,6 +55,22 @@ class VacanciesRepositoryImpl(private val networkClient: NetworkClient) : Vacanc
         val response =
             networkClient.doRequestGetSimilarVacancies(requestSimilarVacancySearch) as ResponseVacanciesListDto
         emit(Converter.fromResponseVacanciesListDtoToVacancies(response))
+    }
+
+    override suspend fun addVacancyToFavorites(vacancy: VacancyDetails) {
+        appDatabase.favoriteVacancyDao().insertVacancy(
+            Converter.fromVacancyDetailsToFavoriteVacancyEntity(vacancy)
+        )
+    }
+
+    override suspend fun removeVacancyFromFavorites(vacancyId: String) {
+        appDatabase.favoriteVacancyDao().deleteVacancy(vacancyId)
+    }
+
+    override fun getFavoriteVacancies(): Flow<List<Vacancy>> {
+        return appDatabase.favoriteVacancyDao().getAllVacancies().map {
+            it.map { Converter.fromFavoriteVacancyEntityToVacancy(it) }
+        }
     }
 
     companion object {
