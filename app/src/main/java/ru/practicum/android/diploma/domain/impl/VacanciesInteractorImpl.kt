@@ -15,7 +15,7 @@ class VacanciesInteractorImpl(private val vacanciesRepository: VacanciesReposito
         return vacanciesRepository.searchVacancies(vacanciesRequest = vacanciesRequest)
     }
 
-    override suspend fun getVacancyDetails(vacancyId: String): Flow<VacancyDetails> {
+    override suspend fun getVacancyDetails(vacancyId: String): Flow<SearchResult<VacancyDetails>> {
         return vacanciesRepository.getVacancyDetails(vacancyId = vacancyId)
     }
 

@@ -10,6 +10,7 @@ import ru.practicum.android.diploma.domain.api.VacanciesInteractor
 import ru.practicum.android.diploma.domain.models.VacancyDetails
 import ru.practicum.android.diploma.domain.share.SharingInteractor
 import ru.practicum.android.diploma.presentation.vacancy.state.VacancyFragmentScreenState
+import ru.practicum.android.diploma.util.SearchResult
 
 class VacancyViewModel(
     private val vacanciesInteractor: VacanciesInteractor,
@@ -25,9 +26,19 @@ class VacancyViewModel(
             viewModelScope.launch(Dispatchers.IO) {
                 vacanciesInteractor
                     .getVacancyDetails(vacancyId)
-                    .collect {
-                        renderVacancyFragmentScreenState(VacancyFragmentScreenState.Content(it))
-                        setInitialVacancyFavoriteStatus(it)
+                    .collect { searchResult ->
+                        when (searchResult) {
+                            is SearchResult.Error -> {
+                                renderVacancyFragmentScreenState(VacancyFragmentScreenState.ServerError)
+                            }
+                            is SearchResult.NoInternet -> {
+                                renderVacancyFragmentScreenState(VacancyFragmentScreenState.ServerError)
+                            }
+                            is SearchResult.Success -> {
+                                renderVacancyFragmentScreenState(VacancyFragmentScreenState.Content(searchResult.data))
+                                setInitialVacancyFavoriteStatus(searchResult.data)
+                            }
+                        }
                     }
             }
         }

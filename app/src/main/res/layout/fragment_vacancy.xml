@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_16dp"
             android:textAlignment="center"
-            tools:text="@string/error_server" />
+            android:text="@string/error_server" />
     </LinearLayout>
 
     <ScrollView
