@@ -84,6 +84,7 @@ class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
         when (state) {
             is VacancyFragmentScreenState.Content -> showContent(state.vacancy)
             is VacancyFragmentScreenState.ServerError -> showError()
+            is VacancyFragmentScreenState.NoInternetConnection -> showNoInternetConnection()
             is VacancyFragmentScreenState.Loading -> showLoading()
         }
     }
@@ -92,12 +93,21 @@ class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
         binding.flProgressBar.visibility = View.VISIBLE
         binding.llErrorServer.visibility = View.GONE
         binding.svVacancy.visibility = View.GONE
+        binding.llNoInternetConnection.visibility = View.GONE
     }
 
     private fun showError() {
         binding.llErrorServer.visibility = View.VISIBLE
         binding.flProgressBar.visibility = View.GONE
         binding.svVacancy.visibility = View.GONE
+        binding.llNoInternetConnection.visibility = View.GONE
+    }
+
+    private fun showNoInternetConnection() {
+        binding.llErrorServer.visibility = View.GONE
+        binding.flProgressBar.visibility = View.GONE
+        binding.svVacancy.visibility = View.GONE
+        binding.llNoInternetConnection.visibility = View.VISIBLE
     }
 
     private fun showContent(vacancy: VacancyDetails) {
@@ -105,6 +115,7 @@ class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
         binding.svVacancy.visibility = View.VISIBLE
         binding.llErrorServer.visibility = View.GONE
         binding.flProgressBar.visibility = View.GONE
+        binding.llNoInternetConnection.visibility = View.GONE
         installVacancyDetails(vacancy)
         val favoriteButton = if (vacancy.isFavorite) R.drawable.ic_favorites_on else R.drawable.ic_favorites_off
         binding.btnFavorite.setImageDrawable(resources.getDrawable(favoriteButton, null))

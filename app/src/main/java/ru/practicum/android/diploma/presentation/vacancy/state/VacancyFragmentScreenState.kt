@@ -8,4 +8,6 @@ sealed interface VacancyFragmentScreenState {
     data class Content(val vacancy: VacancyDetails) : VacancyFragmentScreenState
 
     data object ServerError : VacancyFragmentScreenState
+
+    data object NoInternetConnection : VacancyFragmentScreenState
 }

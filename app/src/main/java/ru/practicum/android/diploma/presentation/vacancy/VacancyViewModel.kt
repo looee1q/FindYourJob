@@ -32,7 +32,7 @@ class VacancyViewModel(
                                 renderVacancyFragmentScreenState(VacancyFragmentScreenState.ServerError)
                             }
                             is SearchResult.NoInternet -> {
-                                renderVacancyFragmentScreenState(VacancyFragmentScreenState.ServerError)
+                                renderVacancyFragmentScreenState(VacancyFragmentScreenState.NoInternetConnection)
                             }
                             is SearchResult.Success -> {
                                 renderVacancyFragmentScreenState(VacancyFragmentScreenState.Content(searchResult.data))

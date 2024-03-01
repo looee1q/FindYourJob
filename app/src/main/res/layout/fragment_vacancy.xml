@@ -97,11 +97,34 @@
             android:text="@string/error_server" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/llNoInternetConnection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_224dp"
+            android:paddingHorizontal="@dimen/_16dp"
+            android:src="@drawable/png_no_internet" />
+
+        <TextView
+            style="@style/Medium22"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16dp"
+            android:textAlignment="center"
+            android:text="@string/no_internet" />
+    </LinearLayout>
+
     <ScrollView
         android:id="@+id/svVacancy"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -404,6 +427,7 @@
                 tools:listitem="@layout/item_phone_comment" />
 
             <Button
+                android:id="@+id/btnGetSimilarVacancies"
                 style="@style/PrimaryButton"
                 android:layout_width="@dimen/_0dp"
                 android:layout_height="@dimen/_60dp"
