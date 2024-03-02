@@ -11,7 +11,7 @@ interface VacanciesRepository {
 
     suspend fun searchVacancies(vacanciesRequest: VacanciesRequest): Flow<SearchResult<Vacancies>>
 
-    suspend fun getVacancyDetails(vacancyId: String): Flow<VacancyDetails>
+    suspend fun getVacancyDetails(vacancyId: String): Flow<SearchResult<VacancyDetails>>
 
     suspend fun getVacancyDetailsFromLocalStorage(vacancyId: String): Flow<VacancyDetails>
 

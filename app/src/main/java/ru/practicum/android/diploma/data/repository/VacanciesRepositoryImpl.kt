@@ -44,10 +44,20 @@ class VacanciesRepositoryImpl(
         }
     }
 
-    override suspend fun getVacancyDetails(vacancyId: String): Flow<VacancyDetails> = flow {
+    override suspend fun getVacancyDetails(vacancyId: String): Flow<SearchResult<VacancyDetails>> = flow {
         val requestVacancySearch = RequestVacancySearch(id = vacancyId)
-        val response = networkClient.doRequestGetVacancy(requestVacancySearch) as VacancyDto
-        emit(Converter.fromVacancyDtoToVacancyDetails(response))
+        val response = networkClient.doRequestGetVacancy(requestVacancySearch)
+        when (response.resultCode) {
+            SUCCESS_RESPONSE -> {
+                emit(SearchResult.Success(Converter.fromVacancyDtoToVacancyDetails(response as VacancyDto)))
+            }
+            NO_INTERNET_CONNECTION -> {
+                emit(SearchResult.NoInternet())
+            }
+            else -> {
+                emit(SearchResult.Error())
+            }
+        }
     }
 
     override suspend fun getVacancyDetailsFromLocalStorage(vacancyId: String): Flow<VacancyDetails> {
