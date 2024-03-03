@@ -91,6 +91,12 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         viewModel.getSearchFragmentScreenState().observe(viewLifecycleOwner) {
             render(it)
         }
+
+        binding.filters.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_searchFragment_to_filterSettingsFragment
+            )
+        }
     }
 
     private fun render(state: SearchFragmentState) {
