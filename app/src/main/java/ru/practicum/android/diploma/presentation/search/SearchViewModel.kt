@@ -89,16 +89,14 @@ class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor) : Vi
             }
 
             is SearchResult.Success -> {
-                if (result.data != null) {
-                    maxPages = result.data.pages
-                    currentPage = result.data.page
-                    found = result.data.found
-                    if (result.data.items.isEmpty()) {
-                        renderState(SearchFragmentState.Empty)
-                    } else {
-                        vacanciesList.addAll(filterDuplicateVacancy(result.data.items))
-                        renderState(SearchFragmentState.Content(vacanciesList, found))
-                    }
+                maxPages = result.data.pages
+                currentPage = result.data.page
+                found = result.data.found
+                if (result.data.items.isEmpty()) {
+                    renderState(SearchFragmentState.Empty)
+                } else {
+                    vacanciesList.addAll(filterDuplicateVacancy(result.data.items))
+                    renderState(SearchFragmentState.Content(vacanciesList, found))
                 }
             }
         }

@@ -8,6 +8,7 @@ import ru.practicum.android.diploma.data.dto.RequestSimilarVacancySearch
 import ru.practicum.android.diploma.data.dto.RequestVacanciesListSearch
 import ru.practicum.android.diploma.data.dto.RequestVacancySearch
 import ru.practicum.android.diploma.data.dto.Response
+import ru.practicum.android.diploma.data.dto.ResponseIndustriesDto
 
 class RetrofitNetworkClient(
     private val hhApiService: HHApiService,
@@ -44,6 +45,17 @@ class RetrofitNetworkClient(
             withContext(Dispatchers.IO) {
                 val response = hhApiService.getSimilarVacancies(dto.id)
                 response.apply { resultCode = SUCCESS_RESPONSE }
+            }
+        }
+    }
+
+    override suspend fun doRequestGetIndustries(): Response {
+        return if (!isConnected()) {
+            Response().apply { resultCode = NO_INTERNET_CONNECTION }
+        } else {
+            withContext(Dispatchers.IO) {
+                val response = hhApiService.getIndustries()
+                ResponseIndustriesDto(response).apply { resultCode = SUCCESS_RESPONSE }
             }
         }
     }
