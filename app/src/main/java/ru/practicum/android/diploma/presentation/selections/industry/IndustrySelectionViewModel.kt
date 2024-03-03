@@ -16,7 +16,6 @@ class IndustrySelectionViewModel(private val filterSearchInteractor: FilterSearc
             filterSearchInteractor
                 .getIndustries()
                 .collect {
-
                 }
         }
     }
