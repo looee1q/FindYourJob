@@ -7,7 +7,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
-        android:id="@+id/title_text_view"
+        android:id="@+id/big_title_text_view"
         style="@style/Regular16"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,17 +16,41 @@
         android:layout_marginStart="@dimen/_16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <ImageView
+        android:id="@+id/arrow_forward_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_16dp"
-        android:src="@drawable/ic_arrow_forward"
+        android:src="@drawable/selector_ic_arrow_forward"
         app:tint="@color/black_day_white_night"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/small_title_text_view"
+        style="@style/Regular12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/area"
+        android:layout_marginStart="@dimen/_16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/small_value_text_view"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/small_value_text_view"
+        style="@style/Regular16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Россия, Москва"
+        android:layout_marginStart="@dimen/_16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/small_title_text_view"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

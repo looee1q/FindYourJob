@@ -40,14 +40,15 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
-        android:id="@+id/industry_field"
-        layout="@layout/place_or_industry_unit" />
-
-    <include
         android:id="@+id/area_field"
         layout="@layout/place_or_industry_unit" />
 
+    <include
+        android:id="@+id/industry_field"
+        layout="@layout/place_or_industry_unit" />
+
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_54dp"
         android:layout_marginHorizontal="@dimen/_16dp"
@@ -56,11 +57,13 @@
         style="@style/TextFieldLayout">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
-            android:text="@string/enter_the_amount"
-            android:textColor="@color/gray_day_white_night"
+            android:hint="@string/enter_the_amount"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray_day_white_night"
             android:textAppearance="@style/Regular16" />
 
     </com.google.android.material.textfield.TextInputLayout>
