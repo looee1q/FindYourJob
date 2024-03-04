@@ -77,7 +77,7 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
     }
 
     private fun onCountryClick(country: Country) {
-
+        println()
     }
 
     private fun renderCountrySelectionState(state: CountrySelectionState) {
