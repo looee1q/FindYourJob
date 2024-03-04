@@ -5,6 +5,7 @@ import ru.practicum.android.diploma.domain.api.FilterSearchInteractor
 import ru.practicum.android.diploma.domain.api.FilterSearchRepository
 import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.domain.models.Industry
+import ru.practicum.android.diploma.util.SearchResult
 
 class FilterSearchInteractorImpl(private val filterSearchRepository: FilterSearchRepository) : FilterSearchInteractor {
 
@@ -12,7 +13,7 @@ class FilterSearchInteractorImpl(private val filterSearchRepository: FilterSearc
         return filterSearchRepository.getIndustries()
     }
 
-    override fun getCountries(): Flow<List<Country>> {
+    override fun getCountries(): Flow<SearchResult<List<Country>>> {
         return filterSearchRepository.getCountries()
     }
 }

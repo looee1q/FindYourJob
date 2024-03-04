@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.FilterSearchInteractor
 import ru.practicum.android.diploma.presentation.selections.country.state.CountrySelectionState
+import ru.practicum.android.diploma.util.SearchResult
 
 class CountrySelectionViewModel(private val filterSearchInteractor: FilterSearchInteractor) : ViewModel() {
 
@@ -19,10 +20,22 @@ class CountrySelectionViewModel(private val filterSearchInteractor: FilterSearch
             filterSearchInteractor
                 .getCountries()
                 .collect {
-                    if (it.isEmpty()) {
-                        renderCountrySelectionState(CountrySelectionState.Empty)
-                    } else {
-                        renderCountrySelectionState(CountrySelectionState.Content(it))
+                    when (it) {
+                        is SearchResult.Success -> {
+                            if (it.data.isEmpty()) {
+                                renderCountrySelectionState(CountrySelectionState.Empty)
+                            } else {
+                                renderCountrySelectionState(CountrySelectionState.Content(it.data))
+                            }
+                        }
+
+                        is SearchResult.NoInternet -> {
+                            renderCountrySelectionState(CountrySelectionState.NoInternet)
+                        }
+
+                        is SearchResult.Error -> {
+                            renderCountrySelectionState(CountrySelectionState.Error)
+                        }
                     }
                 }
         }

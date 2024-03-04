@@ -7,4 +7,8 @@ sealed interface CountrySelectionState {
     data class Content(val countries: List<Country>) : CountrySelectionState
 
     data object Empty : CountrySelectionState
+
+    data object Error : CountrySelectionState
+
+    data object NoInternet : CountrySelectionState
 }

@@ -10,6 +10,7 @@ import ru.practicum.android.diploma.data.network.NetworkClient
 import ru.practicum.android.diploma.domain.api.FilterSearchRepository
 import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.domain.models.Industry
+import ru.practicum.android.diploma.util.SearchResult
 
 class FilterSearchRepositoryImpl(private val networkClient: NetworkClient) : FilterSearchRepository {
 
@@ -30,29 +31,30 @@ class FilterSearchRepositoryImpl(private val networkClient: NetworkClient) : Fil
         }
     }
 
-    override fun getCountries(): Flow<List<Country>> = flow {
+    override fun getCountries(): Flow<SearchResult<List<Country>>> = flow {
         val response = networkClient.doRequestGetCountries()
         when (response.resultCode) {
             SUCCESS_RESPONSE -> {
                 emit(
-                    (response as ResponseCountriesDto)
-                        .countries
-                        .map {
-                            Country(
-                                id = it.id,
-                                name = it.name,
-                                url = it.url
-                            )
-                        }
+                    SearchResult.Success(
+                        (response as ResponseCountriesDto)
+                            .countries
+                            .map {
+                                Country(
+                                    id = it.id,
+                                    name = it.name
+                                )
+                            }
+                    )
                 )
             }
 
             NO_INTERNET_CONNECTION -> {
-                emit(listOf())
+                emit(SearchResult.NoInternet())
             }
 
             else -> {
-                emit(listOf())
+                emit(SearchResult.Error())
             }
         }
     }

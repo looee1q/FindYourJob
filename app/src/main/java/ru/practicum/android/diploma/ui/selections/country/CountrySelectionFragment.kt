@@ -5,9 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentCountrySelectionBinding
 import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.presentation.selections.country.CountrySelectionViewModel
@@ -94,7 +97,26 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
 
             is CountrySelectionState.Empty -> {
                 hideCountryRecyclerView()
-                showLLErrorServer()
+                showLLErrorServer(
+                    imageResource = R.drawable.empty_favorites,
+                    titleResource = R.string.countries_are_empty
+                )
+            }
+
+            is CountrySelectionState.Error -> {
+                hideCountryRecyclerView()
+                showLLErrorServer(
+                    imageResource = R.drawable.png_no_regions,
+                    titleResource = R.string.error_no_region
+                )
+            }
+
+            is CountrySelectionState.NoInternet -> {
+                hideCountryRecyclerView()
+                showLLErrorServer(
+                    imageResource = R.drawable.png_no_internet,
+                    titleResource = R.string.no_internet
+                )
             }
         }
     }
@@ -107,8 +129,10 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
         binding.countryRecyclerView.visibility = View.GONE
     }
 
-    private fun showLLErrorServer() {
+    private fun showLLErrorServer(@DrawableRes imageResource: Int, @StringRes titleResource: Int) {
         binding.llErrorServer.visibility = View.VISIBLE
+        binding.placeholderImageView.setBackgroundResource(imageResource)
+        binding.placeholderTextView.setText(titleResource)
     }
 
     private fun hideLLErrorServer() {
