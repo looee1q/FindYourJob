@@ -42,6 +42,8 @@
     <string name="error_no_region">Не удалось получить список</string>
     <string name="area_region_header">Выбор региона</string>
     <string name="region_search">Введите регион</string>
+    <string name="industry_header">Выбор отрасли</string>
+    <string name="industry_search">Введите отрасль</string>
 
 
     <plurals name="vacancy_plurals">
