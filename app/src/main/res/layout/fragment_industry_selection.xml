@@ -69,18 +69,32 @@
         app:layout_constraintEnd_toEndOf="@id/InputEditText"
         app:layout_constraintTop_toTopOf="@id/InputEditText" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="@dimen/_36dp"
+        android:layout_height="@dimen/_36dp"
+        android:layout_gravity="center"
+        android:layout_marginVertical="@dimen/_16dp"
+        android:indeterminateTint="@color/blue"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+        app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+        app:layout_constraintTop_toBottomOf="@id/InputEditText" />
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/IndustryRecyclerView"
+        android:id="@+id/rvIndustries"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_0dp"
         android:layout_marginTop="@dimen/_16dp"
         android:orientation="vertical"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/buttonConfirm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/InputEditText"
-        tools:listitem="@layout/item_industry_selection" />
+        tools:listitem="@layout/item_industry_selection"
+        tools:itemCount="4" />
 
     <LinearLayout
         android:id="@+id/llErrorServer"
@@ -109,6 +123,33 @@
             tools:text="@string/error_no_region" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/llNoInternetConnection"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/InputEditText">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_224dp"
+            android:paddingHorizontal="@dimen/_16dp"
+            android:src="@drawable/png_no_internet" />
+
+        <TextView
+            style="@style/Medium22"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16dp"
+            android:maxLines="2"
+            android:paddingHorizontal="@dimen/_48dp"
+            android:textAlignment="center"
+            tools:text="@string/no_internet" />
+    </LinearLayout>
+
     <Button
         android:id="@+id/buttonConfirm"
         style="@style/PrimaryButton"
@@ -118,6 +159,7 @@
         android:layout_marginVertical="@dimen/_24dp"
         android:text="@string/filter_button_approve"
         android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/rvIndustries"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

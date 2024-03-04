@@ -8,21 +8,26 @@ import ru.practicum.android.diploma.data.dto.ResponseIndustriesDto
 import ru.practicum.android.diploma.data.network.NetworkClient
 import ru.practicum.android.diploma.domain.api.FilterSearchRepository
 import ru.practicum.android.diploma.domain.models.Industry
+import ru.practicum.android.diploma.util.SearchResult
 
 class FilterSearchRepositoryImpl(private val networkClient: NetworkClient) : FilterSearchRepository {
-    override fun getIndustries(): Flow<List<Industry>> = flow {
+    override fun getIndustries(): Flow<SearchResult<List<Industry>>> = flow {
         val response = networkClient.doRequestGetIndustries()
         when (response.resultCode) {
             SUCCESS_RESPONSE -> {
-                emit(convertIdustryListDtoToIndustryList((response as ResponseIndustriesDto).industries))
+                emit(
+                    SearchResult.Success(
+                        convertIdustryListDtoToIndustryList((response as ResponseIndustriesDto).industries)
+                    )
+                )
             }
 
             NO_INTERNET_CONNECTION -> {
-                emit(listOf())
+                emit(SearchResult.NoInternet())
             }
 
             else -> {
-                emit(listOf())
+                emit(SearchResult.Error())
             }
         }
     }

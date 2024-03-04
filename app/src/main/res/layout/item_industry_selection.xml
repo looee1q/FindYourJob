@@ -7,13 +7,14 @@
     android:layout_height="wrap_content">
 
     <RadioButton
-        android:id="@+id/radioButton"
+        android:id="@+id/rbIndustryName"
         style="@style/Regular16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
         android:button="@null"
         android:checked="false"
-        android:drawableRight="?android:attr/listChoiceIndicatorSingle"
+        android:drawableEnd="?android:attr/listChoiceIndicatorSingle"
         android:drawableTint="@color/blue"
         android:gravity="center_vertical"
         android:paddingHorizontal="@dimen/_16dp"
