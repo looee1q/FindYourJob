@@ -5,6 +5,7 @@ import retrofit2.http.Headers
 import retrofit2.http.Path
 import retrofit2.http.QueryMap
 import ru.practicum.android.diploma.BuildConfig
+import ru.practicum.android.diploma.data.dto.IndustryDto
 import ru.practicum.android.diploma.data.dto.ResponseVacanciesListDto
 import ru.practicum.android.diploma.data.dto.VacancyDto
 
@@ -30,4 +31,11 @@ interface HHApiService {
     )
     @GET("/vacancies/{vacancy_id}/similar_vacancies")
     suspend fun getSimilarVacancies(@Path("vacancy_id") id: String): ResponseVacanciesListDto
+
+    @Headers(
+        "Authorization: Bearer ${BuildConfig.HH_ACCESS_TOKEN}",
+        "HH-User-Agent: Find Your Job/1.0 (goaltenders@yandex.ru)"
+    )
+    @GET("/industries")
+    suspend fun getIndustries(): List<IndustryDto>
 }

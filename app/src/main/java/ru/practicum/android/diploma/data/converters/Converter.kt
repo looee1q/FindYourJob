@@ -3,9 +3,11 @@ package ru.practicum.android.diploma.data.converters
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import ru.practicum.android.diploma.data.db.entity.FavoriteVacancyEntity
+import ru.practicum.android.diploma.data.dto.IndustryDto
 import ru.practicum.android.diploma.data.dto.RequestVacanciesListSearch
 import ru.practicum.android.diploma.data.dto.ResponseVacanciesListDto
 import ru.practicum.android.diploma.data.dto.VacancyDto
+import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.models.Phone
 import ru.practicum.android.diploma.domain.models.Salary
 import ru.practicum.android.diploma.domain.models.Vacancies
@@ -163,6 +165,13 @@ object Converter {
             keySkillsInJson = Gson().toJson(vacancyDetails.keySkills),
             alternateUrl = vacancyDetails.alternateUrl,
             schedule = vacancyDetails.schedule
+        )
+    }
+
+    fun fromIndustryDtoToIndustry(industryDto: IndustryDto): Industry {
+        return Industry(
+            id = industryDto.id,
+            name = industryDto.name
         )
     }
 
