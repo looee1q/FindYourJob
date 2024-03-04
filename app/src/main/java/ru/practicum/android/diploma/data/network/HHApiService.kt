@@ -5,6 +5,7 @@ import retrofit2.http.Headers
 import retrofit2.http.Path
 import retrofit2.http.QueryMap
 import ru.practicum.android.diploma.BuildConfig
+import ru.practicum.android.diploma.data.dto.CountryDto
 import ru.practicum.android.diploma.data.dto.IndustryDto
 import ru.practicum.android.diploma.data.dto.ResponseVacanciesListDto
 import ru.practicum.android.diploma.data.dto.VacancyDto
@@ -38,4 +39,11 @@ interface HHApiService {
     )
     @GET("/industries")
     suspend fun getIndustries(): List<IndustryDto>
+
+    @Headers(
+        "Authorization: Bearer ${BuildConfig.HH_ACCESS_TOKEN}",
+        "HH-User-Agent: Find Your Job/1.0 (goaltenders@yandex.ru)"
+    )
+    @GET("/areas/countries")
+    suspend fun getCountries(): List<CountryDto>
 }

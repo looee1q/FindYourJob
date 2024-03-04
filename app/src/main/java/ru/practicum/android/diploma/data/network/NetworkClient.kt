@@ -14,4 +14,6 @@ interface NetworkClient {
     suspend fun doRequestGetSimilarVacancies(dto: RequestSimilarVacancySearch): Response
 
     suspend fun doRequestGetIndustries(): Response
+
+    suspend fun doRequestGetCountries(): Response
 }
