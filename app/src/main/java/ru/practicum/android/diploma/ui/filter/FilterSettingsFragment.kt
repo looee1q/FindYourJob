@@ -31,6 +31,18 @@ class FilterSettingsFragment : BindingFragment<FragmentFilterSettingsBinding>() 
             findNavController().navigateUp()
         }
 
+        binding.industryField.root.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_filterSettingsFragment_to_industrySelectionFragment
+            )
+        }
+
+        binding.areaField.root.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_filterSettingsFragment_to_areaSelectionFragment
+            )
+        }
+
         binding.areaField.arrowForwardButton.setOnClickListener {
             if (binding.areaField.arrowForwardButton.isSelected) {
                 returnAreaFieldToDefaultState()
