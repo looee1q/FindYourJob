@@ -31,12 +31,13 @@
         app:layout_constraintTop_toTopOf="@+id/btnBack" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/phoneAndCommentRecyclerView"
+        android:id="@+id/countryRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/_24dp"
         android:orientation="vertical"
-        android:visibility="visible"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnBack"
@@ -48,17 +49,19 @@
         android:layout_height="@dimen/_0dp"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnBack">
 
         <ImageView
+            android:id="@+id/placeholderImageView"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_224dp"
             android:paddingHorizontal="@dimen/_16dp"
             android:src="@drawable/png_no_regions" />
 
         <TextView
+            android:id="@+id/placeholderTextView"
             style="@style/Medium22"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -67,6 +70,7 @@
             android:paddingHorizontal="@dimen/_48dp"
             android:textAlignment="center"
             tools:text="@string/error_no_region" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

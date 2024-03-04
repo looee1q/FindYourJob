@@ -8,6 +8,7 @@ import ru.practicum.android.diploma.data.dto.RequestSimilarVacancySearch
 import ru.practicum.android.diploma.data.dto.RequestVacanciesListSearch
 import ru.practicum.android.diploma.data.dto.RequestVacancySearch
 import ru.practicum.android.diploma.data.dto.Response
+import ru.practicum.android.diploma.data.dto.ResponseCountriesDto
 import ru.practicum.android.diploma.data.dto.ResponseIndustriesDto
 
 class RetrofitNetworkClient(
@@ -56,6 +57,21 @@ class RetrofitNetworkClient(
             withContext(Dispatchers.IO) {
                 val response = hhApiService.getIndustries()
                 ResponseIndustriesDto(response).apply { resultCode = SUCCESS_RESPONSE }
+            }
+        }
+    }
+
+    override suspend fun doRequestGetCountries(): Response {
+        return if (!isConnected()) {
+            Response().apply {
+                resultCode = NO_INTERNET_CONNECTION
+            }
+        } else {
+            withContext(Dispatchers.IO) {
+                val response = hhApiService.getCountries()
+                ResponseCountriesDto(response).apply {
+                    resultCode = SUCCESS_RESPONSE
+                }
             }
         }
     }
