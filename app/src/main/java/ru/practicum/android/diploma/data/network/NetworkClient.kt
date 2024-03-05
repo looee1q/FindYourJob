@@ -1,5 +1,6 @@
 package ru.practicum.android.diploma.data.network
 
+import ru.practicum.android.diploma.data.dto.RequestAreasSearch
 import ru.practicum.android.diploma.data.dto.RequestSimilarVacancySearch
 import ru.practicum.android.diploma.data.dto.RequestVacanciesListSearch
 import ru.practicum.android.diploma.data.dto.RequestVacancySearch
@@ -16,4 +17,8 @@ interface NetworkClient {
     suspend fun doRequestGetIndustries(): Response
 
     suspend fun doRequestGetCountries(): Response
+
+    suspend fun doRequestGetAreas(): Response
+
+    suspend fun doRequestGetAreas(dto: RequestAreasSearch): Response
 }

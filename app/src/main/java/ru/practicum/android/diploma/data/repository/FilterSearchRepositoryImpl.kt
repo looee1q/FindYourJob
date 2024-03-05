@@ -4,10 +4,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.practicum.android.diploma.data.converters.Converter
 import ru.practicum.android.diploma.data.dto.IndustryDto
+import ru.practicum.android.diploma.data.dto.RequestAreasSearch
+import ru.practicum.android.diploma.data.dto.ResponseAreasDto
 import ru.practicum.android.diploma.data.dto.ResponseCountriesDto
 import ru.practicum.android.diploma.data.dto.ResponseIndustriesDto
 import ru.practicum.android.diploma.data.network.NetworkClient
 import ru.practicum.android.diploma.domain.api.FilterSearchRepository
+import ru.practicum.android.diploma.domain.models.Region
 import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.util.SearchResult
@@ -50,6 +53,37 @@ class FilterSearchRepositoryImpl(private val networkClient: NetworkClient) : Fil
                                 )
                             }
                     )
+                )
+            }
+
+            NO_INTERNET_CONNECTION -> {
+                emit(SearchResult.NoInternet())
+            }
+
+            else -> {
+                emit(SearchResult.Error())
+            }
+        }
+    }
+
+    override fun getAreas(): Flow<SearchResult<List<Region>>> {
+        return getParentAreas(null)
+    }
+
+    override fun getParentAreas(parentAreaId: String?): Flow<SearchResult<List<Region>>> = flow {
+        val response = if (parentAreaId.isNullOrEmpty()) {
+            networkClient.doRequestGetAreas()
+        } else {
+            val request = RequestAreasSearch(id = parentAreaId)
+            networkClient.doRequestGetAreas(request)
+        }
+
+        when (response.resultCode) {
+            SUCCESS_RESPONSE -> {
+                val areasDto = (response as ResponseAreasDto).areas
+                val areas = Converter.fromListOfAreaDTOToListOfArea(areasDto)
+                emit(
+                    SearchResult.Success(areas)
                 )
             }
 

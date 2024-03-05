@@ -70,7 +70,7 @@
         app:layout_constraintTop_toTopOf="@id/InputEditText" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/phoneAndCommentRecyclerView"
+        android:id="@+id/regionRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_16dp"
