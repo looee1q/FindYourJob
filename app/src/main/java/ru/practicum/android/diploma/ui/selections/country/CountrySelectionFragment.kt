@@ -80,7 +80,8 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
     }
 
     private fun onCountryClick(country: Country) {
-        println()
+        viewModel.saveCountry(country)
+        onBackButtonClick()
     }
 
     private fun renderCountrySelectionState(state: CountrySelectionState) {
