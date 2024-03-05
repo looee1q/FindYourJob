@@ -7,7 +7,7 @@ import ru.practicum.android.diploma.util.SearchResult
 
 interface FilterSearchRepository {
 
-    fun getIndustries(): Flow<List<Industry>>
+    fun getIndustries(): Flow<SearchResult<List<Industry>>>
 
     fun getCountries(): Flow<SearchResult<List<Country>>>
 }

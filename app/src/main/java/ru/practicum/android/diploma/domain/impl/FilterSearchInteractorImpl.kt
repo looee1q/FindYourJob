@@ -9,7 +9,7 @@ import ru.practicum.android.diploma.util.SearchResult
 
 class FilterSearchInteractorImpl(private val filterSearchRepository: FilterSearchRepository) : FilterSearchInteractor {
 
-    override fun getIndustries(): Flow<List<Industry>> {
+    override fun getIndustries(): Flow<SearchResult<List<Industry>>> {
         return filterSearchRepository.getIndustries()
     }
 
