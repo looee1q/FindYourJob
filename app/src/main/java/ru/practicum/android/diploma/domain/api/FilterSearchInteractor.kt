@@ -10,4 +10,10 @@ interface FilterSearchInteractor {
     fun getIndustries(): Flow<SearchResult<List<Industry>>>
 
     fun getCountries(): Flow<SearchResult<List<Country>>>
+
+    fun saveCountry(country: Country)
+
+    fun getCountry(): Country?
+
+    fun deleteCountry()
 }

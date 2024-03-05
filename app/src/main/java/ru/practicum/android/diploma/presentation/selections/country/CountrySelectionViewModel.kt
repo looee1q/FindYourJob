@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.FilterSearchInteractor
+import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.presentation.selections.country.state.CountrySelectionState
 import ru.practicum.android.diploma.util.SearchResult
 
@@ -39,6 +40,10 @@ class CountrySelectionViewModel(private val filterSearchInteractor: FilterSearch
                     }
                 }
         }
+    }
+
+    fun saveCountry(country: Country) {
+        filterSearchInteractor.saveCountry(country)
     }
 
     private fun renderCountrySelectionState(state: CountrySelectionState) {
