@@ -8,9 +8,9 @@ sealed interface SearchFragmentState {
 
     data class Content(val vacancies: List<Vacancy>, val found: Int) : SearchFragmentState
 
-    data class Error(val isFirstPage: Boolean, val vacancies: List<Vacancy>, val found: Int) : SearchFragmentState
+    data class Error(val isFirstPage: Boolean) : SearchFragmentState
 
-    data class NoInternet(val isFirstPage: Boolean, val vacancies: List<Vacancy>, val found: Int) : SearchFragmentState
+    data class NoInternet(val isFirstPage: Boolean) : SearchFragmentState
 
     data object Empty : SearchFragmentState
 

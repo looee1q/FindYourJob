@@ -60,6 +60,10 @@ class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor) : Vi
         renderState(SearchFragmentState.Start)
     }
 
+    fun getContent() {
+        renderState(SearchFragmentState.Content(vacanciesList, found))
+    }
+
     private fun makeRequest(vacanciesRequest: VacanciesRequest) {
         val isFirstPage = vacanciesRequest.page == 0
         renderState(SearchFragmentState.Loading(isFirstPage))
@@ -81,11 +85,11 @@ class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor) : Vi
     private fun parsingResultSearch(result: SearchResult<Vacancies>, isFirstPage: Boolean) {
         when (result) {
             is SearchResult.NoInternet -> {
-                renderState(SearchFragmentState.NoInternet(isFirstPage, vacanciesList, found))
+                renderState(SearchFragmentState.NoInternet(isFirstPage))
             }
 
             is SearchResult.Error -> {
-                renderState(SearchFragmentState.Error(isFirstPage, vacanciesList, found))
+                renderState(SearchFragmentState.Error(isFirstPage))
             }
 
             is SearchResult.Success -> {

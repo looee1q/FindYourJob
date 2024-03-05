@@ -6,12 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
+import android.widget.TextView
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentSearchBinding
@@ -103,8 +104,8 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         when (state) {
             is SearchFragmentState.Content -> showContent(state.vacancies, state.found)
             is SearchFragmentState.Empty -> showEmpty()
-            is SearchFragmentState.Error -> showError(state.isFirstPage, state.vacancies, state.found)
-            is SearchFragmentState.NoInternet -> showNoInternet(state.isFirstPage, state.vacancies, state.found)
+            is SearchFragmentState.Error -> showError(state.isFirstPage)
+            is SearchFragmentState.NoInternet -> showNoInternet(state.isFirstPage)
             is SearchFragmentState.Loading -> showLoading(state.isFirstPage)
             is SearchFragmentState.Start -> showStart()
         }
@@ -132,7 +133,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         }
     }
 
-    private fun showError(isFirstPage: Boolean, vacanciesList: List<Vacancy>, found: Int) {
+    private fun showError(isFirstPage: Boolean) {
         hideViews()
         if (isFirstPage) {
             binding.recyclerViewFoundVacancies.visibility = View.GONE
@@ -140,16 +141,12 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
             binding.messageError.text = getString(R.string.error_server)
             binding.imageError.setImageResource(R.drawable.error_server)
         } else {
-            Toast.makeText(
-                requireContext(),
-                resources.getString(R.string.error_occurred),
-                Toast.LENGTH_SHORT
-            ).show()
-            showContent(vacanciesList, found)
+            onSnack(resources.getString(R.string.error_occurred))
+            viewModel.getContent()
         }
     }
 
-    private fun showNoInternet(isFirstPage: Boolean, vacanciesList: List<Vacancy>, found: Int) {
+    private fun showNoInternet(isFirstPage: Boolean) {
         hideViews()
         if (isFirstPage) {
             binding.recyclerViewFoundVacancies.visibility = View.GONE
@@ -157,13 +154,17 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
             binding.messageError.text = getString(R.string.no_internet)
             binding.imageError.setImageResource(R.drawable.png_no_internet)
         } else {
-            Toast.makeText(
-                requireContext(),
-                resources.getString(R.string.check_internet),
-                Toast.LENGTH_SHORT
-            ).show()
-            showContent(vacanciesList, found)
+            onSnack(resources.getString(R.string.check_internet))
+            viewModel.getContent()
         }
+    }
+
+    private fun onSnack(message: String) {
+        val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT)
+        val snackbarView = snackbar.view
+        val textView = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text) as TextView
+        textView.textAlignment = View.TEXT_ALIGNMENT_CENTER
+        snackbar.show()
     }
 
     private fun hideViews() {
