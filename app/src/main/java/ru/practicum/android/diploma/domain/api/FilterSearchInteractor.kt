@@ -12,7 +12,7 @@ interface FilterSearchInteractor {
 
     fun getCountries(): Flow<SearchResult<List<Country>>>
 
-    fun getAreas(): Flow<SearchResult<List<Region>>>
+    fun getRegions(): Flow<SearchResult<List<Region>>>
 
-    fun getParentAreas(parentAreaId: String): Flow<SearchResult<List<Region>>>
+    fun getParentRegions(parentAreaId: String): Flow<SearchResult<List<Region>>>
 }

@@ -66,11 +66,11 @@ class FilterSearchRepositoryImpl(private val networkClient: NetworkClient) : Fil
         }
     }
 
-    override fun getAreas(): Flow<SearchResult<List<Region>>> {
-        return getParentAreas(null)
+    override fun getRegions(): Flow<SearchResult<List<Region>>> {
+        return getParentRegions(null)
     }
 
-    override fun getParentAreas(parentAreaId: String?): Flow<SearchResult<List<Region>>> = flow {
+    override fun getParentRegions(parentAreaId: String?): Flow<SearchResult<List<Region>>> = flow {
         val response = if (parentAreaId.isNullOrEmpty()) {
             networkClient.doRequestGetAreas()
         } else {
@@ -81,9 +81,9 @@ class FilterSearchRepositoryImpl(private val networkClient: NetworkClient) : Fil
         when (response.resultCode) {
             SUCCESS_RESPONSE -> {
                 val areasDto = (response as ResponseAreasDto).areas
-                val areas = Converter.fromListOfAreaDTOToListOfArea(areasDto)
+                val regions = Converter.fromListOfAreaDTOToListOfRegion(areasDto)
                 emit(
-                    SearchResult.Success(areas)
+                    SearchResult.Success(regions)
                 )
             }
 

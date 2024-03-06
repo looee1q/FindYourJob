@@ -18,11 +18,11 @@ class FilterSearchInteractorImpl(private val filterSearchRepository: FilterSearc
         return filterSearchRepository.getCountries()
     }
 
-    override fun getAreas(): Flow<SearchResult<List<Region>>> {
-        return filterSearchRepository.getAreas()
+    override fun getRegions(): Flow<SearchResult<List<Region>>> {
+        return filterSearchRepository.getRegions()
     }
 
-    override fun getParentAreas(parentAreaId: String): Flow<SearchResult<List<Region>>> {
-        return filterSearchRepository.getParentAreas(parentAreaId)
+    override fun getParentRegions(parentAreaId: String): Flow<SearchResult<List<Region>>> {
+        return filterSearchRepository.getParentRegions(parentAreaId)
     }
 }

@@ -177,17 +177,17 @@ object Converter {
         )
     }
 
-    fun fromListOfAreaDTOToListOfArea(areasDto: List<AreaDTO>): List<Region> {
+    fun fromListOfAreaDTOToListOfRegion(areasDto: List<AreaDTO>): List<Region> {
         val finalRegions = mutableListOf<Region>()
 
         finalRegions.addAll(
-            areasDto.map {
+            areasDto.filter { !it.parentId.isNullOrEmpty() }.map {
                 Region(id = it.id, name = it.name, parentId = it.parentId)
             }
         )
 
         areasDto.forEach {
-            finalRegions.addAll(fromListOfAreaDTOToListOfArea(it.areas))
+            finalRegions.addAll(fromListOfAreaDTOToListOfRegion(it.areas))
         }
 
         return finalRegions

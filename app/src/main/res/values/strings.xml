@@ -23,7 +23,9 @@
     <string name="search">Введите запрос</string>
     <string name="no_internet">Нет интернета</string>
     <string name="nothing_found">Таких вакансий нет</string>
+    <string name="nothing_found_regions">Такого региона нет</string>
     <string name="nothing_found_description">Не удалось получить список вакансий</string>
+    <string name="failed_to_retrieve_list">Не удалось получить список</string>
     <string name="count_found_vacancies">Найдено %1$d %2$s</string>
     <string name="salary_no_value">Зарплата не указана</string>
     <string name="salary_from">от "%s" "%s"</string>

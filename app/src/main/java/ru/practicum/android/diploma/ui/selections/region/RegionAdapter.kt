@@ -26,7 +26,9 @@ class RegionAdapter(private val onRegionClickListener: (Region) -> Unit) :
 
     override fun getItemCount(): Int = countries.size
 
-    class RegionViewHolder(private val binding: ItemCountryRegionSelectionBinding) : RecyclerView.ViewHolder(binding.root) {
+    class RegionViewHolder(
+        private val binding: ItemCountryRegionSelectionBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(country: Region) {
             binding.countryName.text = country.name

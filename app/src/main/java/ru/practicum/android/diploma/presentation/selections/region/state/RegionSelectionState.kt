@@ -12,5 +12,5 @@ sealed interface RegionSelectionState {
 
     data object NoInternet : RegionSelectionState
 
-    data object Loading: RegionSelectionState
+    data object Loading : RegionSelectionState
 }
