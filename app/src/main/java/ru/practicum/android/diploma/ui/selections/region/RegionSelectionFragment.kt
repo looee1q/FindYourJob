@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
@@ -40,15 +41,17 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
 
         initRegionRecyclerView()
 
-        if (binding.inputEditText.text.isEmpty()) {
+        val countryId = requireArguments().getString(ARGS_COUNTRY_ID, "").toString()
+        if (countryId.isEmpty()) {
             viewModel.getRegions()
+        } else {
+            viewModel.getRegionsOfCountry(countryId)
         }
 
         binding.inputEditText.doOnTextChanged { text, start, before, count ->
-            viewModel.getParentRegionsWithDebounce(text.toString())
+            regionAdapter?.filter(text.toString())
 
             if (text.isNullOrBlank()) {
-                viewModel.cancelSearch()
                 binding.icClose.setImageResource(R.drawable.ic_search)
                 binding.icClose.isClickable = false
             } else {
@@ -64,7 +67,6 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
         viewModel.regionsStateLiveData.observe(viewLifecycleOwner) {
             render(it)
         }
-
     }
 
     private fun initRegionRecyclerView() {
@@ -86,15 +88,19 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
             is RegionSelectionState.Content -> {
                 renderContent(state.regions)
             }
+
             RegionSelectionState.Empty -> {
                 renderEmptiness()
             }
+
             RegionSelectionState.Error -> {
                 renderError()
             }
+
             RegionSelectionState.NoInternet -> {
                 renderNoInternet()
             }
+
             RegionSelectionState.Loading -> {
                 renderLoading()
             }
@@ -105,11 +111,7 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
         binding.regionRecyclerView.isVisible = true
         binding.llErrorPlaceholder.isVisible = false
         binding.progressBar.isVisible = false
-        regionAdapter?.countries?.clear()
-        regionAdapter?.countries?.addAll(
-            regions
-        )
-        regionAdapter?.notifyDataSetChanged()
+        regionAdapter?.setItems(regions)
     }
 
     private fun renderEmptiness() {
@@ -143,6 +145,11 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
     }
 
     companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val CLICK_DEBOUNCE_DELAY = 0L
+        private const val ARGS_COUNTRY_ID = "ARGS_COUNTRY_ID"
+
+        fun createArgs(countryId: String): Bundle = bundleOf(
+            ARGS_COUNTRY_ID to countryId,
+        )
     }
 }

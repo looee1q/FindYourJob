@@ -3,9 +3,9 @@ package ru.practicum.android.diploma.domain.impl
 import kotlinx.coroutines.flow.Flow
 import ru.practicum.android.diploma.domain.api.FilterSearchInteractor
 import ru.practicum.android.diploma.domain.api.FilterSearchRepository
-import ru.practicum.android.diploma.domain.models.Region
 import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.domain.models.Industry
+import ru.practicum.android.diploma.domain.models.Region
 import ru.practicum.android.diploma.util.SearchResult
 
 class FilterSearchInteractorImpl(private val filterSearchRepository: FilterSearchRepository) : FilterSearchInteractor {
@@ -22,8 +22,8 @@ class FilterSearchInteractorImpl(private val filterSearchRepository: FilterSearc
         return filterSearchRepository.getRegions()
     }
 
-    override fun getParentRegions(parentAreaId: String): Flow<SearchResult<List<Region>>> {
-        return filterSearchRepository.getParentRegions(parentAreaId)
+    override fun getRegionsOfCountry(countryId: String): Flow<SearchResult<List<Region>>> {
+        return filterSearchRepository.getRegionsOfCountry(countryId)
     }
 
     override fun saveCountry(country: Country) {

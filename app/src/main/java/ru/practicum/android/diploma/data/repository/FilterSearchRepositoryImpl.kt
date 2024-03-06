@@ -12,9 +12,9 @@ import ru.practicum.android.diploma.data.dto.ResponseCountriesDto
 import ru.practicum.android.diploma.data.dto.ResponseIndustriesDto
 import ru.practicum.android.diploma.data.network.NetworkClient
 import ru.practicum.android.diploma.domain.api.FilterSearchRepository
-import ru.practicum.android.diploma.domain.models.Region
 import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.domain.models.Industry
+import ru.practicum.android.diploma.domain.models.Region
 import ru.practicum.android.diploma.util.SearchResult
 
 class FilterSearchRepositoryImpl(
@@ -73,14 +73,14 @@ class FilterSearchRepositoryImpl(
     }
 
     override fun getRegions(): Flow<SearchResult<List<Region>>> {
-        return getParentRegions(null)
+        return getRegionsOfCountry(null)
     }
 
-    override fun getParentRegions(parentAreaId: String?): Flow<SearchResult<List<Region>>> = flow {
-        val response = if (parentAreaId.isNullOrEmpty()) {
+    override fun getRegionsOfCountry(countryId: String?): Flow<SearchResult<List<Region>>> = flow {
+        val response = if (countryId.isNullOrEmpty()) {
             networkClient.doRequestGetAreas()
         } else {
-            val request = RequestAreasSearch(id = parentAreaId)
+            val request = RequestAreasSearch(id = countryId)
             networkClient.doRequestGetAreas(request)
         }
 
