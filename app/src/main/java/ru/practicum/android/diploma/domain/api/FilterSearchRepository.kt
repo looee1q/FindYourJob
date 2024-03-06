@@ -15,4 +15,10 @@ interface FilterSearchRepository {
     fun getRegions(): Flow<SearchResult<List<Region>>>
 
     fun getParentRegions(parentAreaId: String?): Flow<SearchResult<List<Region>>>
+
+    fun saveCountry(country: Country)
+
+    fun getCountry(): Country?
+
+    fun deleteCountry()
 }

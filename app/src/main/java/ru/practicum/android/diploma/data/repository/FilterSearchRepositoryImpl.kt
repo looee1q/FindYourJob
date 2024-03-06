@@ -1,5 +1,7 @@
 package ru.practicum.android.diploma.data.repository
 
+import android.content.SharedPreferences
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.practicum.android.diploma.data.converters.Converter
@@ -15,7 +17,11 @@ import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.util.SearchResult
 
-class FilterSearchRepositoryImpl(private val networkClient: NetworkClient) : FilterSearchRepository {
+class FilterSearchRepositoryImpl(
+    private val networkClient: NetworkClient,
+    private val sharedPreferences: SharedPreferences,
+    private val gson: Gson
+) : FilterSearchRepository {
 
     override fun getIndustries(): Flow<SearchResult<List<Industry>>> = flow {
         val response = networkClient.doRequestGetIndustries()
@@ -23,7 +29,7 @@ class FilterSearchRepositoryImpl(private val networkClient: NetworkClient) : Fil
             SUCCESS_RESPONSE -> {
                 emit(
                     SearchResult.Success(
-                        convertIdustryListDtoToIndustryList((response as ResponseIndustriesDto).industries)
+                        convertIndustryListDtoToIndustryList((response as ResponseIndustriesDto).industries)
                     )
                 )
             }
@@ -97,7 +103,19 @@ class FilterSearchRepositoryImpl(private val networkClient: NetworkClient) : Fil
         }
     }
 
-    private fun convertIdustryListDtoToIndustryList(industryListDto: List<IndustryDto>): List<Industry> {
+    override fun saveCountry(country: Country) {
+        sharedPreferences.edit().putString(COUNTRY_KEY, createJsonFromCountry(country)).apply()
+    }
+
+    override fun getCountry(): Country? {
+        return createCountryFromJson(sharedPreferences.getString(COUNTRY_KEY, "") ?: "")
+    }
+
+    override fun deleteCountry() {
+        sharedPreferences.edit().remove(COUNTRY_KEY).apply()
+    }
+
+    private fun convertIndustryListDtoToIndustryList(industryListDto: List<IndustryDto>): List<Industry> {
         val result = ArrayList<Industry>()
         industryListDto.forEach {
             result.add(Converter.fromIndustryDtoToIndustry(it))
@@ -110,8 +128,17 @@ class FilterSearchRepositoryImpl(private val networkClient: NetworkClient) : Fil
         return result
     }
 
+    private fun createJsonFromCountry(country: Country): String {
+        return gson.toJson(country)
+    }
+
+    private fun createCountryFromJson(json: String): Country? {
+        return gson.fromJson(json, Country::class.java)
+    }
+
     companion object {
         private const val SUCCESS_RESPONSE = 200
         private const val NO_INTERNET_CONNECTION = -1
+        private const val COUNTRY_KEY = "COUNTRY"
     }
 }

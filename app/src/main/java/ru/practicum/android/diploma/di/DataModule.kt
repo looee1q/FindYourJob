@@ -4,13 +4,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import androidx.room.Room
+import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.practicum.android.diploma.data.db.AppDatabase
-import ru.practicum.android.diploma.data.filter.FilterStorage
-import ru.practicum.android.diploma.data.filter.SharedPrefFilterStorageImpl
 import ru.practicum.android.diploma.data.network.HHApiService
 import ru.practicum.android.diploma.data.network.NetworkClient
 import ru.practicum.android.diploma.data.network.RetrofitNetworkClient
@@ -46,10 +45,6 @@ val dataModule = module {
         androidContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 
-    single<FilterStorage> {
-        SharedPrefFilterStorageImpl(sharedPreferences = get())
-    }
-
     single<NetworkClient> {
         RetrofitNetworkClient(hhApiService = get(), connectivityManager = get())
     }
@@ -63,6 +58,10 @@ val dataModule = module {
     }
 
     single<FilterSearchRepository> {
-        FilterSearchRepositoryImpl(networkClient = get())
+        FilterSearchRepositoryImpl(
+            networkClient = get(),
+            sharedPreferences = get(),
+            gson = Gson()
+        )
     }
 }

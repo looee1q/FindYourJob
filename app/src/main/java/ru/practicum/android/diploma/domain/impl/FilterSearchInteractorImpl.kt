@@ -25,4 +25,16 @@ class FilterSearchInteractorImpl(private val filterSearchRepository: FilterSearc
     override fun getParentRegions(parentAreaId: String): Flow<SearchResult<List<Region>>> {
         return filterSearchRepository.getParentRegions(parentAreaId)
     }
+
+    override fun saveCountry(country: Country) {
+        filterSearchRepository.saveCountry(country = country)
+    }
+
+    override fun getCountry(): Country? {
+        return filterSearchRepository.getCountry()
+    }
+
+    override fun deleteCountry() {
+        filterSearchRepository.deleteCountry()
+    }
 }
