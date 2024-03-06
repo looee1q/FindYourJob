@@ -31,6 +31,22 @@ class AreaSelectionFragment : BindingFragment<FragmentAreaSelectionBinding>() {
                 setSelectedCountry(country = it)
             }
         }
+
+        binding.btnBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        binding.countryLayout.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_areaSelectionFragment_to_countrySelectionFragment
+            )
+        }
+
+        binding.regionLayout.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_areaSelectionFragment_to_regionSelectionFragment
+            )
+        }
     }
 
     private fun initUI() {
