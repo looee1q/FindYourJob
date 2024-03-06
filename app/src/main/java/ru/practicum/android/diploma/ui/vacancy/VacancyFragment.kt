@@ -18,6 +18,7 @@ import ru.practicum.android.diploma.domain.models.VacancyDetails
 import ru.practicum.android.diploma.presentation.vacancy.VacancyViewModel
 import ru.practicum.android.diploma.presentation.vacancy.state.VacancyFragmentScreenState
 import ru.practicum.android.diploma.ui.fragment.BindingFragment
+import ru.practicum.android.diploma.ui.similar.SimilarVacanciesFragment
 import ru.practicum.android.diploma.util.getSalaryStringAndSymbol
 
 class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
@@ -48,6 +49,7 @@ class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
             SEARCH_FRAGMENT_ORIGIN -> {
                 viewModel.getVacancyDetails(vacancyId)
             }
+
             FAVORITE_FRAGMENT_ORIGIN -> {
                 viewModel.getVacancyDetailsFromLocalStorage(vacancyId)
             }
@@ -77,6 +79,13 @@ class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
 
         binding.btnFavorite.setOnClickListener {
             changeVacancyFavoriteStatus()
+        }
+
+        binding.btnGetSimilarVacancies.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_vacancyFragment_to_similarVacancyFragment,
+                SimilarVacanciesFragment.createArgs(vacancyId)
+            )
         }
     }
 

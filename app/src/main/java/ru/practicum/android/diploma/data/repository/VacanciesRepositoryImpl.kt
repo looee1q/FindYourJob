@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import ru.practicum.android.diploma.data.converters.Converter
 import ru.practicum.android.diploma.data.db.AppDatabase
-import ru.practicum.android.diploma.data.dto.RequestSimilarVacancySearch
 import ru.practicum.android.diploma.data.dto.RequestVacancySearch
 import ru.practicum.android.diploma.data.dto.ResponseVacanciesListDto
 import ru.practicum.android.diploma.data.dto.VacancyDto
@@ -51,9 +50,11 @@ class VacanciesRepositoryImpl(
             SUCCESS_RESPONSE -> {
                 emit(SearchResult.Success(Converter.fromVacancyDtoToVacancyDetails(response as VacancyDto)))
             }
+
             NO_INTERNET_CONNECTION -> {
                 emit(SearchResult.NoInternet())
             }
+
             else -> {
                 emit(SearchResult.Error())
             }
@@ -70,11 +71,29 @@ class VacanciesRepositoryImpl(
         }
     }
 
-    override suspend fun getSimilarVacancies(vacancyId: String): Flow<Vacancies> = flow {
-        val requestSimilarVacancySearch = RequestSimilarVacancySearch(id = vacancyId)
-        val response =
-            networkClient.doRequestGetSimilarVacancies(requestSimilarVacancySearch) as ResponseVacanciesListDto
-        emit(Converter.fromResponseVacanciesListDtoToVacancies(response))
+    override suspend fun getSimilarVacancies(
+        vacancyId: String,
+        vacanciesRequest: VacanciesRequest
+    ): Flow<SearchResult<Vacancies>> = flow {
+        val requestVacanciesListSearch = Converter.fromVacanciesRequestToRequestVacanciesListSearch(vacanciesRequest)
+        val response = networkClient.doRequestGetSimilarVacancies(vacancyId, requestVacanciesListSearch)
+        when (response.resultCode) {
+            SUCCESS_RESPONSE -> {
+                emit(
+                    SearchResult.Success(
+                        Converter.fromResponseVacanciesListDtoToVacancies(response as ResponseVacanciesListDto)
+                    )
+                )
+            }
+
+            NO_INTERNET_CONNECTION -> {
+                emit(SearchResult.NoInternet())
+            }
+
+            else -> {
+                emit(SearchResult.Error())
+            }
+        }
     }
 
     override suspend fun addVacancyToFavorites(vacancy: VacancyDetails) {

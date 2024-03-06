@@ -15,7 +15,10 @@ interface VacanciesInteractor {
 
     suspend fun getVacancyDetailsFromLocalStorage(vacancyId: String): Flow<VacancyDetails>
 
-    suspend fun getSimilarVacancies(vacancyId: String): Flow<Vacancies>
+    suspend fun getSimilarVacancies(
+        vacancyId: String,
+        vacanciesRequest: VacanciesRequest
+    ): Flow<SearchResult<Vacancies>>
 
     suspend fun addVacancyToFavorites(vacancy: VacancyDetails)
 

@@ -23,8 +23,11 @@ class VacanciesInteractorImpl(private val vacanciesRepository: VacanciesReposito
         return vacanciesRepository.getVacancyDetailsFromLocalStorage(vacancyId = vacancyId)
     }
 
-    override suspend fun getSimilarVacancies(vacancyId: String): Flow<Vacancies> {
-        return vacanciesRepository.getSimilarVacancies(vacancyId = vacancyId)
+    override suspend fun getSimilarVacancies(
+        vacancyId: String,
+        vacanciesRequest: VacanciesRequest
+    ): Flow<SearchResult<Vacancies>> {
+        return vacanciesRepository.getSimilarVacancies(vacancyId = vacancyId, vacanciesRequest = vacanciesRequest)
     }
 
     override suspend fun addVacancyToFavorites(vacancy: VacancyDetails) {

@@ -7,6 +7,7 @@ import ru.practicum.android.diploma.presentation.search.SearchViewModel
 import ru.practicum.android.diploma.presentation.selections.area.AreaSelectionViewModel
 import ru.practicum.android.diploma.presentation.selections.country.CountrySelectionViewModel
 import ru.practicum.android.diploma.presentation.selections.industry.IndustrySelectionViewModel
+import ru.practicum.android.diploma.presentation.similar.SimilarVacanciesViewModel
 import ru.practicum.android.diploma.presentation.vacancy.VacancyViewModel
 
 val appModule = module {
@@ -21,6 +22,10 @@ val appModule = module {
 
     viewModel<VacancyViewModel> {
         VacancyViewModel(vacanciesInteractor = get(), sharingInteractor = get())
+    }
+
+    viewModel<SimilarVacanciesViewModel> {
+        SimilarVacanciesViewModel(vacanciesInteractor = get())
     }
 
     viewModel<IndustrySelectionViewModel> {
