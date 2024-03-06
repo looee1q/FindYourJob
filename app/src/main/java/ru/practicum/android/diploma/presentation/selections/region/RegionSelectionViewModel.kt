@@ -23,7 +23,7 @@ class RegionSelectionViewModel(
     val regionsStateLiveData: LiveData<RegionSelectionState> get() = _regionsStateLiveData
 
     private val searchDebounce = debounce<String>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) {
-        getParentRegionsWithDebounce2(it)
+        getParentRegionsByName(it)
     }
 
     private val listOfAllRegions = mutableListOf<Region>()
@@ -52,19 +52,19 @@ class RegionSelectionViewModel(
         searchDebounce.invoke(region)
     }
 
-    fun getParentRegionsWithDebounce2(region: String) {
+    private fun getParentRegionsByName(region: String) {
         if (listOfAllRegions.isEmpty()) {
             getRegions()
         } else if (!listOfAllRegions.map { it.name }.contains(region)) {
             _regionsStateLiveData.postValue(RegionSelectionState.Empty)
         } else {
             listOfAllRegions.first { it.name == region }.also {
-                getParentRegions(it.id)
+                getParentRegionsById(it.id)
             }
         }
     }
 
-    private fun getParentRegions(parentId: String) {
+    private fun getParentRegionsById(parentId: String) {
         _regionsStateLiveData.postValue(RegionSelectionState.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             filterSearchInteractor.getParentRegions(parentId)
