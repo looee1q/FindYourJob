@@ -17,11 +17,13 @@ class VacancyViewModel(
     private val sharingInteractor: SharingInteractor
 ) : ViewModel() {
 
+    private var isRequestMade = false
     private val vacancyFragmentScreenState = MutableLiveData<VacancyFragmentScreenState>()
     fun getVacancyFragmentScreenState(): LiveData<VacancyFragmentScreenState> = vacancyFragmentScreenState
 
     fun getVacancyDetails(vacancyId: String) {
-        if (vacancyId.isNotEmpty()) {
+        if (!isRequestMade && vacancyId.isNotEmpty()) {
+            isRequestMade = true
             renderVacancyFragmentScreenState(VacancyFragmentScreenState.Loading)
             viewModelScope.launch(Dispatchers.IO) {
                 vacanciesInteractor
@@ -31,6 +33,7 @@ class VacancyViewModel(
                             is SearchResult.Error -> {
                                 renderVacancyFragmentScreenState(VacancyFragmentScreenState.ServerError)
                             }
+
                             is SearchResult.NoInternet -> {
                                 renderVacancyFragmentScreenState(VacancyFragmentScreenState.NoInternetConnection)
                             }
