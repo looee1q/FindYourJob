@@ -9,7 +9,8 @@ import ru.practicum.android.diploma.domain.models.Region
 class RegionAdapter(private val onRegionClickListener: (Region) -> Unit) :
     RecyclerView.Adapter<RegionAdapter.RegionViewHolder>() {
 
-    val countries = mutableListOf<Region>()
+    private var countries: MutableList<Region> = ArrayList()
+    private val originalList: MutableList<Region> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RegionViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -25,6 +26,30 @@ class RegionAdapter(private val onRegionClickListener: (Region) -> Unit) :
     }
 
     override fun getItemCount(): Int = countries.size
+
+    fun setItems(items: List<Region>) {
+        countries.addAll(items)
+        notifyDataSetChanged()
+        originalList.clear()
+        originalList.addAll(items)
+    }
+
+    private fun updateDisplayList(updatedList: List<Region>) {
+        countries.clear()
+        countries.addAll(updatedList)
+        notifyDataSetChanged()
+    }
+
+    fun filter(searchQuery: String?) {
+        if (searchQuery.isNullOrEmpty()) {
+            updateDisplayList(originalList)
+        } else {
+            val filteredList = originalList.filter {
+                it.name.contains(searchQuery, true)
+            }
+            updateDisplayList(filteredList)
+        }
+    }
 
     class RegionViewHolder(
         private val binding: ItemCountryRegionSelectionBinding

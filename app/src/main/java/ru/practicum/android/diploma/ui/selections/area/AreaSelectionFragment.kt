@@ -11,6 +11,7 @@ import ru.practicum.android.diploma.databinding.FragmentAreaSelectionBinding
 import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.presentation.selections.area.AreaSelectionViewModel
 import ru.practicum.android.diploma.ui.fragment.BindingFragment
+import ru.practicum.android.diploma.ui.selections.region.RegionSelectionFragment
 
 class AreaSelectionFragment : BindingFragment<FragmentAreaSelectionBinding>() {
 
@@ -44,7 +45,8 @@ class AreaSelectionFragment : BindingFragment<FragmentAreaSelectionBinding>() {
 
         binding.regionLayout.setOnClickListener {
             findNavController().navigate(
-                R.id.action_areaSelectionFragment_to_regionSelectionFragment
+                R.id.action_areaSelectionFragment_to_regionSelectionFragment,
+                RegionSelectionFragment.createArgs("40")
             )
         }
     }
