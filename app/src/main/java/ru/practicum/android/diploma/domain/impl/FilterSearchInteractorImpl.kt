@@ -37,4 +37,16 @@ class FilterSearchInteractorImpl(private val filterSearchRepository: FilterSearc
     override fun deleteCountry() {
         filterSearchRepository.deleteCountry()
     }
+
+    override fun saveIndustry(industry: Industry) {
+        filterSearchRepository.saveIndustry(industry)
+    }
+
+    override fun getIndustry(): Industry? {
+        return filterSearchRepository.getIndustry()
+    }
+
+    override fun deleteIndustry() {
+        filterSearchRepository.deleteIndustry()
+    }
 }

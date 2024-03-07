@@ -14,7 +14,7 @@ import ru.practicum.android.diploma.util.SearchResult
 class IndustrySelectionViewModel(private val filterSearchInteractor: FilterSearchInteractor) : ViewModel() {
 
     private val industriesFragmentState = MutableLiveData<IndustrySelectionState>()
-    var checkedIndustry: Industry? = null
+    private var checkedIndustry: Industry? = null
     private var latestCheckedPosition = -1
     private val industries = ArrayList<Industry>()
 
@@ -23,6 +23,24 @@ class IndustrySelectionViewModel(private val filterSearchInteractor: FilterSearc
     }
 
     fun getIndustriesFragmentState(): LiveData<IndustrySelectionState> = industriesFragmentState
+
+    fun saveCheckedIndustry(industry: Industry, position: Int) {
+        checkedIndustry = industry
+        industriesFragmentState.postValue(
+            IndustrySelectionState.ChangeCheckedIndustry(
+                industries,
+                latestCheckedPosition,
+                position
+            )
+        )
+        latestCheckedPosition = position
+    }
+
+    fun saveIndustry() {
+        checkedIndustry?.let {
+            filterSearchInteractor.saveIndustry(it)
+        }
+    }
 
     private fun getIndustries() {
         industriesFragmentState.postValue(IndustrySelectionState.Loading)
@@ -53,17 +71,5 @@ class IndustrySelectionViewModel(private val filterSearchInteractor: FilterSearc
                     }
                 }
         }
-    }
-
-    fun saveCheckedIndustry(industry: Industry, position: Int) {
-        checkedIndustry = industry
-        industriesFragmentState.postValue(
-            IndustrySelectionState.ChangeCheckedIndustry(
-                industries,
-                latestCheckedPosition,
-                position
-            )
-        )
-        latestCheckedPosition = position
     }
 }

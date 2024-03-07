@@ -108,11 +108,23 @@ class FilterSearchRepositoryImpl(
     }
 
     override fun getCountry(): Country? {
-        return createCountryFromJson(sharedPreferences.getString(COUNTRY_KEY, "") ?: "")
+        return createCountryFromJson(json = sharedPreferences.getString(COUNTRY_KEY, "") ?: "")
     }
 
     override fun deleteCountry() {
         sharedPreferences.edit().remove(COUNTRY_KEY).apply()
+    }
+
+    override fun saveIndustry(industry: Industry) {
+        sharedPreferences.edit().putString(INDUSTRY_KEY, createJsonFromIndustry(industry)).apply()
+    }
+
+    override fun getIndustry(): Industry? {
+        return createIndustryFromJson(json = sharedPreferences.getString(INDUSTRY_KEY, "") ?: "")
+    }
+
+    override fun deleteIndustry() {
+        sharedPreferences.edit().remove(INDUSTRY_KEY).apply()
     }
 
     private fun convertIndustryListDtoToIndustryList(industryListDto: List<IndustryDto>): List<Industry> {
@@ -136,9 +148,18 @@ class FilterSearchRepositoryImpl(
         return gson.fromJson(json, Country::class.java)
     }
 
+    private fun createJsonFromIndustry(industry: Industry): String {
+        return gson.toJson(industry)
+    }
+
+    private fun createIndustryFromJson(json: String): Industry? {
+        return gson.fromJson(json, Industry::class.java)
+    }
+
     companion object {
         private const val SUCCESS_RESPONSE = 200
         private const val NO_INTERNET_CONNECTION = -1
         private const val COUNTRY_KEY = "COUNTRY"
+        private const val INDUSTRY_KEY = "INDUSTRY"
     }
 }

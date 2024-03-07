@@ -21,4 +21,10 @@ interface FilterSearchRepository {
     fun getCountry(): Country?
 
     fun deleteCountry()
+
+    fun saveIndustry(industry: Industry)
+
+    fun getIndustry(): Industry?
+
+    fun deleteIndustry()
 }
