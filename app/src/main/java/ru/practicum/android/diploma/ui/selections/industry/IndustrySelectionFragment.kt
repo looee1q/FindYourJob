@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentIndustrySelectionBinding
 import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.presentation.selections.industry.IndustrySelectionViewModel
@@ -35,23 +36,28 @@ class IndustrySelectionFragment : BindingFragment<FragmentIndustrySelectionBindi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.btnBack.setOnClickListener {
             findNavController().navigateUp()
         }
-
-        binding.buttonConfirm.setOnClickListener {
-            Toast.makeText(
-                requireContext(),
-                "${viewModel.checkedIndustry?.id}  ${viewModel.checkedIndustry?.name}",
-                Toast.LENGTH_SHORT
-            ).show()
+        binding.InputEditText.doOnTextChanged { text, _, _, _ ->
+            adapter.filter(searchQuery = text.toString())
+            if (text.isNullOrBlank()) {
+                binding.icClose.setImageResource(R.drawable.ic_search)
+                binding.icClose.isClickable = false
+            } else {
+                binding.icClose.setImageResource(R.drawable.ic_close)
+                binding.icClose.isClickable = true
+            }
         }
-
-        binding.rvIndustries.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.icClose.setOnClickListener {
+            binding.InputEditText.setText("")
+        }
+        binding.buttonConfirm.setOnClickListener {
+            viewModel.saveIndustry()
+            findNavController().navigateUp()
+        }
+        binding.rvIndustries.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.rvIndustries.adapter = adapter
-
         viewModel.getIndustriesFragmentState().observe(viewLifecycleOwner) {
             render(it)
         }
