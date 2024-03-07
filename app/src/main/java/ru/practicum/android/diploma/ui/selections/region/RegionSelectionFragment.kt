@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -80,7 +81,15 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
     }
 
     private fun onRegionClick(region: Region) {
-        println()
+        setFragmentResult(
+            REQUEST_KEY_REGION,
+            bundleOf(
+                "ID" to region.id,
+                "NAME" to region.name
+            )
+        )
+        findNavController().navigateUp()
+
     }
 
     private fun render(state: RegionSelectionState) {
@@ -147,6 +156,7 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 0L
         private const val ARGS_COUNTRY_ID = "ARGS_COUNTRY_ID"
+        const val REQUEST_KEY_REGION = "REQUEST_KEY_REGION"
 
         fun createArgs(countryId: String): Bundle = bundleOf(
             ARGS_COUNTRY_ID to countryId,
