@@ -8,12 +8,16 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.practicum.android.diploma.data.NetworkClient
 import ru.practicum.android.diploma.data.db.AppDatabase
 import ru.practicum.android.diploma.data.filter.FilterStorage
 import ru.practicum.android.diploma.data.filter.SharedPrefFilterStorageImpl
 import ru.practicum.android.diploma.data.network.HHApiService
+import ru.practicum.android.diploma.data.network.NetworkClient
 import ru.practicum.android.diploma.data.network.RetrofitNetworkClient
+import ru.practicum.android.diploma.data.repository.VacanciesRepositoryImpl
+import ru.practicum.android.diploma.data.share.ExternalNavigatorImpl
+import ru.practicum.android.diploma.domain.api.VacanciesRepository
+import ru.practicum.android.diploma.domain.share.ExternalNavigator
 
 val dataModule = module {
 
@@ -45,6 +49,14 @@ val dataModule = module {
     }
 
     single<NetworkClient> {
-        RetrofitNetworkClient(hhApiService = get(), context = androidContext(), connectivityManager = get())
+        RetrofitNetworkClient(hhApiService = get(), connectivityManager = get())
+    }
+
+    single<VacanciesRepository> {
+        VacanciesRepositoryImpl(networkClient = get(), appDatabase = get())
+    }
+
+    single<ExternalNavigator> {
+        ExternalNavigatorImpl(context = get())
     }
 }

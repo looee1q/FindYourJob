@@ -7,15 +7,15 @@ data class ResponseVacanciesListDto(
     val pages: Int,
     val page: Int,
     @SerializedName("items")
-    val listVacancies: ArrayList<Vacancy>
+    val listVacancies: ArrayList<VacancyResponse>
 ) : Response()
 
-data class Vacancy(
+data class VacancyResponse(
     val id: String,
     val area: AreaResponse,
     val name: String,
     val employer: EmployerResponse,
-    val salary: SalaryResponse,
+    val salary: SalaryResponse?
 )
 
 data class AreaResponse(
@@ -24,18 +24,17 @@ data class AreaResponse(
 )
 
 data class EmployerResponse(
-    val id: String,
     val name: String,
     @SerializedName("logo_urls")
-    val logoUrls: LogoUrlsResponse
+    val logoUrls: LogoUrlsResponse?
 )
 
 data class LogoUrlsResponse(
-    val original: String,
+    val original: String?
 )
 
 data class SalaryResponse(
-    val currency: String,
-    val from: Int,
-    val to: Int
+    val currency: String?,
+    val from: Int?,
+    val to: Int?
 )

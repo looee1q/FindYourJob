@@ -5,10 +5,11 @@ import com.google.gson.annotations.SerializedName
 data class VacancyDto(
     val id: String,
     val area: AreaResponseDto,
+    val address: AddressDto?,
     val name: String,
     val employer: EmployerResponseDto,
-    val salary: SalaryResponseDto,
-    val contacts: ContactsResponseDto,
+    val salary: SalaryResponseDto?,
+    val contacts: ContactsResponseDto?,
     val description: String,
     val employment: EmploymentResponseDto,
     val experience: ExperienceResponseDto,
@@ -24,35 +25,41 @@ data class AreaResponseDto(
     val name: String
 )
 
+data class AddressDto(
+    val building: String?,
+    val city: String?,
+    val street: String?
+)
+
 data class EmployerResponseDto(
     val id: String,
     val name: String,
     @SerializedName("logo_urls")
-    val logoUrls: LogoUrlsResponseDto
+    val logoUrls: LogoUrlsResponseDto?
 )
 
 data class LogoUrlsResponseDto(
-    val original: String,
+    val original: String?,
 )
 
 data class SalaryResponseDto(
-    val currency: String,
-    val from: Int,
-    val to: Int
+    val currency: String?,
+    val from: Int?,
+    val to: Int?
 )
 
 data class ContactsResponseDto(
-    val email: String,
-    val name: String,
-    val phones: PhonesResponseDto
-
+    val email: String?,
+    val name: String?,
+    @SerializedName("phones")
+    val phones: List<PhonesResponseDto?>
 )
 
 data class PhonesResponseDto(
-    val city: String,
-    val comment: String,
-    val country: String,
-    val number: String
+    val city: String?,
+    val comment: String?,
+    val country: String?,
+    val number: String?
 )
 
 data class EmploymentResponseDto(
