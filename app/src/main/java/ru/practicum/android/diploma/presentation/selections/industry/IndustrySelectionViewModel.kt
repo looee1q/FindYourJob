@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.FilterSearchInteractor
+import ru.practicum.android.diploma.domain.models.FilterParameters
 import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.presentation.selections.industry.state.IndustrySelectionState
 import ru.practicum.android.diploma.util.SearchResult
@@ -38,7 +39,16 @@ class IndustrySelectionViewModel(private val filterSearchInteractor: FilterSearc
 
     fun saveIndustry() {
         checkedIndustry?.let {
-            filterSearchInteractor.saveIndustry(it)
+            val filterParameters = filterSearchInteractor.getFilterParameters()
+            if (filterParameters == null) {
+                filterSearchInteractor.saveFilterParameters(
+                    FilterParameters(idIndustry = it.id, nameIndustry = it.name)
+                )
+            } else {
+                filterSearchInteractor.saveFilterParameters(
+                    filterParameters.copy(idIndustry = it.id, nameIndustry = it.name)
+                )
+            }
         }
     }
 

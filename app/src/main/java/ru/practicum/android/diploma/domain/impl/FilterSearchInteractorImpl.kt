@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import ru.practicum.android.diploma.domain.api.FilterSearchInteractor
 import ru.practicum.android.diploma.domain.api.FilterSearchRepository
 import ru.practicum.android.diploma.domain.models.Country
+import ru.practicum.android.diploma.domain.models.FilterParameters
 import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.models.Region
 import ru.practicum.android.diploma.util.SearchResult
@@ -26,27 +27,15 @@ class FilterSearchInteractorImpl(private val filterSearchRepository: FilterSearc
         return filterSearchRepository.getRegionsOfCountry(countryId)
     }
 
-    override fun saveCountry(country: Country) {
-        filterSearchRepository.saveCountry(country = country)
+    override fun saveFilterParameters(filterParameters: FilterParameters) {
+        filterSearchRepository.saveFilterParameter(filterParameters)
     }
 
-    override fun getCountry(): Country? {
-        return filterSearchRepository.getCountry()
+    override fun getFilterParameters(): FilterParameters? {
+        return filterSearchRepository.getFilterParameters()
     }
 
-    override fun deleteCountry() {
-        filterSearchRepository.deleteCountry()
-    }
-
-    override fun saveIndustry(industry: Industry) {
-        filterSearchRepository.saveIndustry(industry)
-    }
-
-    override fun getIndustry(): Industry? {
-        return filterSearchRepository.getIndustry()
-    }
-
-    override fun deleteIndustry() {
-        filterSearchRepository.deleteIndustry()
+    override fun deleteFilterParameters() {
+        filterSearchRepository.deleteFilterParameters()
     }
 }
