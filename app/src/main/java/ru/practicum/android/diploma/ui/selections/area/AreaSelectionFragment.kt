@@ -1,11 +1,10 @@
 package ru.practicum.android.diploma.ui.selections.area
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -22,9 +21,10 @@ class AreaSelectionFragment : BindingFragment<FragmentAreaSelectionBinding>() {
     private val viewModel by viewModel<AreaSelectionViewModel>()
 
     private var countryFromSharedPref: Country? = null
-    private var countryName: String? = null
-    private var countryId: String? = null
-    private var isFirstFragmentOpen: Boolean = false
+    private var countryNameFromSharedPref: String = ""
+    private var countryIdFromSharedPref: String = ""
+    private var countryName: String = ""
+    private var countryId: String = ""
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -36,9 +36,13 @@ class AreaSelectionFragment : BindingFragment<FragmentAreaSelectionBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val argsFragment = requireArguments().getString(ARGS_FIRST_OPEN).toString()
-        if (argsFragment == "FilterSettingsFragment") {
-            isFirstFragmentOpen = true
+        countryFromSharedPref = viewModel.getCountryFromSharedPref()
+        countryNameFromSharedPref = countryFromSharedPref?.name ?: ""
+
+        setFragmentResultListener(CountrySelectionFragment.REQUEST_KEY) { key, bundle ->
+            countryName = bundle.getString("NAME") ?: ""
+            countryId = bundle.getString("ID") ?: ""
+            checkFragment()
         }
 
         checkFragment()
@@ -62,28 +66,31 @@ class AreaSelectionFragment : BindingFragment<FragmentAreaSelectionBinding>() {
 
         binding.icArrowForwardCountry.setOnClickListener {
             setEmptyCountry()
+            viewModel.saveCountryToSharedPref(countryId, countryName)
         }
 
         binding.buttonSelect.setOnClickListener {
             viewModel.saveCountryToSharedPref(countryId, countryName)
-            Log.e("AreaSelectionFragment", "countryId = $countryId countryName = $countryName")
-
             findNavController().navigateUp()
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigateUp()
+                }
+            }
+        )
     }
 
     private fun checkFragment() {
-        if (isFirstFragmentOpen) {
-            countryFromSharedPref = viewModel.getCountryFromSharedPref()
-            countryName = countryFromSharedPref?.name
-            Log.e("countryFromSharedPref", "countryId = $countryId countryName = $countryName")
+        if (countryNameFromSharedPref.isNotEmpty() && countryName.isEmpty()) {
             countryFromSharedPref?.let { setSelectedCountry(it.name) }
-        } else {
-            setFragmentResultListener(CountrySelectionFragment.REQUEST_KEY) { key, bundle ->
-                countryName = bundle.getString("NAME")
-                countryId = bundle.getString("ID")
-                countryName?.let { setSelectedCountry(it) }
-            }
+        } else if (countryNameFromSharedPref.isEmpty() && countryName.isEmpty()) {
+            setEmptyCountry()
+        } else if (countryName.isNotEmpty()) {
+            setSelectedCountry(countryName)
         }
     }
 
@@ -102,26 +109,17 @@ class AreaSelectionFragment : BindingFragment<FragmentAreaSelectionBinding>() {
         binding.icArrowForwardCountry.isSelected = false
         binding.countryName.visibility = View.GONE
         binding.countryName.text = ""
+        countryName = ""
+        countryId = ""
         showButtonSelect()
-        countryName = null
-        countryId = null
     }
 
     private fun showButtonSelect() {
-        if (countryName.isNullOrEmpty()) {
+        if (countryName.isEmpty() && countryNameFromSharedPref.isEmpty()) {
             binding.buttonSelect.visibility = View.GONE
         } else {
             binding.buttonSelect.visibility = View.VISIBLE
         }
-    }
-
-    companion object {
-        private var ARGS_FIRST_OPEN = ""
-
-        fun createArgs(isFirstFragmentOpen: String): Bundle = bundleOf(
-            ARGS_FIRST_OPEN to isFirstFragmentOpen
-        )
-
     }
 
 }
