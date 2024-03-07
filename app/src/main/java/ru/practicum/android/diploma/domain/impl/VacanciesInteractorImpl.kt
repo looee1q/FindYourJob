@@ -11,19 +11,19 @@ import ru.practicum.android.diploma.util.SearchResult
 
 class VacanciesInteractorImpl(private val vacanciesRepository: VacanciesRepository) : VacanciesInteractor {
 
-    override suspend fun searchVacancies(vacanciesRequest: VacanciesRequest): Flow<SearchResult<Vacancies>> {
+    override fun searchVacancies(vacanciesRequest: VacanciesRequest): Flow<SearchResult<Vacancies>> {
         return vacanciesRepository.searchVacancies(vacanciesRequest = vacanciesRequest)
     }
 
-    override suspend fun getVacancyDetails(vacancyId: String): Flow<SearchResult<VacancyDetails>> {
+    override fun getVacancyDetails(vacancyId: String): Flow<SearchResult<VacancyDetails>> {
         return vacanciesRepository.getVacancyDetails(vacancyId = vacancyId)
     }
 
-    override suspend fun getVacancyDetailsFromLocalStorage(vacancyId: String): Flow<VacancyDetails> {
+    override fun getVacancyDetailsFromLocalStorage(vacancyId: String): Flow<VacancyDetails> {
         return vacanciesRepository.getVacancyDetailsFromLocalStorage(vacancyId = vacancyId)
     }
 
-    override suspend fun getSimilarVacancies(
+    override fun getSimilarVacancies(
         vacancyId: String,
         vacanciesRequest: VacanciesRequest
     ): Flow<SearchResult<Vacancies>> {

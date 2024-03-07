@@ -9,8 +9,8 @@ import ru.practicum.android.diploma.domain.models.Region
 class RegionAdapter(private val onRegionClickListener: (Region) -> Unit) :
     RecyclerView.Adapter<RegionAdapter.RegionViewHolder>() {
 
-    private var countries: MutableList<Region> = ArrayList()
-    private val originalList: MutableList<Region> = ArrayList()
+    private var countries = mutableListOf<Region>()
+    private val originalList = mutableListOf<Region>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RegionViewHolder {
         val inflater = LayoutInflater.from(parent.context)

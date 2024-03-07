@@ -26,8 +26,13 @@ class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
     private val viewModel by viewModel<VacancyViewModel>()
     private var vacancyId = ""
     private var vacancyDetails: VacancyDetails? = null
-    private var adapter: PhoneAndCommentAdapter? = null
-    private val phoneList: ArrayList<Phone> = arrayListOf()
+    private val adapter by lazy {
+        PhoneAndCommentAdapter(object : PhoneAndCommentAdapter.PhoneClickListener {
+            override fun onPhoneClick(phone: Phone?) {
+                viewModel.openPhone(phone?.phone)
+            }
+        })
+    }
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -66,12 +71,6 @@ class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
         binding.tvEmail.setOnClickListener {
             viewModel.openEmail(vacancyDetails?.contactEmail)
         }
-
-        adapter = PhoneAndCommentAdapter(phoneList, object : PhoneAndCommentAdapter.PhoneClickListener {
-            override fun onPhoneClick(phone: Phone?) {
-                viewModel.openPhone(phone?.phone)
-            }
-        })
 
         binding.phoneAndCommentRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -127,7 +126,7 @@ class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
         binding.llNoInternetConnection.visibility = View.GONE
         installVacancyDetails(vacancy)
         val favoriteButton = if (vacancy.isFavorite) R.drawable.ic_favorites_on else R.drawable.ic_favorites_off
-        binding.btnFavorite.setImageDrawable(resources.getDrawable(favoriteButton, null))
+        binding.btnFavorite.setImageResource(favoriteButton)
     }
 
     private fun installVacancyDetails(vacancy: VacancyDetails) {
@@ -137,7 +136,7 @@ class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
         binding.tvExperienceCaption.text = vacancy.experience
         binding.tvEmploymentSchedule.text =
             getString(R.string.employment_schedule, vacancy.employment, vacancy.schedule)
-        binding.tvDescription.setText(Html.fromHtml(vacancy.description, Html.FROM_HTML_MODE_COMPACT))
+        binding.tvDescription.text = Html.fromHtml(vacancy.description, Html.FROM_HTML_MODE_COMPACT)
 
         if (vacancy.address.isNotEmpty()) {
             binding.tvAreaName.text = vacancy.address
@@ -145,7 +144,7 @@ class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
             binding.tvAreaName.text = vacancy.areaName
         }
 
-        if (vacancy.keySkills.isNullOrEmpty()) {
+        if (vacancy.keySkills.isEmpty()) {
             binding.keySkillsGroup.visibility = View.GONE
         } else {
             binding.tvSkills.text = viewModel.getStringKeySkills(vacancy.keySkills)
@@ -182,11 +181,7 @@ class VacancyFragment : BindingFragment<FragmentVacancyBinding>() {
             if (vacancy.contactPhones.isNullOrEmpty()) {
                 binding.phoneAndCommentRecyclerView.visibility = View.GONE
             } else {
-                adapter?.let {
-                    phoneList.clear()
-                    phoneList.addAll(vacancy.contactPhones)
-                    it.notifyDataSetChanged()
-                }
+                adapter.setPhoneList(vacancy.contactPhones)
             }
         }
     }
