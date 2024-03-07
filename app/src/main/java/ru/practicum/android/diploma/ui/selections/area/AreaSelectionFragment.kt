@@ -109,6 +109,8 @@ class AreaSelectionFragment : BindingFragment<FragmentAreaSelectionBinding>() {
             setEmptyCountry()
         } else if (countryName.isNotEmpty()) {
             setSelectedCountry(countryName)
+            setEmptyRegion()
+            clearRegion()
         }
     }
 
