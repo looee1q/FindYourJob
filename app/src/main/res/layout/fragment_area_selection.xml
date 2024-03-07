@@ -100,6 +100,7 @@
         app:layout_constraintTop_toTopOf="@+id/regionLayout" />
 
     <Button
+        android:id="@+id/buttonSelect"
         style="@style/PrimaryButton"
         android:layout_width="@dimen/_0dp"
         android:layout_height="@dimen/_60dp"

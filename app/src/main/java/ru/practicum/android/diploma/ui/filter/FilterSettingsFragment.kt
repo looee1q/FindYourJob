@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFilterSettingsBinding
 import ru.practicum.android.diploma.ui.fragment.BindingFragment
+import ru.practicum.android.diploma.ui.selections.area.AreaSelectionFragment
 
 class FilterSettingsFragment : BindingFragment<FragmentFilterSettingsBinding>() {
 
@@ -38,9 +39,12 @@ class FilterSettingsFragment : BindingFragment<FragmentFilterSettingsBinding>() 
         }
 
         binding.areaField.root.setOnClickListener {
+            val isFirstFragmentOpen = IS_FIRST_FRAGMENT_OPEN
             findNavController().navigate(
-                R.id.action_filterSettingsFragment_to_areaSelectionFragment
+                R.id.action_filterSettingsFragment_to_areaSelectionFragment,
+                AreaSelectionFragment.createArgs(isFirstFragmentOpen)
             )
+
         }
 
         binding.areaField.arrowForwardButton.setOnClickListener {
@@ -189,4 +193,8 @@ class FilterSettingsFragment : BindingFragment<FragmentFilterSettingsBinding>() 
         val isSalaryChosen: Boolean = false,
         val doNotShowWithoutSalary: Boolean = true
     )
+
+    companion object {
+        const val IS_FIRST_FRAGMENT_OPEN = "FilterSettingsFragment"
+    }
 }
