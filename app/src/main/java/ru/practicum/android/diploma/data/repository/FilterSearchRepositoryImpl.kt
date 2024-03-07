@@ -13,6 +13,7 @@ import ru.practicum.android.diploma.data.dto.ResponseIndustriesDto
 import ru.practicum.android.diploma.data.network.NetworkClient
 import ru.practicum.android.diploma.domain.api.FilterSearchRepository
 import ru.practicum.android.diploma.domain.models.Country
+import ru.practicum.android.diploma.domain.models.FilterParameters
 import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.models.Region
 import ru.practicum.android.diploma.util.SearchResult
@@ -73,14 +74,14 @@ class FilterSearchRepositoryImpl(
     }
 
     override fun getRegions(): Flow<SearchResult<List<Region>>> {
-        return getParentRegions(null)
+        return getRegionsOfCountry(null)
     }
 
-    override fun getParentRegions(parentAreaId: String?): Flow<SearchResult<List<Region>>> = flow {
-        val response = if (parentAreaId.isNullOrEmpty()) {
+    override fun getRegionsOfCountry(countryId: String?): Flow<SearchResult<List<Region>>> = flow {
+        val response = if (countryId.isNullOrEmpty()) {
             networkClient.doRequestGetAreas()
         } else {
-            val request = RequestAreasSearch(id = parentAreaId)
+            val request = RequestAreasSearch(id = countryId)
             networkClient.doRequestGetAreas(request)
         }
 
@@ -103,16 +104,19 @@ class FilterSearchRepositoryImpl(
         }
     }
 
-    override fun saveCountry(country: Country) {
-        sharedPreferences.edit().putString(COUNTRY_KEY, createJsonFromCountry(country)).apply()
+    override fun saveFilterParameter(filterParameters: FilterParameters) {
+        sharedPreferences
+            .edit()
+            .putString(FILTER_PARAMETERS_KEY, createJsonFromFilterParameters(filterParameters))
+            .apply()
     }
 
-    override fun getCountry(): Country? {
-        return createCountryFromJson(sharedPreferences.getString(COUNTRY_KEY, "") ?: "")
+    override fun getFilterParameters(): FilterParameters? {
+        return createFilterParametersFromJson(json = sharedPreferences.getString(FILTER_PARAMETERS_KEY, "") ?: "")
     }
 
-    override fun deleteCountry() {
-        sharedPreferences.edit().remove(COUNTRY_KEY).apply()
+    override fun deleteFilterParameters() {
+        sharedPreferences.edit().remove(FILTER_PARAMETERS_KEY).apply()
     }
 
     private fun convertIndustryListDtoToIndustryList(industryListDto: List<IndustryDto>): List<Industry> {
@@ -128,17 +132,17 @@ class FilterSearchRepositoryImpl(
         return result
     }
 
-    private fun createJsonFromCountry(country: Country): String {
-        return gson.toJson(country)
+    private fun createJsonFromFilterParameters(filterParameters: FilterParameters): String {
+        return gson.toJson(filterParameters)
     }
 
-    private fun createCountryFromJson(json: String): Country? {
-        return gson.fromJson(json, Country::class.java)
+    private fun createFilterParametersFromJson(json: String): FilterParameters? {
+        return gson.fromJson(json, FilterParameters::class.java)
     }
 
     companion object {
         private const val SUCCESS_RESPONSE = 200
         private const val NO_INTERNET_CONNECTION = -1
-        private const val COUNTRY_KEY = "COUNTRY"
+        private const val FILTER_PARAMETERS_KEY = "FILTER_PARAMETERS"
     }
 }

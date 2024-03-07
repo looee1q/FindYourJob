@@ -15,5 +15,12 @@ class AreaSelectionViewModel(private val filterSearchInteractor: FilterSearchInt
             val country = Country(countryId, countryName)
             filterSearchInteractor.saveCountry(country)
         }
+    fun getSelectedCountry(): LiveData<Country> = selectedCountry
+
+    fun getCountry() {
+        val filterParameters = filterSearchInteractor.getFilterParameters()
+        filterParameters?.let {
+            selectedCountry.value = Country(id = it.idCountry, name = it.nameCountry)
+        }
     }
 }

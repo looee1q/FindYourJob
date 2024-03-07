@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.FilterSearchInteractor
+import ru.practicum.android.diploma.domain.models.Country
+import ru.practicum.android.diploma.domain.models.FilterParameters
 import ru.practicum.android.diploma.presentation.selections.country.state.CountrySelectionState
 import ru.practicum.android.diploma.util.SearchResult
 
@@ -38,6 +40,19 @@ class CountrySelectionViewModel(private val filterSearchInteractor: FilterSearch
                         }
                     }
                 }
+        }
+    }
+
+    fun saveCountry(country: Country) {
+        val filterParameters = filterSearchInteractor.getFilterParameters()
+        if (filterParameters == null) {
+            filterSearchInteractor.saveFilterParameters(
+                FilterParameters(idCountry = country.id, nameCountry = country.name)
+            )
+        } else {
+            filterSearchInteractor.saveFilterParameters(
+                filterParameters.copy(idIndustry = country.id, nameCountry = country.name)
+            )
         }
     }
 

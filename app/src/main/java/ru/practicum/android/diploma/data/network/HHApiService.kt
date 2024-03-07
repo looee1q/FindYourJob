@@ -32,7 +32,10 @@ interface HHApiService {
         "HH-User-Agent: Find Your Job/1.0 (goaltenders@yandex.ru)"
     )
     @GET("/vacancies/{vacancy_id}/similar_vacancies")
-    suspend fun getSimilarVacancies(@Path("vacancy_id") id: String): ResponseVacanciesListDto
+    suspend fun getSimilarVacancies(
+        @Path("vacancy_id") id: String,
+        @QueryMap options: Map<String, String>
+    ): ResponseVacanciesListDto
 
     @Headers(
         "Authorization: Bearer ${BuildConfig.HH_ACCESS_TOKEN}",

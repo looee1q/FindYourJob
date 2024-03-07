@@ -55,6 +55,7 @@
     <string name="industry_header">Выбор отрасли</string>
     <string name="industry_search">Введите отрасль</string>
     <string name="countries_are_empty">Список стран пуст</string>
+    <string name="similar_vacancies">Похожие вакансии</string>
 
     <plurals name="vacancy_plurals">
         <item quantity="one">Найдена %1$d вакансия</item>
