@@ -10,7 +10,7 @@ class IndustryAdapter(
     private val itemClickListener: IndustryClickListener
 ) : RecyclerView.Adapter<IndustryViewHolder>() {
 
-    private val industries = ArrayList<Industry>()
+    private val industries = mutableListOf<Industry>()
     private var selectedPosition = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IndustryViewHolder {

@@ -172,9 +172,9 @@
 
     <LinearLayout
         android:id="@+id/placeHolderError"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_width="@dimen/_0dp"
+        android:layout_height="@dimen/_0dp"
+        android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -195,6 +195,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_16dp"
             android:gravity="center"
+            android:maxLines="2"
             android:text="@string/no_internet" />
 
     </LinearLayout>

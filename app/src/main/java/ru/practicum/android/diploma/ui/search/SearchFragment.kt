@@ -26,7 +26,21 @@ import ru.practicum.android.diploma.util.debounce
 open class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
     open val viewModel by viewModel<SearchViewModel>()
-    private var adapter: VacancyAdapter? = null
+
+    private val adapter by lazy {
+        VacancyAdapter(object : VacancyAdapter.VacancyClickListener {
+            override fun onVacancyClick(vacancy: Vacancy) {
+                val onVacancyClickDebounce =
+                    debounce<Vacancy>(
+                        CLICK_DEBOUNCE_DELAY,
+                        viewLifecycleOwner.lifecycleScope,
+                        false
+                    ) { openVacancyFragment(it) }
+
+                onVacancyClickDebounce(vacancy)
+            }
+        })
+    }
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -37,13 +51,6 @@ open class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val onVacancyClickDebounce =
-            debounce<Vacancy>(
-                CLICK_DEBOUNCE_DELAY,
-                viewLifecycleOwner.lifecycleScope,
-                false
-            ) { openVacancyFragment(it) }
 
         binding.InputEditText.doOnTextChanged { text, _, _, _ ->
             binding.placeHolderError.visibility = View.GONE
@@ -59,12 +66,6 @@ open class SearchFragment : BindingFragment<FragmentSearchBinding>() {
             }
         }
 
-        adapter = VacancyAdapter(object : VacancyAdapter.VacancyClickListener {
-            override fun onVacancyClick(vacancy: Vacancy) {
-                onVacancyClickDebounce(vacancy)
-            }
-        })
-
         binding.recyclerViewFoundVacancies.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerViewFoundVacancies.adapter = adapter
@@ -77,7 +78,7 @@ open class SearchFragment : BindingFragment<FragmentSearchBinding>() {
                     val pos =
                         (binding.recyclerViewFoundVacancies.layoutManager as LinearLayoutManager)
                             .findLastVisibleItemPosition()
-                    val itemsCount = adapter!!.itemCount
+                    val itemsCount = adapter.itemCount
                     if (pos >= itemsCount - 1) {
                         viewModel.getNextPage()
                     }
@@ -196,7 +197,7 @@ open class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         binding.messageFound.text =
             resources.getQuantityString(R.plurals.vacancy_plurals, found, found)
         binding.messageFound.visibility = View.VISIBLE
-        adapter?.setVacancyList(vacancies)
+        adapter.setVacancyList(vacancies)
         binding.recyclerViewFoundVacancies.visibility = View.VISIBLE
     }
 

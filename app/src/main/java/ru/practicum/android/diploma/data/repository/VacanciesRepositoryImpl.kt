@@ -21,7 +21,7 @@ class VacanciesRepositoryImpl(
     private val appDatabase: AppDatabase
 ) : VacanciesRepository {
 
-    override suspend fun searchVacancies(vacanciesRequest: VacanciesRequest): Flow<SearchResult<Vacancies>> = flow {
+    override fun searchVacancies(vacanciesRequest: VacanciesRequest): Flow<SearchResult<Vacancies>> = flow {
         val requestVacanciesListSearch = Converter.fromVacanciesRequestToRequestVacanciesListSearch(vacanciesRequest)
         val response = networkClient.doRequestSearchVacancies(requestVacanciesListSearch)
         when (response.resultCode) {
@@ -43,7 +43,7 @@ class VacanciesRepositoryImpl(
         }
     }
 
-    override suspend fun getVacancyDetails(vacancyId: String): Flow<SearchResult<VacancyDetails>> = flow {
+    override fun getVacancyDetails(vacancyId: String): Flow<SearchResult<VacancyDetails>> = flow {
         val requestVacancySearch = RequestVacancySearch(id = vacancyId)
         val response = networkClient.doRequestGetVacancy(requestVacancySearch)
         when (response.resultCode) {
@@ -61,7 +61,7 @@ class VacanciesRepositoryImpl(
         }
     }
 
-    override suspend fun getVacancyDetailsFromLocalStorage(vacancyId: String): Flow<VacancyDetails> {
+    override fun getVacancyDetailsFromLocalStorage(vacancyId: String): Flow<VacancyDetails> {
         return flow {
             emit(
                 Converter.fromFavoriteVacancyEntityToVacancyDetails(
@@ -71,7 +71,7 @@ class VacanciesRepositoryImpl(
         }
     }
 
-    override suspend fun getSimilarVacancies(
+    override fun getSimilarVacancies(
         vacancyId: String,
         vacanciesRequest: VacanciesRequest
     ): Flow<SearchResult<Vacancies>> = flow {

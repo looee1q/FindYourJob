@@ -166,7 +166,8 @@ object Converter {
             experience = vacancyDetails.experience,
             keySkillsInJson = Gson().toJson(vacancyDetails.keySkills),
             alternateUrl = vacancyDetails.alternateUrl,
-            schedule = vacancyDetails.schedule
+            schedule = vacancyDetails.schedule,
+            timeAddToFav = System.currentTimeMillis()
         )
     }
 
