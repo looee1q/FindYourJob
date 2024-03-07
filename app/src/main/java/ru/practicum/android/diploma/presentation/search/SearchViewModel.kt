@@ -20,7 +20,7 @@ open class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor)
 
     private var latestSearchText: String? = null
     var currentRequest: VacanciesRequest? = null
-    private val vacanciesList = ArrayList<Vacancy>()
+    private val vacanciesList = mutableListOf<Vacancy>()
     private var currentPage = 0
     private var maxPages = 0
     private var found = 0
@@ -46,9 +46,9 @@ open class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor)
         if (currentRequest != null && !isNextPageLoading) {
             val nextPage = currentPage + 1
             if (nextPage < maxPages) {
-                currentRequest = currentRequest!!.copy(page = nextPage)
+                currentRequest = currentRequest?.copy(page = nextPage)
                 isNextPageLoading = true
-                makeRequest(currentRequest!!)
+                currentRequest?.let { makeRequest(it) }
             }
         }
     }

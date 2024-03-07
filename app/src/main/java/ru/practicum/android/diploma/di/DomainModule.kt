@@ -10,11 +10,11 @@ import ru.practicum.android.diploma.domain.share.impl.SharingInteractorImpl
 
 val domainModule = module {
 
-    single<VacanciesInteractor> {
+    factory<VacanciesInteractor> {
         VacanciesInteractorImpl(get())
     }
 
-    single<SharingInteractor> {
+    factory<SharingInteractor> {
         SharingInteractorImpl(get())
     }
 
