@@ -5,14 +5,17 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.domain.api.FilterSearchInteractor
 import ru.practicum.android.diploma.domain.api.VacanciesInteractor
 import ru.practicum.android.diploma.domain.models.VacanciesRequest
 import ru.practicum.android.diploma.presentation.search.SearchViewModel
 import ru.practicum.android.diploma.presentation.search.state.SearchFragmentState
 import ru.practicum.android.diploma.util.SearchResult
 
-class SimilarVacanciesViewModel(private val vacanciesInteractor: VacanciesInteractor) :
-    SearchViewModel(vacanciesInteractor) {
+class SimilarVacanciesViewModel(
+    private val vacanciesInteractor: VacanciesInteractor,
+    private val filterSearchInteractor: FilterSearchInteractor
+) : SearchViewModel(vacanciesInteractor, filterSearchInteractor) {
 
     private var similarVacancyId = ""
     private var isRequestMade = false
