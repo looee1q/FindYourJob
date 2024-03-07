@@ -99,6 +99,14 @@ open class SearchFragment : BindingFragment<FragmentSearchBinding>() {
                 R.id.action_searchFragment_to_filterSettingsFragment
             )
         }
+        viewModel.getFilterParameters()
+        viewModel.filterParameters.observe(viewLifecycleOwner) {
+            if (it != null) {
+                binding.filters.setImageResource(R.drawable.ic_filter_on)
+            } else {
+                binding.filters.setImageResource(R.drawable.ic_filter_off)
+            }
+        }
     }
 
     private fun render(state: SearchFragmentState) {

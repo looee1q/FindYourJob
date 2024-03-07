@@ -8,5 +8,5 @@ data class FilterParameters(
     val idRegion: String = "",
     val nameRegion: String = "",
     val salary: String = "",
-    val showWithoutSalary: Boolean = false
+    val doNotShowWithoutSalary: Boolean = false
 )

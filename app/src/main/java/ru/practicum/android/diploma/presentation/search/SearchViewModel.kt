@@ -8,7 +8,9 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.domain.api.FilterSearchInteractor
 import ru.practicum.android.diploma.domain.api.VacanciesInteractor
+import ru.practicum.android.diploma.domain.models.FilterParameters
 import ru.practicum.android.diploma.domain.models.Vacancies
 import ru.practicum.android.diploma.domain.models.VacanciesRequest
 import ru.practicum.android.diploma.domain.models.Vacancy
@@ -16,7 +18,10 @@ import ru.practicum.android.diploma.presentation.search.state.SearchFragmentStat
 import ru.practicum.android.diploma.util.SearchResult
 import ru.practicum.android.diploma.util.debounce
 
-open class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor) : ViewModel() {
+open class SearchViewModel(
+    private val vacanciesInteractor: VacanciesInteractor,
+    private val filterSearchInteractor: FilterSearchInteractor
+) : ViewModel() {
 
     private var latestSearchText: String? = null
     var currentRequest: VacanciesRequest? = null
@@ -31,13 +36,44 @@ open class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor)
         makeRequest(it)
     }
 
+    private val _filterParameters = MutableLiveData<FilterParameters?>()
+    val filterParameters: LiveData<FilterParameters?> = _filterParameters
+
     fun getSearchFragmentScreenState(): LiveData<SearchFragmentState> = searchFragmentScreenState
 
     fun searchByText(text: String) {
         if (text.isNotEmpty() && text != latestSearchText) {
+            val area = filterParameters.value?.let {
+                it.idRegion.ifEmpty {
+                    it.idCountry.ifEmpty {
+                        null
+                    }
+                }
+            }
+            val industry = filterParameters.value?.let {
+                it.idIndustry.ifEmpty {
+                    null
+                }
+            }
+            val salary = filterParameters.value?.salary.orEmpty()
+            val onlyWithSalary = filterParameters.value?.doNotShowWithoutSalary
             latestSearchText = text
             vacanciesList.clear()
-            currentRequest = currentRequest?.copy(page = 0, text = text) ?: VacanciesRequest(text = text)
+            currentRequest = currentRequest?.copy(
+                page = 0,
+                text = text,
+                area = area,
+                industry = industry,
+                salary = if (salary.isEmpty()) null else salary.toInt(),
+                onlyWithSalary = onlyWithSalary ?: false
+            )
+                ?: VacanciesRequest(
+                    text = text,
+                    area = area,
+                    industry = industry,
+                    salary = if (salary.isEmpty()) null else salary.toInt(),
+                    onlyWithSalary = onlyWithSalary ?: false
+                )
             searchDebounce(currentRequest!!)
         }
     }
@@ -116,6 +152,10 @@ open class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor)
 
     fun renderState(state: SearchFragmentState) {
         searchFragmentScreenState.postValue(state)
+    }
+
+    fun getFilterParameters() {
+        _filterParameters.value = filterSearchInteractor.getFilterParameters()
     }
 
     companion object {
