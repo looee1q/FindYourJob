@@ -41,6 +41,7 @@ class FilterSettingsFragment : BindingFragment<FragmentFilterSettingsBinding>() 
             findNavController().navigate(
                 R.id.action_filterSettingsFragment_to_areaSelectionFragment
             )
+
         }
 
         binding.areaField.arrowForwardButton.setOnClickListener {

@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -80,7 +82,13 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
     }
 
     private fun onCountryClick(country: Country) {
-        viewModel.saveCountry(country)
+        setFragmentResult(
+            REQUEST_KEY,
+            bundleOf(
+                "ID" to country.id,
+                "NAME" to country.name
+            )
+        )
         onBackButtonClick()
     }
 
@@ -142,5 +150,6 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
+        const val REQUEST_KEY = "REQUEST_KEY"
     }
 }
