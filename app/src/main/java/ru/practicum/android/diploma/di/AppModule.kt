@@ -8,6 +8,7 @@ import ru.practicum.android.diploma.presentation.selections.area.AreaSelectionVi
 import ru.practicum.android.diploma.presentation.selections.country.CountrySelectionViewModel
 import ru.practicum.android.diploma.presentation.selections.industry.IndustrySelectionViewModel
 import ru.practicum.android.diploma.presentation.similar.SimilarVacanciesViewModel
+import ru.practicum.android.diploma.presentation.selections.region.RegionSelectionViewModel
 import ru.practicum.android.diploma.presentation.vacancy.VacancyViewModel
 
 val appModule = module {
@@ -38,5 +39,9 @@ val appModule = module {
 
     viewModel<AreaSelectionViewModel> {
         AreaSelectionViewModel(filterSearchInteractor = get())
+    }
+
+    viewModel<RegionSelectionViewModel> {
+        RegionSelectionViewModel(filterSearchInteractor = get())
     }
 }
