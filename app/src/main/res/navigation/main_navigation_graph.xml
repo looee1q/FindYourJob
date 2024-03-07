@@ -70,6 +70,10 @@
     </fragment>
     <fragment
         android:id="@+id/similarVacancyFragment"
-        android:name="ru.practicum.android.diploma.ui.similar.SimilarVacancyFragment"
-        android:label="SimilarVacancyFragment" />
+        android:name="ru.practicum.android.diploma.ui.similar.SimilarVacanciesFragment"
+        android:label="SimilarVacancyFragment">
+        <action
+            android:id="@+id/action_similarVacancyFragment_to_vacancyFragment"
+            app:destination="@id/vacancyFragment" />
+    </fragment>
 </navigation>

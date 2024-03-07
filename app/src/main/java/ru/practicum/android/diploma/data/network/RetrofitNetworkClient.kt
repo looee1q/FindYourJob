@@ -5,7 +5,6 @@ import android.net.NetworkCapabilities
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.practicum.android.diploma.data.dto.RequestAreasSearch
-import ru.practicum.android.diploma.data.dto.RequestSimilarVacancySearch
 import ru.practicum.android.diploma.data.dto.RequestVacanciesListSearch
 import ru.practicum.android.diploma.data.dto.RequestVacancySearch
 import ru.practicum.android.diploma.data.dto.Response
@@ -41,12 +40,16 @@ class RetrofitNetworkClient(
         }
     }
 
-    override suspend fun doRequestGetSimilarVacancies(dto: RequestSimilarVacancySearch): Response {
+    override suspend fun doRequestGetSimilarVacancies(
+        vacancyId: String,
+        requestDto: RequestVacanciesListSearch
+    ): Response {
         return if (!isConnected()) {
             Response().apply { resultCode = NO_INTERNET_CONNECTION }
         } else {
             withContext(Dispatchers.IO) {
-                val response = hhApiService.getSimilarVacancies(dto.id)
+                val options = formQueryMapToSearchVacancies(requestDto)
+                val response = hhApiService.getSimilarVacancies(vacancyId, options)
                 response.apply { resultCode = SUCCESS_RESPONSE }
             }
         }
