@@ -42,7 +42,6 @@ class AreaSelectionFragment : BindingFragment<FragmentAreaSelectionBinding>() {
 
         checkFragment()
 
-
         binding.btnBack.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -64,7 +63,6 @@ class AreaSelectionFragment : BindingFragment<FragmentAreaSelectionBinding>() {
         }
 
         binding.buttonSelect.setOnClickListener {
-
             viewModel.saveCountryToSharedPref(countryId, countryName)
             Log.e("AreaSelectionFragment", "countryId = $countryId countryName = $countryName")
 

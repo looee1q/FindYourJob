@@ -8,9 +8,9 @@ import ru.practicum.android.diploma.data.dto.IndustryDto
 import ru.practicum.android.diploma.data.dto.RequestVacanciesListSearch
 import ru.practicum.android.diploma.data.dto.ResponseVacanciesListDto
 import ru.practicum.android.diploma.data.dto.VacancyDto
-import ru.practicum.android.diploma.domain.models.Region
 import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.models.Phone
+import ru.practicum.android.diploma.domain.models.Region
 import ru.practicum.android.diploma.domain.models.Salary
 import ru.practicum.android.diploma.domain.models.Vacancies
 import ru.practicum.android.diploma.domain.models.VacanciesRequest
