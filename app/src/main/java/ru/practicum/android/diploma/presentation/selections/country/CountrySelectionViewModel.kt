@@ -18,6 +18,7 @@ class CountrySelectionViewModel(private val filterSearchInteractor: FilterSearch
     fun getCountrySelectionState(): LiveData<CountrySelectionState> = countrySelectionState
 
     fun getCountries() {
+        renderCountrySelectionState(CountrySelectionState.Loading)
         viewModelScope.launch {
             filterSearchInteractor
                 .getCountries()

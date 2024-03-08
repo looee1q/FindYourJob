@@ -10,5 +10,7 @@ sealed interface CountrySelectionState {
 
     data object Error : CountrySelectionState
 
+    data object Loading : CountrySelectionState
+
     data object NoInternet : CountrySelectionState
 }

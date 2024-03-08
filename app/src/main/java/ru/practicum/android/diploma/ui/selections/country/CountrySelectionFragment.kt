@@ -96,16 +96,19 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
         when (state) {
             is CountrySelectionState.Content -> {
                 showCountryRecyclerView()
+                hideLoader()
                 hideLLErrorServer()
                 countryAdapter?.let {
                     it.countries.clear()
                     it.countries.addAll(state.countries)
                     it.notifyDataSetChanged()
                 }
+
             }
 
             is CountrySelectionState.Empty -> {
                 hideCountryRecyclerView()
+                hideLoader()
                 showLLErrorServer(
                     imageResource = R.drawable.empty_favorites,
                     titleResource = R.string.countries_are_empty
@@ -114,14 +117,22 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
 
             is CountrySelectionState.Error -> {
                 hideCountryRecyclerView()
+                hideLoader()
                 showLLErrorServer(
                     imageResource = R.drawable.png_no_regions,
                     titleResource = R.string.error_no_region
                 )
             }
 
+            is CountrySelectionState.Loading -> {
+                showLoader()
+                hideCountryRecyclerView()
+                hideLLErrorServer()
+            }
+
             is CountrySelectionState.NoInternet -> {
                 hideCountryRecyclerView()
+                hideLoader()
                 showLLErrorServer(
                     imageResource = R.drawable.png_no_internet,
                     titleResource = R.string.no_internet
@@ -146,6 +157,14 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
 
     private fun hideLLErrorServer() {
         binding.llErrorServer.visibility = View.GONE
+    }
+
+    private fun showLoader() {
+        binding.progressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideLoader() {
+        binding.progressBar.visibility = View.GONE
     }
 
     companion object {
