@@ -10,7 +10,6 @@ class RegionAdapter(private val onRegionClickListener: (Region) -> Unit) :
     RecyclerView.Adapter<RegionAdapter.RegionViewHolder>() {
 
     private var countries = mutableListOf<Region>()
-    private val originalList = mutableListOf<Region>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RegionViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -28,27 +27,9 @@ class RegionAdapter(private val onRegionClickListener: (Region) -> Unit) :
     override fun getItemCount(): Int = countries.size
 
     fun setItems(items: List<Region>) {
+        countries.clear()
         countries.addAll(items)
         notifyDataSetChanged()
-        originalList.clear()
-        originalList.addAll(items)
-    }
-
-    private fun updateDisplayList(updatedList: List<Region>) {
-        countries.clear()
-        countries.addAll(updatedList)
-        notifyDataSetChanged()
-    }
-
-    fun filter(searchQuery: String?) {
-        if (searchQuery.isNullOrEmpty()) {
-            updateDisplayList(originalList)
-        } else {
-            val filteredList = originalList.filter {
-                it.name.contains(searchQuery, true)
-            }
-            updateDisplayList(filteredList)
-        }
     }
 
     class RegionViewHolder(

@@ -16,7 +16,7 @@ class RegionSelectionViewModel(
     private val filterSearchInteractor: FilterSearchInteractor
 ) : ViewModel() {
 
-    private val foundRegion = mutableListOf<Region>()
+    private val foundRegions = mutableListOf<Region>()
 
     private val _regionsStateLiveData = MutableLiveData<RegionSelectionState>()
     val regionsStateLiveData: LiveData<RegionSelectionState> get() = _regionsStateLiveData
@@ -56,7 +56,7 @@ class RegionSelectionViewModel(
                     _regionsStateLiveData.postValue(
                         RegionSelectionState.Content(searchResult.data)
                     )
-                    foundRegion.addAll(searchResult.data)
+                    foundRegions.addAll(searchResult.data)
                 }
             }
 
@@ -70,12 +70,19 @@ class RegionSelectionViewModel(
         }
     }
 
-    fun setRegionsStateAsEmpty() {
-        _regionsStateLiveData.postValue(RegionSelectionState.Empty)
-    }
-
-    fun setRegionsStateAsContent() {
-        _regionsStateLiveData.postValue(RegionSelectionState.Content(foundRegion))
+    fun filterRegions(searchQuery: String?) {
+        if (searchQuery.isNullOrEmpty()) {
+            _regionsStateLiveData.postValue(RegionSelectionState.Content(foundRegions))
+        } else {
+            val filteredList = foundRegions.filter {
+                it.name.contains(searchQuery, true)
+            }
+            if (filteredList.isNotEmpty()) {
+                _regionsStateLiveData.postValue(RegionSelectionState.Content(filteredList))
+            } else {
+                _regionsStateLiveData.postValue(RegionSelectionState.Empty)
+            }
+        }
     }
 
 }
