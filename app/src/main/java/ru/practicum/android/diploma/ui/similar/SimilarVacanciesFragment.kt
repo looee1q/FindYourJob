@@ -85,7 +85,7 @@ class SimilarVacanciesFragment : BindingFragment<FragmentSimilarVacanciesBinding
 
     private fun render(state: SimilarVacanciesFragmentState) {
         when (state) {
-            is SimilarVacanciesFragmentState.Content -> showContent(state.vacancies, state.found)
+            is SimilarVacanciesFragmentState.Content -> showContent(state.vacancies)
             is SimilarVacanciesFragmentState.Empty -> showEmpty()
             is SimilarVacanciesFragmentState.Error -> showError(state.isFirstPage)
             is SimilarVacanciesFragmentState.NoInternet -> showNoInternet(state.isFirstPage)
@@ -151,7 +151,7 @@ class SimilarVacanciesFragment : BindingFragment<FragmentSimilarVacanciesBinding
         binding.placeHolderError.visibility = View.VISIBLE
     }
 
-    private fun showContent(vacancies: List<Vacancy>, found: Int) {
+    private fun showContent(vacancies: List<Vacancy>) {
         binding.progressBarMain.visibility = View.GONE
         binding.progressBarPaging.visibility = View.GONE
         binding.placeHolderError.visibility = View.GONE

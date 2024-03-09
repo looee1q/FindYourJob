@@ -24,7 +24,6 @@ class SimilarVacanciesViewModel(
     private var currentRequest: VacanciesRequest? = null
     private var currentPage = 0
     private var maxPages = 0
-    private var found = 0
     private var isNextPageLoading = false
 
     private val similarVacanciesFragmentState = MutableLiveData<SimilarVacanciesFragmentState>()
@@ -81,14 +80,13 @@ class SimilarVacanciesViewModel(
             is SearchResult.Success -> {
                 maxPages = result.data.pages
                 currentPage = result.data.page
-                found = result.data.found
                 if (result.data.items.isEmpty()) {
                     renderState(SimilarVacanciesFragmentState.Empty)
                 } else {
                     vacanciesList.addAll(
                         filterDuplicateVacancy(result.data.items)
                     )
-                    renderState(SimilarVacanciesFragmentState.Content(vacanciesList, found))
+                    renderState(SimilarVacanciesFragmentState.Content(vacanciesList))
                 }
             }
         }
@@ -103,7 +101,7 @@ class SimilarVacanciesViewModel(
     }
 
     fun getContent() {
-        renderState(SimilarVacanciesFragmentState.Content(vacanciesList, found))
+        renderState(SimilarVacanciesFragmentState.Content(vacanciesList))
     }
 
     private fun renderState(state: SimilarVacanciesFragmentState) {
