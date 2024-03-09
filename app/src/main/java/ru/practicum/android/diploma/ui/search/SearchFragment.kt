@@ -23,9 +23,9 @@ import ru.practicum.android.diploma.ui.fragment.BindingFragment
 import ru.practicum.android.diploma.ui.vacancy.VacancyFragment
 import ru.practicum.android.diploma.util.debounce
 
-open class SearchFragment : BindingFragment<FragmentSearchBinding>() {
+class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
-    open val viewModel by viewModel<SearchViewModel>()
+    private val viewModel by viewModel<SearchViewModel>()
 
     private val adapter by lazy {
         VacancyAdapter(object : VacancyAdapter.VacancyClickListener {
@@ -215,7 +215,7 @@ open class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         inputMethodManager.hideSoftInputFromWindow(binding.InputEditText.windowToken, 0)
     }
 
-    open fun openVacancyFragment(vacancy: Vacancy) {
+    private fun openVacancyFragment(vacancy: Vacancy) {
         findNavController().navigate(
             R.id.action_searchFragment_to_vacancyFragment,
             VacancyFragment.createArgs(vacancy.id, VacancyFragment.SEARCH_FRAGMENT_ORIGIN)

@@ -27,7 +27,7 @@ val appModule = module {
     }
 
     viewModel<SimilarVacanciesViewModel> {
-        SimilarVacanciesViewModel(vacanciesInteractor = get(), filterSearchInteractor = get())
+        SimilarVacanciesViewModel(vacanciesInteractor = get())
     }
 
     viewModel<IndustrySelectionViewModel> {

@@ -24,12 +24,12 @@ open class SearchViewModel(
 ) : ViewModel() {
 
     private var latestSearchText: String? = null
-    var currentRequest: VacanciesRequest? = null
+    private var currentRequest: VacanciesRequest? = null
     private val vacanciesList = mutableListOf<Vacancy>()
     private var currentPage = 0
     private var maxPages = 0
     private var found = 0
-    var isNextPageLoading = false
+    private var isNextPageLoading = false
 
     open val searchFragmentScreenState = MutableLiveData<SearchFragmentState>(SearchFragmentState.Start)
     private val searchDebounce = debounce<VacanciesRequest>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) {
@@ -118,7 +118,7 @@ open class SearchViewModel(
         }
     }
 
-    fun parsingResultSearch(result: SearchResult<Vacancies>, isFirstPage: Boolean) {
+    private fun parsingResultSearch(result: SearchResult<Vacancies>, isFirstPage: Boolean) {
         when (result) {
             is SearchResult.NoInternet -> {
                 renderState(SearchFragmentState.NoInternet(isFirstPage))
@@ -150,7 +150,7 @@ open class SearchViewModel(
         }
     }
 
-    fun renderState(state: SearchFragmentState) {
+    private fun renderState(state: SearchFragmentState) {
         searchFragmentScreenState.postValue(state)
     }
 
