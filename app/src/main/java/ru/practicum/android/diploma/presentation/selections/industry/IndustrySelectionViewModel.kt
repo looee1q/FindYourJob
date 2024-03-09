@@ -82,4 +82,13 @@ class IndustrySelectionViewModel(private val filterSearchInteractor: FilterSearc
                 }
         }
     }
+
+    fun setIndustrySelectionStateAsEmpty() {
+        industriesFragmentState.postValue(IndustrySelectionState.Empty)
+    }
+
+    fun setIndustrySelectionStateAsContent() {
+        industriesFragmentState.postValue(IndustrySelectionState.Content(industries))
+    }
+
 }

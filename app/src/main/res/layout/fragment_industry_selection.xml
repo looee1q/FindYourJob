@@ -45,7 +45,7 @@
         app:layout_constraintTop_toTopOf="@+id/btnBack" />
 
     <EditText
-        android:id="@+id/InputEditText"
+        android:id="@+id/inputEditText"
         style="@style/InputEditText"
         android:layout_width="@dimen/_0dp"
         android:layout_height="wrap_content"
@@ -65,9 +65,9 @@
         android:layout_marginEnd="@dimen/_20dp"
         android:src="@drawable/ic_search"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@id/InputEditText"
-        app:layout_constraintEnd_toEndOf="@id/InputEditText"
-        app:layout_constraintTop_toTopOf="@id/InputEditText" />
+        app:layout_constraintBottom_toBottomOf="@id/inputEditText"
+        app:layout_constraintEnd_toEndOf="@id/inputEditText"
+        app:layout_constraintTop_toTopOf="@id/inputEditText" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -80,7 +80,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
         app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
-        app:layout_constraintTop_toBottomOf="@id/InputEditText" />
+        app:layout_constraintTop_toBottomOf="@id/inputEditText" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvIndustries"
@@ -92,27 +92,29 @@
         app:layout_constraintBottom_toTopOf="@id/buttonConfirm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/InputEditText"
+        app:layout_constraintTop_toBottomOf="@id/inputEditText"
         tools:listitem="@layout/item_industry_selection"
         tools:itemCount="4" />
 
     <LinearLayout
-        android:id="@+id/llErrorServer"
+        android:id="@+id/llErrorPlaceholder"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_0dp"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/InputEditText">
+        app:layout_constraintTop_toBottomOf="@id/inputEditText">
 
         <ImageView
+            android:id="@+id/imageError"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_224dp"
             android:paddingHorizontal="@dimen/_16dp"
             android:src="@drawable/png_no_regions" />
 
         <TextView
+            android:id="@+id/textError"
             style="@style/Medium22"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -121,33 +123,6 @@
             android:paddingHorizontal="@dimen/_48dp"
             android:textAlignment="center"
             tools:text="@string/error_no_region" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llNoInternetConnection"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_0dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/InputEditText">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/_224dp"
-            android:paddingHorizontal="@dimen/_16dp"
-            android:src="@drawable/png_no_internet" />
-
-        <TextView
-            style="@style/Medium22"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_16dp"
-            android:maxLines="2"
-            android:paddingHorizontal="@dimen/_48dp"
-            android:textAlignment="center"
-            tools:text="@string/no_internet" />
     </LinearLayout>
 
     <Button

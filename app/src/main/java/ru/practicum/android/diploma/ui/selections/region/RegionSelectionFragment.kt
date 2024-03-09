@@ -52,6 +52,12 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
         binding.inputEditText.doOnTextChanged { text, start, before, count ->
             regionAdapter?.filter(text.toString())
 
+            if (regionAdapter?.itemCount == 0) {
+                viewModel.setRegionsStateAsEmpty()
+            } else {
+                viewModel.setRegionsStateAsContent()
+            }
+
             if (text.isNullOrBlank()) {
                 binding.icClose.setImageResource(R.drawable.ic_search)
                 binding.icClose.isClickable = false
@@ -62,7 +68,9 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
         }
 
         binding.icClose.setOnClickListener {
-            binding.inputEditText.setText("")
+            if (binding.inputEditText.isEnabled) {
+                binding.inputEditText.setText("")
+            }
         }
 
         viewModel.regionsStateLiveData.observe(viewLifecycleOwner) {
@@ -137,6 +145,7 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
         binding.progressBar.isVisible = false
         binding.imageError.setImageResource(R.drawable.png_no_regions)
         binding.textError.setText(R.string.failed_to_retrieve_list)
+        binding.inputEditText.isEnabled = false
     }
 
     private fun renderNoInternet() {
@@ -145,6 +154,7 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
         binding.progressBar.isVisible = false
         binding.imageError.setImageResource(R.drawable.png_no_internet)
         binding.textError.setText(R.string.no_internet)
+        binding.inputEditText.isEnabled = false
     }
 
     private fun renderLoading() {

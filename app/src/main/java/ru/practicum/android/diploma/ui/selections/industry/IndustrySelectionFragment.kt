@@ -39,8 +39,15 @@ class IndustrySelectionFragment : BindingFragment<FragmentIndustrySelectionBindi
         binding.btnBack.setOnClickListener {
             findNavController().navigateUp()
         }
-        binding.InputEditText.doOnTextChanged { text, _, _, _ ->
+        binding.inputEditText.doOnTextChanged { text, _, _, _ ->
             adapter.filter(searchQuery = text.toString())
+
+            if (adapter.itemCount == 0) {
+                viewModel.setIndustrySelectionStateAsEmpty()
+            } else {
+                viewModel.setIndustrySelectionStateAsContent()
+            }
+
             if (text.isNullOrBlank()) {
                 binding.icClose.setImageResource(R.drawable.ic_search)
                 binding.icClose.isClickable = false
@@ -49,8 +56,11 @@ class IndustrySelectionFragment : BindingFragment<FragmentIndustrySelectionBindi
                 binding.icClose.isClickable = true
             }
         }
+
         binding.icClose.setOnClickListener {
-            binding.InputEditText.setText("")
+            if (binding.inputEditText.isEnabled) {
+                binding.inputEditText.setText("")
+            }
         }
         binding.buttonConfirm.setOnClickListener {
             viewModel.saveIndustry()
@@ -84,27 +94,50 @@ class IndustrySelectionFragment : BindingFragment<FragmentIndustrySelectionBindi
             is IndustrySelectionState.Loading -> {
                 showLoading()
             }
+
+            is IndustrySelectionState.Empty -> {
+                showEmptiness()
+            }
         }
     }
 
     private fun showLoading() {
         binding.progressBar.isVisible = true
+        binding.llErrorPlaceholder.isVisible = false
+        binding.rvIndustries.isVisible = false
     }
 
     private fun showError() {
         binding.progressBar.isVisible = false
-        binding.llErrorServer.isVisible = true
+        binding.llErrorPlaceholder.isVisible = true
+        binding.rvIndustries.isVisible = false
+        binding.imageError.setImageResource(R.drawable.png_no_regions)
+        binding.textError.setText(R.string.failed_to_retrieve_list)
+        binding.inputEditText.isEnabled = false
     }
 
     private fun showNoInternet() {
         binding.progressBar.isVisible = false
-        binding.llNoInternetConnection.isVisible = true
+        binding.llErrorPlaceholder.isVisible = true
+        binding.rvIndustries.isVisible = false
+        binding.imageError.setImageResource(R.drawable.png_no_internet)
+        binding.textError.setText(R.string.no_internet)
+        binding.inputEditText.isEnabled = false
     }
 
     private fun showContent(industries: List<Industry>) {
         binding.progressBar.isVisible = false
+        binding.llErrorPlaceholder.isVisible = false
         binding.rvIndustries.isVisible = true
         adapter.setIndustryList(industries, -1, -1)
+    }
+
+    private fun showEmptiness() {
+        binding.progressBar.isVisible = false
+        binding.llErrorPlaceholder.isVisible = true
+        binding.rvIndustries.isVisible = false
+        binding.imageError.setImageResource(R.drawable.png_nothing_found)
+        binding.textError.setText(R.string.nothing_found_industries)
     }
 
     private fun showChangeChecked(industries: List<Industry>, oldChecked: Int, newChecked: Int) {

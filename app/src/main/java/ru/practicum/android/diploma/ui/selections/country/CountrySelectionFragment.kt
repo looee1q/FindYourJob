@@ -120,7 +120,7 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
                 hideLoader()
                 showLLErrorServer(
                     imageResource = R.drawable.png_no_regions,
-                    titleResource = R.string.error_no_region
+                    titleResource = R.string.failed_to_retrieve_list
                 )
             }
 
