@@ -54,7 +54,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
         binding.InputEditText.doOnTextChanged { text, _, _, _ ->
             binding.placeHolderError.visibility = View.GONE
-            viewModel.searchByText(binding.InputEditText.text.toString())
+            viewModel.search(text = binding.InputEditText.text.toString(), withDelay = true)
 
             if (text.isNullOrEmpty()) {
                 viewModel.cancelSearch()
@@ -103,7 +103,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         viewModel.filterParameters.observe(viewLifecycleOwner) {
             if (it != null) {
                 binding.filters.setImageResource(R.drawable.ic_filter_on)
-                viewModel.searchByText(binding.InputEditText.text.toString(), applyFilters = true)
+                viewModel.search(text = binding.InputEditText.text.toString(), withDelay = false)
             } else {
                 binding.filters.setImageResource(R.drawable.ic_filter_off)
             }
