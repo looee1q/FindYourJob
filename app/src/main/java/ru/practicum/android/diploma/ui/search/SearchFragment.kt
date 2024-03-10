@@ -103,6 +103,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         viewModel.filterParameters.observe(viewLifecycleOwner) {
             if (it != null) {
                 binding.filters.setImageResource(R.drawable.ic_filter_on)
+                viewModel.searchByText(binding.InputEditText.text.toString(), applyFilters = true)
             } else {
                 binding.filters.setImageResource(R.drawable.ic_filter_off)
             }
