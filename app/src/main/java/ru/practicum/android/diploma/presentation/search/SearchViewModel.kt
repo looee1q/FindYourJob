@@ -41,8 +41,8 @@ open class SearchViewModel(
 
     fun getSearchFragmentScreenState(): LiveData<SearchFragmentState> = searchFragmentScreenState
 
-    fun searchByText(text: String) {
-        if (text.isNotEmpty() && text != latestSearchText) {
+    fun searchByText(text: String, applyFilters: Boolean = false) {
+        if (text.isNotEmpty() && (text != latestSearchText || applyFilters)) {
             val area = filterParameters.value?.let {
                 it.idRegion.ifEmpty {
                     it.idCountry.ifEmpty {
