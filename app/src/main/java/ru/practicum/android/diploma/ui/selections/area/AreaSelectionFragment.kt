@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResultListener
@@ -30,6 +31,7 @@ class AreaSelectionFragment : BindingFragment<FragmentAreaSelectionBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupBackButton()
 
         setFragmentResultListener(REQUEST_COUNTRY_KEY) { _, bundle ->
             viewModel.saveCountrySelection(
@@ -72,6 +74,14 @@ class AreaSelectionFragment : BindingFragment<FragmentAreaSelectionBinding>() {
         viewModel.selectionAreaState.observe(viewLifecycleOwner) {
             render(it)
         }
+    }
+
+    private fun setupBackButton() {
+        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                findNavController().navigateUp()
+            }
+        })
     }
 
     private fun render(filterParameters: FilterParameters?) {

@@ -98,36 +98,19 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
             }
 
             is CountrySelectionState.Empty -> {
-                hideCountryRecyclerView()
-                hideLoader()
-                showLLErrorServer(
-                    imageResource = R.drawable.empty_favorites,
-                    titleResource = R.string.countries_are_empty
-                )
+                renderEmpty()
             }
 
             is CountrySelectionState.Error -> {
-                hideCountryRecyclerView()
-                hideLoader()
-                showLLErrorServer(
-                    imageResource = R.drawable.png_no_regions,
-                    titleResource = R.string.failed_to_retrieve_list
-                )
+                renderError()
             }
 
             is CountrySelectionState.Loading -> {
-                showLoader()
-                hideCountryRecyclerView()
-                hideLLErrorServer()
+                renderLoading()
             }
 
             is CountrySelectionState.NoInternet -> {
-                hideCountryRecyclerView()
-                hideLoader()
-                showLLErrorServer(
-                    imageResource = R.drawable.png_no_internet,
-                    titleResource = R.string.no_internet
-                )
+                renderNoInternet()
             }
         }
     }
@@ -139,6 +122,39 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
         countryAdapter.countries.clear()
         countryAdapter.countries.addAll(countries)
         countryAdapter.notifyDataSetChanged()
+    }
+
+    private fun renderEmpty() {
+        hideCountryRecyclerView()
+        hideLoader()
+        showLLErrorServer(
+            imageResource = R.drawable.empty_favorites,
+            titleResource = R.string.countries_are_empty
+        )
+    }
+
+    private fun renderError() {
+        hideCountryRecyclerView()
+        hideLoader()
+        showLLErrorServer(
+            imageResource = R.drawable.png_no_regions,
+            titleResource = R.string.failed_to_retrieve_list
+        )
+    }
+
+    private fun renderLoading() {
+        showLoader()
+        hideCountryRecyclerView()
+        hideLLErrorServer()
+    }
+
+    private fun renderNoInternet() {
+        hideCountryRecyclerView()
+        hideLoader()
+        showLLErrorServer(
+            imageResource = R.drawable.png_no_internet,
+            titleResource = R.string.no_internet
+        )
     }
 
     private fun showCountryRecyclerView() {
