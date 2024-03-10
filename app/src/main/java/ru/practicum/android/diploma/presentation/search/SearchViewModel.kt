@@ -18,7 +18,7 @@ import ru.practicum.android.diploma.presentation.search.state.SearchFragmentStat
 import ru.practicum.android.diploma.util.SearchResult
 import ru.practicum.android.diploma.util.debounce
 
-open class SearchViewModel(
+class SearchViewModel(
     private val vacanciesInteractor: VacanciesInteractor,
     private val filterSearchInteractor: FilterSearchInteractor
 ) : ViewModel() {
@@ -31,7 +31,7 @@ open class SearchViewModel(
     private var found = 0
     private var isNextPageLoading = false
 
-    open val searchFragmentScreenState = MutableLiveData<SearchFragmentState>(SearchFragmentState.Start)
+    private val searchFragmentScreenState = MutableLiveData<SearchFragmentState>(SearchFragmentState.Start)
     private val searchDebounce = debounce<VacanciesRequest>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) {
         makeRequest(it)
     }
@@ -99,7 +99,7 @@ open class SearchViewModel(
         }
     }
 
-    open fun cancelSearch() {
+    fun cancelSearch() {
         viewModelScope.coroutineContext.cancelChildren()
         latestSearchText = ""
         vacanciesList.clear()
@@ -110,7 +110,7 @@ open class SearchViewModel(
         renderState(SearchFragmentState.Content(vacanciesList, found))
     }
 
-    open fun makeRequest(vacanciesRequest: VacanciesRequest) {
+    private fun makeRequest(vacanciesRequest: VacanciesRequest) {
         val isFirstPage = vacanciesRequest.page == 0
         renderState(SearchFragmentState.Loading(isFirstPage))
         viewModelScope.launch {
