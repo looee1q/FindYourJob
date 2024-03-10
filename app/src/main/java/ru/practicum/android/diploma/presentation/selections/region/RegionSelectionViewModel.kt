@@ -17,7 +17,7 @@ class RegionSelectionViewModel(
 ) : ViewModel() {
 
     private val foundRegions = mutableListOf<Region>()
-
+    private val allRegions = mutableListOf<Region>()
     private val _regionsStateLiveData = MutableLiveData<RegionSelectionState>()
     val regionsStateLiveData: LiveData<RegionSelectionState> get() = _regionsStateLiveData
 
@@ -53,10 +53,11 @@ class RegionSelectionViewModel(
                 if (searchResult.data.isEmpty()) {
                     _regionsStateLiveData.postValue(RegionSelectionState.Empty)
                 } else {
+                    foundRegions.addAll(searchResult.data.filterNot { it.parentId.isNullOrEmpty() })
                     _regionsStateLiveData.postValue(
-                        RegionSelectionState.Content(searchResult.data)
+                        RegionSelectionState.Content(foundRegions)
                     )
-                    foundRegions.addAll(searchResult.data)
+                    allRegions.addAll(searchResult.data)
                 }
             }
 
@@ -85,4 +86,18 @@ class RegionSelectionViewModel(
         }
     }
 
+    fun getCountryByRegion(region: Region) {
+        if (region.parentId != null && region.parentId != "1001") {
+            try {
+                getCountryByRegion(
+                    allRegions.first { it.id == region.parentId }
+                )
+            } catch (e: NoSuchElementException) {
+                println(e)
+                _regionsStateLiveData.postValue(RegionSelectionState.RegionSelected(Region("", "", null)))
+            }
+        } else {
+            _regionsStateLiveData.postValue(RegionSelectionState.RegionSelected(region))
+        }
+    }
 }

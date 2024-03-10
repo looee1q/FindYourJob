@@ -13,4 +13,6 @@ sealed interface RegionSelectionState {
     data object NoInternet : RegionSelectionState
 
     data object Loading : RegionSelectionState
+
+    data class RegionSelected(val country: Region) : RegionSelectionState
 }
