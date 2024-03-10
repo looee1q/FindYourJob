@@ -42,13 +42,11 @@ class FilterSettingsFragment : BindingFragment<FragmentFilterSettingsBinding>() 
         binding.areaField.arrowForwardButton.setOnClickListener {
             if (binding.areaField.arrowForwardButton.isSelected) {
                 viewModel.deleteAreaInFilterParameters()
-                cleanArea()
             }
         }
         binding.industryField.arrowForwardButton.setOnClickListener {
             if (binding.industryField.arrowForwardButton.isSelected) {
                 viewModel.deleteIndustryFilterParameters()
-                cleanIndustry()
             }
         }
         binding.inputEditText.doOnTextChanged { text, _, _, _ ->
@@ -82,6 +80,7 @@ class FilterSettingsFragment : BindingFragment<FragmentFilterSettingsBinding>() 
         viewModel.initialState.observe(viewLifecycleOwner) {
             if (checkIfTheStateIsDefault(it)) {
                 hideButtons()
+                viewModel.deleteFilterParameters()
             } else {
                 showButtons()
             }

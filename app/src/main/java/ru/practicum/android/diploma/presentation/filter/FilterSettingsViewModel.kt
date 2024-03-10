@@ -20,8 +20,10 @@ class FilterSettingsViewModel(private val filterSearchInteractor: FilterSearchIn
     }
 
     fun deleteFilterParameters() {
-        filterSearchInteractor.deleteFilterParameters()
-        _filterParameters.value = null
+        if (_filterParameters.value != null) {
+            filterSearchInteractor.deleteFilterParameters()
+            _filterParameters.value = null
+        }
     }
 
     fun deleteAreaInFilterParameters() {
