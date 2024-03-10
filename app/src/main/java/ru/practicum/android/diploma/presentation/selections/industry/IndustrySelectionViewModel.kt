@@ -15,16 +15,22 @@ import ru.practicum.android.diploma.util.SearchResult
 class IndustrySelectionViewModel(private val filterSearchInteractor: FilterSearchInteractor) : ViewModel() {
 
     private val industriesFragmentState = MutableLiveData<IndustrySelectionState>()
+    private var currentFilterParameters: FilterParameters? = null
     private var checkedIndustry: Industry? = null
     private var selectedPosition = -1
     private val industries = mutableListOf<Industry>()
     private val filteredIndustries = mutableListOf<Industry>()
 
     init {
+        getFilterParameters()
         getIndustries()
     }
 
     fun getIndustriesFragmentState(): LiveData<IndustrySelectionState> = industriesFragmentState
+
+    private fun getFilterParameters() {
+        currentFilterParameters = filterSearchInteractor.getFilterParameters()
+    }
 
     fun saveCheckedIndustry(industry: Industry, position: Int) {
         checkedIndustry = industry
@@ -34,16 +40,10 @@ class IndustrySelectionViewModel(private val filterSearchInteractor: FilterSearc
 
     fun saveIndustry() {
         checkedIndustry?.let {
-            val filterParameters = filterSearchInteractor.getFilterParameters()
-            if (filterParameters == null) {
-                filterSearchInteractor.saveFilterParameters(
-                    FilterParameters(idIndustry = it.id, nameIndustry = it.name)
-                )
-            } else {
-                filterSearchInteractor.saveFilterParameters(
-                    filterParameters.copy(idIndustry = it.id, nameIndustry = it.name)
-                )
-            }
+            filterSearchInteractor.saveFilterParameters(
+                currentFilterParameters?.copy(idIndustry = it.id, nameIndustry = it.name)
+                    ?: FilterParameters(idIndustry = it.id, nameIndustry = it.name)
+            )
         }
     }
 
@@ -71,6 +71,10 @@ class IndustrySelectionViewModel(private val filterSearchInteractor: FilterSearc
                             } else {
                                 industries.addAll(result.data)
                                 filteredIndustries.addAll(result.data)
+                                selectedPosition = filteredIndustries.indexOfFirst { industry ->
+                                    val idIndustry = currentFilterParameters?.idIndustry ?: ""
+                                    industry.id == idIndustry
+                                }
                                 renderContent()
                             }
                         }

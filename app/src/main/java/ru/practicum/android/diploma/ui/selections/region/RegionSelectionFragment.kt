@@ -18,11 +18,13 @@ import ru.practicum.android.diploma.domain.models.Region
 import ru.practicum.android.diploma.presentation.selections.region.RegionSelectionViewModel
 import ru.practicum.android.diploma.presentation.selections.region.state.RegionSelectionState
 import ru.practicum.android.diploma.ui.fragment.BindingFragment
+import ru.practicum.android.diploma.ui.selections.area.AreaSelectionFragment
 import ru.practicum.android.diploma.util.debounce
 
 class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>() {
 
     private val viewModel by viewModel<RegionSelectionViewModel>()
+    private var selectedRegion: Region? = null
 
     private val regionAdapter by lazy {
         val onClickDebounce: (Region) -> Unit =
@@ -84,15 +86,8 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
     }
 
     private fun onRegionClick(region: Region) {
-        setFragmentResult(
-            REQUEST_KEY_REGION,
-            bundleOf(
-                "ID" to region.id,
-                "NAME" to region.name
-            )
-        )
-        findNavController().navigateUp()
-
+        selectedRegion = region
+        viewModel.getCountryByRegion(region)
     }
 
     private fun render(state: RegionSelectionState) {
@@ -101,22 +96,45 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
                 renderContent(state.regions)
             }
 
-            RegionSelectionState.Empty -> {
+            is RegionSelectionState.Empty -> {
                 renderEmptiness()
             }
 
-            RegionSelectionState.Error -> {
+            is RegionSelectionState.Error -> {
                 renderError()
             }
 
-            RegionSelectionState.NoInternet -> {
+            is RegionSelectionState.NoInternet -> {
                 renderNoInternet()
             }
 
-            RegionSelectionState.Loading -> {
+            is RegionSelectionState.Loading -> {
                 renderLoading()
             }
+
+            is RegionSelectionState.RegionSelected -> {
+                returnFragmentResult(state.country)
+            }
         }
+    }
+
+    private fun returnFragmentResult(country: Region) {
+        setFragmentResult(
+            AreaSelectionFragment.REQUEST_REGION_KEY,
+            AreaSelectionFragment.createArgsRegionSelection(
+                selectedRegion?.id ?: "",
+                selectedRegion?.name ?: ""
+            )
+        )
+
+        val countryId = requireArguments().getString(ARGS_COUNTRY_ID, "").toString()
+        if (countryId.isEmpty()) {
+            setFragmentResult(
+                AreaSelectionFragment.REQUEST_COUNTRY_KEY,
+                AreaSelectionFragment.createArgsCountrySelection(country.id, country.name)
+            )
+        }
+        findNavController().navigateUp()
     }
 
     private fun renderContent(regions: List<Region>) {
@@ -161,7 +179,6 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 0L
         private const val ARGS_COUNTRY_ID = "ARGS_COUNTRY_ID"
-        const val REQUEST_KEY_REGION = "REQUEST_KEY_REGION"
 
         fun createArgs(countryId: String): Bundle = bundleOf(
             ARGS_COUNTRY_ID to countryId,
