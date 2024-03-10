@@ -115,30 +115,12 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
         }
     }
 
-    private fun showContent(countries: List<Country>) {
-        showCountryRecyclerView()
-        hideLoader()
-        hideLLErrorServer()
-        countryAdapter.countries.clear()
-        countryAdapter.countries.addAll(countries)
-        countryAdapter.notifyDataSetChanged()
-    }
-
     private fun renderEmpty() {
         hideCountryRecyclerView()
         hideLoader()
         showLLErrorServer(
             imageResource = R.drawable.empty_favorites,
             titleResource = R.string.countries_are_empty
-        )
-    }
-
-    private fun renderError() {
-        hideCountryRecyclerView()
-        hideLoader()
-        showLLErrorServer(
-            imageResource = R.drawable.png_no_regions,
-            titleResource = R.string.failed_to_retrieve_list
         )
     }
 
@@ -181,6 +163,24 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
 
     private fun hideLoader() {
         binding.progressBar.visibility = View.GONE
+    }
+
+    private fun showContent(countries: List<Country>) {
+        showCountryRecyclerView()
+        hideLoader()
+        hideLLErrorServer()
+        countryAdapter.countries.clear()
+        countryAdapter.countries.addAll(countries)
+        countryAdapter.notifyDataSetChanged()
+    }
+
+    private fun renderError() {
+        hideCountryRecyclerView()
+        hideLoader()
+        showLLErrorServer(
+            imageResource = R.drawable.png_no_regions,
+            titleResource = R.string.failed_to_retrieve_list
+        )
     }
 
     companion object {
