@@ -123,7 +123,7 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
             titleResource = R.string.countries_are_empty
         )
     }
-
+    
     private fun renderLoading() {
         showLoader()
         hideCountryRecyclerView()
