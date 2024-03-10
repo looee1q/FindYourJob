@@ -80,7 +80,9 @@ class FilterSettingsFragment : BindingFragment<FragmentFilterSettingsBinding>() 
         viewModel.initialState.observe(viewLifecycleOwner) {
             if (checkIfTheStateIsDefault(it)) {
                 hideButtons()
-                viewModel.deleteFilterParameters()
+                if (viewModel.filterParameters.value != null) {
+                    viewModel.deleteFilterParameters()
+                }
             } else {
                 showButtons()
             }
