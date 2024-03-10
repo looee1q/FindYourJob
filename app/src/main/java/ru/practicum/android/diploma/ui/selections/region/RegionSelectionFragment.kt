@@ -24,7 +24,13 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
 
     private val viewModel by viewModel<RegionSelectionViewModel>()
 
-    private var regionAdapter: RegionAdapter? = null
+    private val regionAdapter by lazy {
+        val onClickDebounce: (Region) -> Unit =
+            debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) {
+                onRegionClick(it)
+            }
+        RegionAdapter(onClickDebounce)
+    }
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -50,13 +56,7 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
         }
 
         binding.inputEditText.doOnTextChanged { text, start, before, count ->
-            regionAdapter?.filter(text.toString())
-
-            if (regionAdapter?.itemCount == 0) {
-                viewModel.setRegionsStateAsEmpty()
-            } else {
-                viewModel.setRegionsStateAsContent()
-            }
+            viewModel.filterRegions(text.toString())
 
             if (text.isNullOrBlank()) {
                 binding.icClose.setImageResource(R.drawable.ic_search)
@@ -79,11 +79,6 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
     }
 
     private fun initRegionRecyclerView() {
-        val onClickDebounce: (Region) -> Unit =
-            debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) {
-                onRegionClick(it)
-            }
-        regionAdapter = RegionAdapter(onClickDebounce)
         binding.regionRecyclerView.adapter = regionAdapter
         binding.regionRecyclerView.layoutManager = LinearLayoutManager(requireActivity())
     }
@@ -128,7 +123,7 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
         binding.regionRecyclerView.isVisible = true
         binding.llErrorPlaceholder.isVisible = false
         binding.progressBar.isVisible = false
-        regionAdapter?.setItems(regions)
+        regionAdapter.setItems(regions)
     }
 
     private fun renderEmptiness() {

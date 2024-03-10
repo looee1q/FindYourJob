@@ -16,8 +16,9 @@ class IndustrySelectionViewModel(private val filterSearchInteractor: FilterSearc
 
     private val industriesFragmentState = MutableLiveData<IndustrySelectionState>()
     private var checkedIndustry: Industry? = null
-    private var latestCheckedPosition = -1
-    private val industries = ArrayList<Industry>()
+    private var selectedPosition = -1
+    private val industries = mutableListOf<Industry>()
+    private val filteredIndustries = mutableListOf<Industry>()
 
     init {
         getIndustries()
@@ -27,14 +28,8 @@ class IndustrySelectionViewModel(private val filterSearchInteractor: FilterSearc
 
     fun saveCheckedIndustry(industry: Industry, position: Int) {
         checkedIndustry = industry
-        industriesFragmentState.postValue(
-            IndustrySelectionState.ChangeCheckedIndustry(
-                industries,
-                latestCheckedPosition,
-                position
-            )
-        )
-        latestCheckedPosition = position
+        selectedPosition = position
+        renderContent()
     }
 
     fun saveIndustry() {
@@ -72,10 +67,11 @@ class IndustrySelectionViewModel(private val filterSearchInteractor: FilterSearc
 
                         is SearchResult.Success -> {
                             if (result.data.isEmpty()) {
-                                industriesFragmentState.postValue(IndustrySelectionState.Error)
+                                industriesFragmentState.postValue(IndustrySelectionState.Empty)
                             } else {
                                 industries.addAll(result.data)
-                                industriesFragmentState.postValue(IndustrySelectionState.Content(result.data))
+                                filteredIndustries.addAll(result.data)
+                                renderContent()
                             }
                         }
                     }
@@ -83,12 +79,32 @@ class IndustrySelectionViewModel(private val filterSearchInteractor: FilterSearc
         }
     }
 
-    fun setIndustrySelectionStateAsEmpty() {
-        industriesFragmentState.postValue(IndustrySelectionState.Empty)
+    private fun renderContent() {
+        industriesFragmentState.postValue(IndustrySelectionState.Content(filteredIndustries, selectedPosition))
     }
 
-    fun setIndustrySelectionStateAsContent() {
-        industriesFragmentState.postValue(IndustrySelectionState.Content(industries))
+    private fun saveFilteredIndustries(newFilteredList: List<Industry>) {
+        filteredIndustries.clear()
+        filteredIndustries.addAll(newFilteredList)
+    }
+
+    fun filter(searchQuery: String?) {
+        selectedPosition = -1
+        if (searchQuery.isNullOrEmpty()) {
+            saveFilteredIndustries(industries)
+            renderContent()
+        } else {
+            saveFilteredIndustries(
+                industries.filter {
+                    it.name.contains(searchQuery, true)
+                }
+            )
+            if (filteredIndustries.isNotEmpty()) {
+                renderContent()
+            } else {
+                industriesFragmentState.postValue(IndustrySelectionState.Empty)
+            }
+        }
     }
 
 }
