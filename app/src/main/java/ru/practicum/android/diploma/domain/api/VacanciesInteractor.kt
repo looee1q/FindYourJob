@@ -9,13 +9,16 @@ import ru.practicum.android.diploma.util.SearchResult
 
 interface VacanciesInteractor {
 
-    suspend fun searchVacancies(vacanciesRequest: VacanciesRequest): Flow<SearchResult<Vacancies>>
+    fun searchVacancies(vacanciesRequest: VacanciesRequest): Flow<SearchResult<Vacancies>>
 
-    suspend fun getVacancyDetails(vacancyId: String): Flow<VacancyDetails>
+    fun getVacancyDetails(vacancyId: String): Flow<SearchResult<VacancyDetails>>
 
-    suspend fun getVacancyDetailsFromLocalStorage(vacancyId: String): Flow<VacancyDetails>
+    fun getVacancyDetailsFromLocalStorage(vacancyId: String): Flow<VacancyDetails>
 
-    suspend fun getSimilarVacancies(vacancyId: String): Flow<Vacancies>
+    fun getSimilarVacancies(
+        vacancyId: String,
+        vacanciesRequest: VacanciesRequest
+    ): Flow<SearchResult<Vacancies>>
 
     suspend fun addVacancyToFavorites(vacancy: VacancyDetails)
 

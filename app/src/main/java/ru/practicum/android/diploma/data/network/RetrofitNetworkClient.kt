@@ -4,10 +4,13 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import ru.practicum.android.diploma.data.dto.RequestSimilarVacancySearch
+import ru.practicum.android.diploma.data.dto.RequestAreasSearch
 import ru.practicum.android.diploma.data.dto.RequestVacanciesListSearch
 import ru.practicum.android.diploma.data.dto.RequestVacancySearch
 import ru.practicum.android.diploma.data.dto.Response
+import ru.practicum.android.diploma.data.dto.ResponseAreasDto
+import ru.practicum.android.diploma.data.dto.ResponseCountriesDto
+import ru.practicum.android.diploma.data.dto.ResponseIndustriesDto
 
 class RetrofitNetworkClient(
     private val hhApiService: HHApiService,
@@ -37,13 +40,73 @@ class RetrofitNetworkClient(
         }
     }
 
-    override suspend fun doRequestGetSimilarVacancies(dto: RequestSimilarVacancySearch): Response {
+    override suspend fun doRequestGetSimilarVacancies(
+        vacancyId: String,
+        requestDto: RequestVacanciesListSearch
+    ): Response {
         return if (!isConnected()) {
             Response().apply { resultCode = NO_INTERNET_CONNECTION }
         } else {
             withContext(Dispatchers.IO) {
-                val response = hhApiService.getSimilarVacancies(dto.id)
+                val options = formQueryMapToSearchVacancies(requestDto)
+                val response = hhApiService.getSimilarVacancies(vacancyId, options)
                 response.apply { resultCode = SUCCESS_RESPONSE }
+            }
+        }
+    }
+
+    override suspend fun doRequestGetIndustries(): Response {
+        return if (!isConnected()) {
+            Response().apply { resultCode = NO_INTERNET_CONNECTION }
+        } else {
+            withContext(Dispatchers.IO) {
+                val response = hhApiService.getIndustries()
+                ResponseIndustriesDto(response).apply { resultCode = SUCCESS_RESPONSE }
+            }
+        }
+    }
+
+    override suspend fun doRequestGetCountries(): Response {
+        return if (!isConnected()) {
+            Response().apply {
+                resultCode = NO_INTERNET_CONNECTION
+            }
+        } else {
+            withContext(Dispatchers.IO) {
+                val response = hhApiService.getCountries()
+                ResponseCountriesDto(response).apply {
+                    resultCode = SUCCESS_RESPONSE
+                }
+            }
+        }
+    }
+
+    override suspend fun doRequestGetAreas(): Response {
+        return if (!isConnected()) {
+            Response().apply {
+                resultCode = NO_INTERNET_CONNECTION
+            }
+        } else {
+            withContext(Dispatchers.IO) {
+                val response = hhApiService.getAreas()
+                ResponseAreasDto(response).apply {
+                    resultCode = SUCCESS_RESPONSE
+                }
+            }
+        }
+    }
+
+    override suspend fun doRequestGetAreas(dto: RequestAreasSearch): Response {
+        return if (!isConnected()) {
+            Response().apply {
+                resultCode = NO_INTERNET_CONNECTION
+            }
+        } else {
+            withContext(Dispatchers.IO) {
+                val response = hhApiService.getAreas(dto.id)
+                ResponseAreasDto(listOf(response)).apply {
+                    resultCode = SUCCESS_RESPONSE
+                }
             }
         }
     }

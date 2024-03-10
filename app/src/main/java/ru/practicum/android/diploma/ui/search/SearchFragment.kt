@@ -6,12 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
+import android.widget.TextView
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentSearchBinding
@@ -22,10 +23,24 @@ import ru.practicum.android.diploma.ui.fragment.BindingFragment
 import ru.practicum.android.diploma.ui.vacancy.VacancyFragment
 import ru.practicum.android.diploma.util.debounce
 
-class SearchFragment : BindingFragment<FragmentSearchBinding>() {
+open class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
-    private val viewModel by viewModel<SearchViewModel>()
-    private var adapter: VacancyAdapter? = null
+    open val viewModel by viewModel<SearchViewModel>()
+
+    private val adapter by lazy {
+        VacancyAdapter(object : VacancyAdapter.VacancyClickListener {
+            override fun onVacancyClick(vacancy: Vacancy) {
+                val onVacancyClickDebounce =
+                    debounce<Vacancy>(
+                        CLICK_DEBOUNCE_DELAY,
+                        viewLifecycleOwner.lifecycleScope,
+                        false
+                    ) { openVacancyFragment(it) }
+
+                onVacancyClickDebounce(vacancy)
+            }
+        })
+    }
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -36,13 +51,6 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val onVacancyClickDebounce =
-            debounce<Vacancy>(
-                CLICK_DEBOUNCE_DELAY,
-                viewLifecycleOwner.lifecycleScope,
-                false
-            ) { openVacancyFragment(it) }
 
         binding.InputEditText.doOnTextChanged { text, _, _, _ ->
             binding.placeHolderError.visibility = View.GONE
@@ -58,12 +66,6 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
             }
         }
 
-        adapter = VacancyAdapter(object : VacancyAdapter.VacancyClickListener {
-            override fun onVacancyClick(vacancy: Vacancy) {
-                onVacancyClickDebounce(vacancy)
-            }
-        })
-
         binding.recyclerViewFoundVacancies.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerViewFoundVacancies.adapter = adapter
@@ -76,7 +78,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
                     val pos =
                         (binding.recyclerViewFoundVacancies.layoutManager as LinearLayoutManager)
                             .findLastVisibleItemPosition()
-                    val itemsCount = adapter!!.itemCount
+                    val itemsCount = adapter.itemCount
                     if (pos >= itemsCount - 1) {
                         viewModel.getNextPage()
                     }
@@ -91,14 +93,28 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         viewModel.getSearchFragmentScreenState().observe(viewLifecycleOwner) {
             render(it)
         }
+
+        binding.filters.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_searchFragment_to_filterSettingsFragment
+            )
+        }
+        viewModel.getFilterParameters()
+        viewModel.filterParameters.observe(viewLifecycleOwner) {
+            if (it != null) {
+                binding.filters.setImageResource(R.drawable.ic_filter_on)
+            } else {
+                binding.filters.setImageResource(R.drawable.ic_filter_off)
+            }
+        }
     }
 
     private fun render(state: SearchFragmentState) {
         when (state) {
             is SearchFragmentState.Content -> showContent(state.vacancies, state.found)
             is SearchFragmentState.Empty -> showEmpty()
-            is SearchFragmentState.Error -> showError(state.isFirstPage, state.vacancies, state.found)
-            is SearchFragmentState.NoInternet -> showNoInternet(state.isFirstPage, state.vacancies, state.found)
+            is SearchFragmentState.Error -> showError(state.isFirstPage)
+            is SearchFragmentState.NoInternet -> showNoInternet(state.isFirstPage)
             is SearchFragmentState.Loading -> showLoading(state.isFirstPage)
             is SearchFragmentState.Start -> showStart()
         }
@@ -126,7 +142,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         }
     }
 
-    private fun showError(isFirstPage: Boolean, vacanciesList: List<Vacancy>, found: Int) {
+    private fun showError(isFirstPage: Boolean) {
         hideViews()
         if (isFirstPage) {
             binding.recyclerViewFoundVacancies.visibility = View.GONE
@@ -134,16 +150,12 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
             binding.messageError.text = getString(R.string.error_server)
             binding.imageError.setImageResource(R.drawable.error_server)
         } else {
-            Toast.makeText(
-                requireContext(),
-                resources.getString(R.string.error_occurred),
-                Toast.LENGTH_SHORT
-            ).show()
-            showContent(vacanciesList, found)
+            onSnack(resources.getString(R.string.error_occurred))
+            viewModel.getContent()
         }
     }
 
-    private fun showNoInternet(isFirstPage: Boolean, vacanciesList: List<Vacancy>, found: Int) {
+    private fun showNoInternet(isFirstPage: Boolean) {
         hideViews()
         if (isFirstPage) {
             binding.recyclerViewFoundVacancies.visibility = View.GONE
@@ -151,13 +163,17 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
             binding.messageError.text = getString(R.string.no_internet)
             binding.imageError.setImageResource(R.drawable.png_no_internet)
         } else {
-            Toast.makeText(
-                requireContext(),
-                resources.getString(R.string.check_internet),
-                Toast.LENGTH_SHORT
-            ).show()
-            showContent(vacanciesList, found)
+            onSnack(resources.getString(R.string.check_internet))
+            viewModel.getContent()
         }
+    }
+
+    private fun onSnack(message: String) {
+        val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT)
+        val snackbarView = snackbar.view
+        val textView = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text) as TextView
+        textView.textAlignment = View.TEXT_ALIGNMENT_CENTER
+        snackbar.show()
     }
 
     private fun hideViews() {
@@ -189,7 +205,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         binding.messageFound.text =
             resources.getQuantityString(R.plurals.vacancy_plurals, found, found)
         binding.messageFound.visibility = View.VISIBLE
-        adapter?.setVacancyList(vacancies)
+        adapter.setVacancyList(vacancies)
         binding.recyclerViewFoundVacancies.visibility = View.VISIBLE
     }
 
@@ -199,7 +215,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         inputMethodManager.hideSoftInputFromWindow(binding.InputEditText.windowToken, 0)
     }
 
-    private fun openVacancyFragment(vacancy: Vacancy) {
+    open fun openVacancyFragment(vacancy: Vacancy) {
         findNavController().navigate(
             R.id.action_searchFragment_to_vacancyFragment,
             VacancyFragment.createArgs(vacancy.id, VacancyFragment.SEARCH_FRAGMENT_ORIGIN)

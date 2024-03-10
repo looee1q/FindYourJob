@@ -7,9 +7,10 @@ import ru.practicum.android.diploma.databinding.ItemPhoneCommentBinding
 import ru.practicum.android.diploma.domain.models.Phone
 
 class PhoneAndCommentAdapter(
-    private val phonesList: List<Phone>?,
     private val clickListener: PhoneClickListener?
 ) : RecyclerView.Adapter<PhoneAndCommentViewHolder>() {
+
+    private val phonesList = mutableListOf<Phone>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhoneAndCommentViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -18,11 +19,17 @@ class PhoneAndCommentAdapter(
     }
 
     override fun onBindViewHolder(holder: PhoneAndCommentViewHolder, position: Int) {
-        holder.bind(phonesList?.get(position), clickListener)
+        holder.bind(phonesList[position], clickListener)
     }
 
     override fun getItemCount(): Int {
-        return phonesList?.size ?: 0
+        return phonesList.size
+    }
+
+    fun setPhoneList(newPhoneList: List<Phone>) {
+        val filteredList = newPhoneList.distinctBy { it.phone }
+        phonesList.addAll(filteredList)
+        notifyDataSetChanged()
     }
 
     interface PhoneClickListener {

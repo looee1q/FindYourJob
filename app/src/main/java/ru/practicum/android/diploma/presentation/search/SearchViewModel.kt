@@ -8,7 +8,9 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.domain.api.FilterSearchInteractor
 import ru.practicum.android.diploma.domain.api.VacanciesInteractor
+import ru.practicum.android.diploma.domain.models.FilterParameters
 import ru.practicum.android.diploma.domain.models.Vacancies
 import ru.practicum.android.diploma.domain.models.VacanciesRequest
 import ru.practicum.android.diploma.domain.models.Vacancy
@@ -16,28 +18,62 @@ import ru.practicum.android.diploma.presentation.search.state.SearchFragmentStat
 import ru.practicum.android.diploma.util.SearchResult
 import ru.practicum.android.diploma.util.debounce
 
-class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor) : ViewModel() {
+open class SearchViewModel(
+    private val vacanciesInteractor: VacanciesInteractor,
+    private val filterSearchInteractor: FilterSearchInteractor
+) : ViewModel() {
 
     private var latestSearchText: String? = null
-    private var currentRequest: VacanciesRequest? = null
-    private val vacanciesList = ArrayList<Vacancy>()
+    var currentRequest: VacanciesRequest? = null
+    private val vacanciesList = mutableListOf<Vacancy>()
     private var currentPage = 0
     private var maxPages = 0
     private var found = 0
-    private var isNextPageLoading = false
+    var isNextPageLoading = false
 
-    private val searchFragmentScreenState = MutableLiveData<SearchFragmentState>(SearchFragmentState.Start)
+    open val searchFragmentScreenState = MutableLiveData<SearchFragmentState>(SearchFragmentState.Start)
     private val searchDebounce = debounce<VacanciesRequest>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) {
         makeRequest(it)
     }
+
+    private val _filterParameters = MutableLiveData<FilterParameters?>()
+    val filterParameters: LiveData<FilterParameters?> = _filterParameters
 
     fun getSearchFragmentScreenState(): LiveData<SearchFragmentState> = searchFragmentScreenState
 
     fun searchByText(text: String) {
         if (text.isNotEmpty() && text != latestSearchText) {
+            val area = filterParameters.value?.let {
+                it.idRegion.ifEmpty {
+                    it.idCountry.ifEmpty {
+                        null
+                    }
+                }
+            }
+            val industry = filterParameters.value?.let {
+                it.idIndustry.ifEmpty {
+                    null
+                }
+            }
+            val salary = filterParameters.value?.salary.orEmpty()
+            val onlyWithSalary = filterParameters.value?.doNotShowWithoutSalary
             latestSearchText = text
             vacanciesList.clear()
-            currentRequest = currentRequest?.copy(page = 0, text = text) ?: VacanciesRequest(text = text)
+            currentRequest = currentRequest?.copy(
+                page = 0,
+                text = text,
+                area = area,
+                industry = industry,
+                salary = if (salary.isEmpty()) null else salary.toInt(),
+                onlyWithSalary = onlyWithSalary ?: false
+            )
+                ?: VacanciesRequest(
+                    text = text,
+                    area = area,
+                    industry = industry,
+                    salary = if (salary.isEmpty()) null else salary.toInt(),
+                    onlyWithSalary = onlyWithSalary ?: false
+                )
             searchDebounce(currentRequest!!)
         }
     }
@@ -45,22 +81,26 @@ class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor) : Vi
     fun getNextPage() {
         if (currentRequest != null && !isNextPageLoading) {
             val nextPage = currentPage + 1
-            if (nextPage <= maxPages) {
-                currentRequest = currentRequest!!.copy(page = nextPage)
+            if (nextPage < maxPages) {
+                currentRequest = currentRequest?.copy(page = nextPage)
                 isNextPageLoading = true
-                makeRequest(currentRequest!!)
+                currentRequest?.let { makeRequest(it) }
             }
         }
     }
 
-    fun cancelSearch() {
+    open fun cancelSearch() {
         viewModelScope.coroutineContext.cancelChildren()
         latestSearchText = ""
         vacanciesList.clear()
         renderState(SearchFragmentState.Start)
     }
 
-    private fun makeRequest(vacanciesRequest: VacanciesRequest) {
+    fun getContent() {
+        renderState(SearchFragmentState.Content(vacanciesList, found))
+    }
+
+    open fun makeRequest(vacanciesRequest: VacanciesRequest) {
         val isFirstPage = vacanciesRequest.page == 0
         renderState(SearchFragmentState.Loading(isFirstPage))
         viewModelScope.launch {
@@ -78,27 +118,25 @@ class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor) : Vi
         }
     }
 
-    private fun parsingResultSearch(result: SearchResult<Vacancies>, isFirstPage: Boolean) {
+    fun parsingResultSearch(result: SearchResult<Vacancies>, isFirstPage: Boolean) {
         when (result) {
             is SearchResult.NoInternet -> {
-                renderState(SearchFragmentState.NoInternet(isFirstPage, vacanciesList, found))
+                renderState(SearchFragmentState.NoInternet(isFirstPage))
             }
 
             is SearchResult.Error -> {
-                renderState(SearchFragmentState.Error(isFirstPage, vacanciesList, found))
+                renderState(SearchFragmentState.Error(isFirstPage))
             }
 
             is SearchResult.Success -> {
-                if (result.data != null) {
-                    maxPages = result.data.pages
-                    currentPage = result.data.page
-                    found = result.data.found
-                    if (result.data.items.isEmpty()) {
-                        renderState(SearchFragmentState.Empty)
-                    } else {
-                        vacanciesList.addAll(filterDuplicateVacancy(result.data.items))
-                        renderState(SearchFragmentState.Content(vacanciesList, found))
-                    }
+                maxPages = result.data.pages
+                currentPage = result.data.page
+                found = result.data.found
+                if (result.data.items.isEmpty()) {
+                    renderState(SearchFragmentState.Empty)
+                } else {
+                    vacanciesList.addAll(filterDuplicateVacancy(result.data.items))
+                    renderState(SearchFragmentState.Content(vacanciesList, found))
                 }
             }
         }
@@ -112,8 +150,12 @@ class SearchViewModel(private val vacanciesInteractor: VacanciesInteractor) : Vi
         }
     }
 
-    private fun renderState(state: SearchFragmentState) {
+    fun renderState(state: SearchFragmentState) {
         searchFragmentScreenState.postValue(state)
+    }
+
+    fun getFilterParameters() {
+        _filterParameters.value = filterSearchInteractor.getFilterParameters()
     }
 
     companion object {

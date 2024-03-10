@@ -1,16 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical">
+
+
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="@dimen/_48dp"
+        android:layout_height="@dimen/_48dp"
+        android:layout_marginStart="@dimen/_4dp"
+        android:layout_marginTop="@dimen/_8dp"
+        android:backgroundTint="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_arrow_back"
+        app:tint="@color/black_day_white_night" />
 
     <TextView
-        android:layout_width="wrap_content"
+        style="@style/Medium22"
+        android:layout_width="@dimen/_0dp"
         android:layout_height="wrap_content"
-        android:text="Area Selection Fragment"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginHorizontal="@dimen/_4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/area_selection_header"
+        app:layout_constraintBottom_toBottomOf="@+id/btnBack"
+        app:layout_constraintStart_toEndOf="@+id/btnBack"
+        app:layout_constraintTop_toTopOf="@+id/btnBack" />
+
+    <LinearLayout
+        android:id="@+id/countryLayout"
+        style="@style/countryLayout"
+        android:layout_marginTop="@dimen/_24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/btnBack">
+
+        <TextView
+            android:id="@+id/countryNameTitle"
+            style="@style/countryNameTitle"
+            android:visibility="visible"
+            android:text="@string/filter_country" />
+
+        <TextView
+            android:id="@+id/countrySupportText"
+            style="@style/countrySupportText"
+            android:visibility="gone"
+            android:text="@string/filter_country" />
+
+        <TextView
+            android:id="@+id/countryName"
+            style="@style/countryName"
+            android:visibility="gone"
+            tools:text="Россия" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/icArrowForwardCountry"
+        style="@style/icArrowForwardCountry"
+        app:layout_constraintBottom_toBottomOf="@+id/countryLayout"
+        app:layout_constraintEnd_toEndOf="@+id/countryLayout"
+        app:layout_constraintTop_toTopOf="@+id/countryLayout" />
+
+    <LinearLayout
+        android:id="@+id/regionLayout"
+        style="@style/countryLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/countryLayout">
+
+        <TextView
+            android:id="@+id/RegionNameTitle"
+            style="@style/countryNameTitle"
+            android:visibility="visible"
+            android:text="@string/filter_region" />
+
+        <TextView
+            android:id="@+id/RegionSupportText"
+            style="@style/countrySupportText"
+            android:visibility="gone"
+            android:text="@string/filter_region" />
+
+        <TextView
+            android:id="@+id/RegionName"
+            style="@style/countryName"
+            android:visibility="gone"
+            tools:text="Москва" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/icArrowForwardRegion"
+        style="@style/icArrowForwardCountry"
+        app:layout_constraintBottom_toBottomOf="@+id/regionLayout"
+        app:layout_constraintEnd_toEndOf="@+id/regionLayout"
+        app:layout_constraintTop_toTopOf="@+id/regionLayout" />
+
+    <Button
+        android:id="@+id/buttonSelect"
+        style="@style/PrimaryButton"
+        android:layout_width="@dimen/_0dp"
+        android:layout_height="@dimen/_60dp"
+        android:layout_marginHorizontal="@dimen/_16dp"
+        android:layout_marginVertical="@dimen/_24dp"
+        android:text="@string/filter_button_approve"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

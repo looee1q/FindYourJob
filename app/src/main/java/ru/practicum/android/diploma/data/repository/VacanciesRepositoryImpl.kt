@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import ru.practicum.android.diploma.data.converters.Converter
 import ru.practicum.android.diploma.data.db.AppDatabase
-import ru.practicum.android.diploma.data.dto.RequestSimilarVacancySearch
 import ru.practicum.android.diploma.data.dto.RequestVacancySearch
 import ru.practicum.android.diploma.data.dto.ResponseVacanciesListDto
 import ru.practicum.android.diploma.data.dto.VacancyDto
@@ -22,7 +21,7 @@ class VacanciesRepositoryImpl(
     private val appDatabase: AppDatabase
 ) : VacanciesRepository {
 
-    override suspend fun searchVacancies(vacanciesRequest: VacanciesRequest): Flow<SearchResult<Vacancies>> = flow {
+    override fun searchVacancies(vacanciesRequest: VacanciesRequest): Flow<SearchResult<Vacancies>> = flow {
         val requestVacanciesListSearch = Converter.fromVacanciesRequestToRequestVacanciesListSearch(vacanciesRequest)
         val response = networkClient.doRequestSearchVacancies(requestVacanciesListSearch)
         when (response.resultCode) {
@@ -44,13 +43,25 @@ class VacanciesRepositoryImpl(
         }
     }
 
-    override suspend fun getVacancyDetails(vacancyId: String): Flow<VacancyDetails> = flow {
+    override fun getVacancyDetails(vacancyId: String): Flow<SearchResult<VacancyDetails>> = flow {
         val requestVacancySearch = RequestVacancySearch(id = vacancyId)
-        val response = networkClient.doRequestGetVacancy(requestVacancySearch) as VacancyDto
-        emit(Converter.fromVacancyDtoToVacancyDetails(response))
+        val response = networkClient.doRequestGetVacancy(requestVacancySearch)
+        when (response.resultCode) {
+            SUCCESS_RESPONSE -> {
+                emit(SearchResult.Success(Converter.fromVacancyDtoToVacancyDetails(response as VacancyDto)))
+            }
+
+            NO_INTERNET_CONNECTION -> {
+                emit(SearchResult.NoInternet())
+            }
+
+            else -> {
+                emit(SearchResult.Error())
+            }
+        }
     }
 
-    override suspend fun getVacancyDetailsFromLocalStorage(vacancyId: String): Flow<VacancyDetails> {
+    override fun getVacancyDetailsFromLocalStorage(vacancyId: String): Flow<VacancyDetails> {
         return flow {
             emit(
                 Converter.fromFavoriteVacancyEntityToVacancyDetails(
@@ -60,11 +71,29 @@ class VacanciesRepositoryImpl(
         }
     }
 
-    override suspend fun getSimilarVacancies(vacancyId: String): Flow<Vacancies> = flow {
-        val requestSimilarVacancySearch = RequestSimilarVacancySearch(id = vacancyId)
-        val response =
-            networkClient.doRequestGetSimilarVacancies(requestSimilarVacancySearch) as ResponseVacanciesListDto
-        emit(Converter.fromResponseVacanciesListDtoToVacancies(response))
+    override fun getSimilarVacancies(
+        vacancyId: String,
+        vacanciesRequest: VacanciesRequest
+    ): Flow<SearchResult<Vacancies>> = flow {
+        val requestVacanciesListSearch = Converter.fromVacanciesRequestToRequestVacanciesListSearch(vacanciesRequest)
+        val response = networkClient.doRequestGetSimilarVacancies(vacancyId, requestVacanciesListSearch)
+        when (response.resultCode) {
+            SUCCESS_RESPONSE -> {
+                emit(
+                    SearchResult.Success(
+                        Converter.fromResponseVacanciesListDtoToVacancies(response as ResponseVacanciesListDto)
+                    )
+                )
+            }
+
+            NO_INTERNET_CONNECTION -> {
+                emit(SearchResult.NoInternet())
+            }
+
+            else -> {
+                emit(SearchResult.Error())
+            }
+        }
     }
 
     override suspend fun addVacancyToFavorites(vacancy: VacancyDetails) {

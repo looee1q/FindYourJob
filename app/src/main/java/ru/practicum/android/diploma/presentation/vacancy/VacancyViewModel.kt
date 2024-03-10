@@ -10,24 +10,38 @@ import ru.practicum.android.diploma.domain.api.VacanciesInteractor
 import ru.practicum.android.diploma.domain.models.VacancyDetails
 import ru.practicum.android.diploma.domain.share.SharingInteractor
 import ru.practicum.android.diploma.presentation.vacancy.state.VacancyFragmentScreenState
+import ru.practicum.android.diploma.util.SearchResult
 
 class VacancyViewModel(
     private val vacanciesInteractor: VacanciesInteractor,
     private val sharingInteractor: SharingInteractor
 ) : ViewModel() {
 
+    private var isRequestMade = false
     private val vacancyFragmentScreenState = MutableLiveData<VacancyFragmentScreenState>()
     fun getVacancyFragmentScreenState(): LiveData<VacancyFragmentScreenState> = vacancyFragmentScreenState
 
     fun getVacancyDetails(vacancyId: String) {
-        if (vacancyId.isNotEmpty()) {
+        if (!isRequestMade && vacancyId.isNotEmpty()) {
+            isRequestMade = true
             renderVacancyFragmentScreenState(VacancyFragmentScreenState.Loading)
             viewModelScope.launch(Dispatchers.IO) {
                 vacanciesInteractor
                     .getVacancyDetails(vacancyId)
-                    .collect {
-                        renderVacancyFragmentScreenState(VacancyFragmentScreenState.Content(it))
-                        setInitialVacancyFavoriteStatus(it)
+                    .collect { searchResult ->
+                        when (searchResult) {
+                            is SearchResult.Error -> {
+                                renderVacancyFragmentScreenState(VacancyFragmentScreenState.ServerError)
+                            }
+
+                            is SearchResult.NoInternet -> {
+                                renderVacancyFragmentScreenState(VacancyFragmentScreenState.NoInternetConnection)
+                            }
+                            is SearchResult.Success -> {
+                                renderVacancyFragmentScreenState(VacancyFragmentScreenState.Content(searchResult.data))
+                                setInitialVacancyFavoriteStatus(searchResult.data)
+                            }
+                        }
                     }
             }
         }

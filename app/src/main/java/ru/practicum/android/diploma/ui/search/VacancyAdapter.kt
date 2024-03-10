@@ -11,7 +11,7 @@ class VacancyAdapter(
     private val clickListener: VacancyClickListener?
 ) : RecyclerView.Adapter<VacancyViewHolder>() {
 
-    private val vacancyList = ArrayList<Vacancy>()
+    private val vacancyList = mutableListOf<Vacancy>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VacancyViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemFoundVacancyBinding.inflate(inflater, parent, false)

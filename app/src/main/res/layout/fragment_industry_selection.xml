@@ -1,16 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical">
 
-    <TextView
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/left_16dp_boundary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Industry Selection Fragment"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/_16dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/right_16dp_boundary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/_16dp" />
+
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="@dimen/_48dp"
+        android:layout_height="@dimen/_48dp"
+        android:layout_marginStart="@dimen/_4dp"
+        android:layout_marginTop="@dimen/_8dp"
+        android:backgroundTint="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_arrow_back"
+        app:tint="@color/black_day_white_night" />
+
+    <TextView
+        style="@style/Medium22"
+        android:layout_width="@dimen/_0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/industry_header"
+        app:layout_constraintBottom_toBottomOf="@+id/btnBack"
+        app:layout_constraintStart_toEndOf="@+id/btnBack"
+        app:layout_constraintTop_toTopOf="@+id/btnBack" />
+
+    <EditText
+        android:id="@+id/InputEditText"
+        style="@style/InputEditText"
+        android:layout_width="@dimen/_0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_20dp"
+        android:hint="@string/industry_search"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
+        app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+        app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+        app:layout_constraintTop_toBottomOf="@id/btnBack" />
+
+    <ImageView
+        android:id="@+id/icClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="@dimen/_20dp"
+        android:src="@drawable/ic_search"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@id/InputEditText"
+        app:layout_constraintEnd_toEndOf="@id/InputEditText"
+        app:layout_constraintTop_toTopOf="@id/InputEditText" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="@dimen/_36dp"
+        android:layout_height="@dimen/_36dp"
+        android:layout_gravity="center"
+        android:layout_marginVertical="@dimen/_16dp"
+        android:indeterminateTint="@color/blue"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/right_16dp_boundary"
+        app:layout_constraintStart_toStartOf="@id/left_16dp_boundary"
+        app:layout_constraintTop_toBottomOf="@id/InputEditText" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvIndustries"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_0dp"
+        android:layout_marginTop="@dimen/_16dp"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/buttonConfirm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/InputEditText"
+        tools:listitem="@layout/item_industry_selection"
+        tools:itemCount="4" />
+
+    <LinearLayout
+        android:id="@+id/llErrorServer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/InputEditText">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_224dp"
+            android:paddingHorizontal="@dimen/_16dp"
+            android:src="@drawable/png_no_regions" />
+
+        <TextView
+            style="@style/Medium22"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16dp"
+            android:maxLines="2"
+            android:paddingHorizontal="@dimen/_48dp"
+            android:textAlignment="center"
+            tools:text="@string/error_no_region" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llNoInternetConnection"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/InputEditText">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_224dp"
+            android:paddingHorizontal="@dimen/_16dp"
+            android:src="@drawable/png_no_internet" />
+
+        <TextView
+            style="@style/Medium22"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16dp"
+            android:maxLines="2"
+            android:paddingHorizontal="@dimen/_48dp"
+            android:textAlignment="center"
+            tools:text="@string/no_internet" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonConfirm"
+        style="@style/PrimaryButton"
+        android:layout_width="@dimen/_0dp"
+        android:layout_height="@dimen/_60dp"
+        android:layout_marginHorizontal="@dimen/_16dp"
+        android:layout_marginVertical="@dimen/_24dp"
+        android:text="@string/filter_button_approve"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/rvIndustries"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

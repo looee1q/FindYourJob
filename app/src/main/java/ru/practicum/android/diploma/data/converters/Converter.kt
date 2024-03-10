@@ -3,10 +3,14 @@ package ru.practicum.android.diploma.data.converters
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import ru.practicum.android.diploma.data.db.entity.FavoriteVacancyEntity
+import ru.practicum.android.diploma.data.dto.AreaDTO
+import ru.practicum.android.diploma.data.dto.IndustryDto
 import ru.practicum.android.diploma.data.dto.RequestVacanciesListSearch
 import ru.practicum.android.diploma.data.dto.ResponseVacanciesListDto
 import ru.practicum.android.diploma.data.dto.VacancyDto
+import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.models.Phone
+import ru.practicum.android.diploma.domain.models.Region
 import ru.practicum.android.diploma.domain.models.Salary
 import ru.practicum.android.diploma.domain.models.Vacancies
 import ru.practicum.android.diploma.domain.models.VacanciesRequest
@@ -162,8 +166,32 @@ object Converter {
             experience = vacancyDetails.experience,
             keySkillsInJson = Gson().toJson(vacancyDetails.keySkills),
             alternateUrl = vacancyDetails.alternateUrl,
-            schedule = vacancyDetails.schedule
+            schedule = vacancyDetails.schedule,
+            timeAddToFav = System.currentTimeMillis()
         )
+    }
+
+    fun fromIndustryDtoToIndustry(industryDto: IndustryDto): Industry {
+        return Industry(
+            id = industryDto.id,
+            name = industryDto.name
+        )
+    }
+
+    fun fromListOfAreaDTOToListOfRegion(areasDto: List<AreaDTO>): List<Region> {
+        val finalRegions = mutableListOf<Region>()
+
+        finalRegions.addAll(
+            areasDto.filter { !it.parentId.isNullOrEmpty() }.map {
+                Region(id = it.id, name = it.name, parentId = it.parentId)
+            }
+        )
+
+        areasDto.forEach {
+            finalRegions.addAll(fromListOfAreaDTOToListOfRegion(it.areas))
+        }
+
+        return finalRegions
     }
 
 }
