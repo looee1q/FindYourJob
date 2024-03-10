@@ -41,41 +41,47 @@ open class SearchViewModel(
 
     fun getSearchFragmentScreenState(): LiveData<SearchFragmentState> = searchFragmentScreenState
 
-    fun searchByText(text: String, applyFilters: Boolean = false) {
-        if (text.isNotEmpty() && (text != latestSearchText || applyFilters)) {
-            val area = filterParameters.value?.let {
-                it.idRegion.ifEmpty {
-                    it.idCountry.ifEmpty {
-                        null
-                    }
-                }
-            }
-            val industry = filterParameters.value?.let {
-                it.idIndustry.ifEmpty {
+    fun search(text: String, applyFilters: Boolean = false) {
+        if (text.isNotEmpty() && text != latestSearchText) {
+            searchWithText(text = text)
+        } else if (text.isNotEmpty() && applyFilters) {
+            searchWithText(text = text)
+        }
+    }
+
+    private fun searchWithText(text: String) {
+        val area = filterParameters.value?.let {
+            it.idRegion.ifEmpty {
+                it.idCountry.ifEmpty {
                     null
                 }
             }
-            val salary = filterParameters.value?.salary.orEmpty()
-            val onlyWithSalary = filterParameters.value?.doNotShowWithoutSalary
-            latestSearchText = text
-            vacanciesList.clear()
-            currentRequest = currentRequest?.copy(
-                page = 0,
+        }
+        val industry = filterParameters.value?.let {
+            it.idIndustry.ifEmpty {
+                null
+            }
+        }
+        val salary = filterParameters.value?.salary.orEmpty()
+        val onlyWithSalary = filterParameters.value?.doNotShowWithoutSalary
+        latestSearchText = text
+        vacanciesList.clear()
+        currentRequest = currentRequest?.copy(
+            page = 0,
+            text = text,
+            area = area,
+            industry = industry,
+            salary = if (salary.isEmpty()) null else salary.toInt(),
+            onlyWithSalary = onlyWithSalary ?: false
+        )
+            ?: VacanciesRequest(
                 text = text,
                 area = area,
                 industry = industry,
                 salary = if (salary.isEmpty()) null else salary.toInt(),
                 onlyWithSalary = onlyWithSalary ?: false
             )
-                ?: VacanciesRequest(
-                    text = text,
-                    area = area,
-                    industry = industry,
-                    salary = if (salary.isEmpty()) null else salary.toInt(),
-                    onlyWithSalary = onlyWithSalary ?: false
-                )
-            searchDebounce(currentRequest!!)
-        }
+        searchDebounce(currentRequest!!)
     }
 
     fun getNextPage() {
