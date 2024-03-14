@@ -182,14 +182,21 @@ object Converter {
         val finalRegions = mutableListOf<Region>()
 
         finalRegions.addAll(
-            areasDto.filter { !it.parentId.isNullOrEmpty() }.map {
-                Region(id = it.id, name = it.name, parentId = it.parentId)
+            areasDto.map {
+                Region(
+                    id = it.id,
+                    name = it.name,
+                    parentId = it.parentId
+                )
             }
         )
 
         areasDto.forEach {
-            finalRegions.addAll(fromListOfAreaDTOToListOfRegion(it.areas))
+            finalRegions.addAll(
+                fromListOfAreaDTOToListOfRegion(it.areas)
+            )
         }
+        finalRegions.sortBy { it.id }
 
         return finalRegions
     }

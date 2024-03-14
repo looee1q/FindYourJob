@@ -16,6 +16,8 @@ class RegionSelectionViewModel(
     private val filterSearchInteractor: FilterSearchInteractor
 ) : ViewModel() {
 
+    private val foundRegions = mutableListOf<Region>()
+    private val allRegions = mutableListOf<Region>()
     private val _regionsStateLiveData = MutableLiveData<RegionSelectionState>()
     val regionsStateLiveData: LiveData<RegionSelectionState> get() = _regionsStateLiveData
 
@@ -51,9 +53,11 @@ class RegionSelectionViewModel(
                 if (searchResult.data.isEmpty()) {
                     _regionsStateLiveData.postValue(RegionSelectionState.Empty)
                 } else {
+                    foundRegions.addAll(searchResult.data.filterNot { it.parentId.isNullOrEmpty() })
                     _regionsStateLiveData.postValue(
-                        RegionSelectionState.Content(searchResult.data)
+                        RegionSelectionState.Content(foundRegions)
                     )
+                    allRegions.addAll(searchResult.data)
                 }
             }
 
@@ -67,4 +71,33 @@ class RegionSelectionViewModel(
         }
     }
 
+    fun filterRegions(searchQuery: String?) {
+        if (searchQuery.isNullOrEmpty()) {
+            _regionsStateLiveData.postValue(RegionSelectionState.Content(foundRegions))
+        } else {
+            val filteredList = foundRegions.filter {
+                it.name.contains(searchQuery, true)
+            }
+            if (filteredList.isNotEmpty()) {
+                _regionsStateLiveData.postValue(RegionSelectionState.Content(filteredList))
+            } else {
+                _regionsStateLiveData.postValue(RegionSelectionState.Empty)
+            }
+        }
+    }
+
+    fun getCountryByRegion(region: Region) {
+        if (region.parentId != null && region.parentId != "1001") {
+            try {
+                getCountryByRegion(
+                    allRegions.first { it.id == region.parentId }
+                )
+            } catch (e: NoSuchElementException) {
+                println(e)
+                _regionsStateLiveData.postValue(RegionSelectionState.RegionSelected(Region("", "", null)))
+            }
+        } else {
+            _regionsStateLiveData.postValue(RegionSelectionState.RegionSelected(region))
+        }
+    }
 }

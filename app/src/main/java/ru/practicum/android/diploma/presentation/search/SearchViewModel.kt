@@ -18,20 +18,20 @@ import ru.practicum.android.diploma.presentation.search.state.SearchFragmentStat
 import ru.practicum.android.diploma.util.SearchResult
 import ru.practicum.android.diploma.util.debounce
 
-open class SearchViewModel(
+class SearchViewModel(
     private val vacanciesInteractor: VacanciesInteractor,
     private val filterSearchInteractor: FilterSearchInteractor
 ) : ViewModel() {
 
     private var latestSearchText: String? = null
-    var currentRequest: VacanciesRequest? = null
+    private var currentRequest: VacanciesRequest? = null
     private val vacanciesList = mutableListOf<Vacancy>()
     private var currentPage = 0
     private var maxPages = 0
     private var found = 0
-    var isNextPageLoading = false
+    private var isNextPageLoading = false
 
-    open val searchFragmentScreenState = MutableLiveData<SearchFragmentState>(SearchFragmentState.Start)
+    private val searchFragmentScreenState = MutableLiveData<SearchFragmentState>(SearchFragmentState.Start)
     private val searchDebounce = debounce<VacanciesRequest>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) {
         makeRequest(it)
     }
@@ -41,40 +41,50 @@ open class SearchViewModel(
 
     fun getSearchFragmentScreenState(): LiveData<SearchFragmentState> = searchFragmentScreenState
 
-    fun searchByText(text: String) {
+    fun search(text: String, withDelay: Boolean) {
         if (text.isNotEmpty() && text != latestSearchText) {
-            val area = filterParameters.value?.let {
-                it.idRegion.ifEmpty {
-                    it.idCountry.ifEmpty {
-                        null
-                    }
-                }
-            }
-            val industry = filterParameters.value?.let {
-                it.idIndustry.ifEmpty {
+            searchByText(text = text, withDelay = true)
+        } else if (text.isNotEmpty() && !withDelay) {
+            searchByText(text = text, withDelay = false)
+        }
+    }
+
+    private fun searchByText(text: String, withDelay: Boolean) {
+        val area = filterParameters.value?.let {
+            it.idRegion.ifEmpty {
+                it.idCountry.ifEmpty {
                     null
                 }
             }
-            val salary = filterParameters.value?.salary.orEmpty()
-            val onlyWithSalary = filterParameters.value?.doNotShowWithoutSalary
-            latestSearchText = text
-            vacanciesList.clear()
-            currentRequest = currentRequest?.copy(
-                page = 0,
+        }
+        val industry = filterParameters.value?.let {
+            it.idIndustry.ifEmpty {
+                null
+            }
+        }
+        val salary = filterParameters.value?.salary.orEmpty()
+        val onlyWithSalary = filterParameters.value?.doNotShowWithoutSalary
+        latestSearchText = text
+        vacanciesList.clear()
+        currentRequest = currentRequest?.copy(
+            page = 0,
+            text = text,
+            area = area,
+            industry = industry,
+            salary = if (salary.isEmpty()) null else salary.toInt(),
+            onlyWithSalary = onlyWithSalary ?: false
+        )
+            ?: VacanciesRequest(
                 text = text,
                 area = area,
                 industry = industry,
                 salary = if (salary.isEmpty()) null else salary.toInt(),
                 onlyWithSalary = onlyWithSalary ?: false
             )
-                ?: VacanciesRequest(
-                    text = text,
-                    area = area,
-                    industry = industry,
-                    salary = if (salary.isEmpty()) null else salary.toInt(),
-                    onlyWithSalary = onlyWithSalary ?: false
-                )
+        if (withDelay) {
             searchDebounce(currentRequest!!)
+        } else {
+            makeRequest(currentRequest!!)
         }
     }
 
@@ -89,7 +99,7 @@ open class SearchViewModel(
         }
     }
 
-    open fun cancelSearch() {
+    fun cancelSearch() {
         viewModelScope.coroutineContext.cancelChildren()
         latestSearchText = ""
         vacanciesList.clear()
@@ -100,7 +110,7 @@ open class SearchViewModel(
         renderState(SearchFragmentState.Content(vacanciesList, found))
     }
 
-    open fun makeRequest(vacanciesRequest: VacanciesRequest) {
+    private fun makeRequest(vacanciesRequest: VacanciesRequest) {
         val isFirstPage = vacanciesRequest.page == 0
         renderState(SearchFragmentState.Loading(isFirstPage))
         viewModelScope.launch {
@@ -118,7 +128,7 @@ open class SearchViewModel(
         }
     }
 
-    fun parsingResultSearch(result: SearchResult<Vacancies>, isFirstPage: Boolean) {
+    private fun parsingResultSearch(result: SearchResult<Vacancies>, isFirstPage: Boolean) {
         when (result) {
             is SearchResult.NoInternet -> {
                 renderState(SearchFragmentState.NoInternet(isFirstPage))
@@ -150,7 +160,7 @@ open class SearchViewModel(
         }
     }
 
-    fun renderState(state: SearchFragmentState) {
+    private fun renderState(state: SearchFragmentState) {
         searchFragmentScreenState.postValue(state)
     }
 

@@ -23,9 +23,9 @@ import ru.practicum.android.diploma.ui.fragment.BindingFragment
 import ru.practicum.android.diploma.ui.vacancy.VacancyFragment
 import ru.practicum.android.diploma.util.debounce
 
-open class SearchFragment : BindingFragment<FragmentSearchBinding>() {
+class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
-    open val viewModel by viewModel<SearchViewModel>()
+    private val viewModel by viewModel<SearchViewModel>()
 
     private val adapter by lazy {
         VacancyAdapter(object : VacancyAdapter.VacancyClickListener {
@@ -54,7 +54,7 @@ open class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
         binding.InputEditText.doOnTextChanged { text, _, _, _ ->
             binding.placeHolderError.visibility = View.GONE
-            viewModel.searchByText(binding.InputEditText.text.toString())
+            viewModel.search(text = binding.InputEditText.text.toString(), withDelay = true)
 
             if (text.isNullOrEmpty()) {
                 viewModel.cancelSearch()
@@ -103,6 +103,7 @@ open class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         viewModel.filterParameters.observe(viewLifecycleOwner) {
             if (it != null) {
                 binding.filters.setImageResource(R.drawable.ic_filter_on)
+                viewModel.search(text = binding.InputEditText.text.toString(), withDelay = false)
             } else {
                 binding.filters.setImageResource(R.drawable.ic_filter_off)
             }
@@ -215,7 +216,7 @@ open class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         inputMethodManager.hideSoftInputFromWindow(binding.InputEditText.windowToken, 0)
     }
 
-    open fun openVacancyFragment(vacancy: Vacancy) {
+    private fun openVacancyFragment(vacancy: Vacancy) {
         findNavController().navigate(
             R.id.action_searchFragment_to_vacancyFragment,
             VacancyFragment.createArgs(vacancy.id, VacancyFragment.SEARCH_FRAGMENT_ORIGIN)

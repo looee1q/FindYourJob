@@ -74,19 +74,19 @@
         app:layout_constraintTop_toBottomOf="@+id/countryLayout">
 
         <TextView
-            android:id="@+id/RegionNameTitle"
+            android:id="@+id/regionNameTitle"
             style="@style/countryNameTitle"
             android:visibility="visible"
             android:text="@string/filter_region" />
 
         <TextView
-            android:id="@+id/RegionSupportText"
+            android:id="@+id/regionSupportText"
             style="@style/countrySupportText"
             android:visibility="gone"
             android:text="@string/filter_region" />
 
         <TextView
-            android:id="@+id/RegionName"
+            android:id="@+id/regionName"
             style="@style/countryName"
             android:visibility="gone"
             tools:text="Москва" />

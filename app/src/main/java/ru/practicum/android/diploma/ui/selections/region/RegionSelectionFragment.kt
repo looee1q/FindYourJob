@@ -18,13 +18,21 @@ import ru.practicum.android.diploma.domain.models.Region
 import ru.practicum.android.diploma.presentation.selections.region.RegionSelectionViewModel
 import ru.practicum.android.diploma.presentation.selections.region.state.RegionSelectionState
 import ru.practicum.android.diploma.ui.fragment.BindingFragment
+import ru.practicum.android.diploma.ui.selections.area.AreaSelectionFragment
 import ru.practicum.android.diploma.util.debounce
 
 class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>() {
 
     private val viewModel by viewModel<RegionSelectionViewModel>()
+    private var selectedRegion: Region? = null
 
-    private var regionAdapter: RegionAdapter? = null
+    private val regionAdapter by lazy {
+        val onClickDebounce: (Region) -> Unit =
+            debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) {
+                onRegionClick(it)
+            }
+        RegionAdapter(onClickDebounce)
+    }
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -50,7 +58,7 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
         }
 
         binding.inputEditText.doOnTextChanged { text, start, before, count ->
-            regionAdapter?.filter(text.toString())
+            viewModel.filterRegions(text.toString())
 
             if (text.isNullOrBlank()) {
                 binding.icClose.setImageResource(R.drawable.ic_search)
@@ -62,7 +70,9 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
         }
 
         binding.icClose.setOnClickListener {
-            binding.inputEditText.setText("")
+            if (binding.inputEditText.isEnabled) {
+                binding.inputEditText.setText("")
+            }
         }
 
         viewModel.regionsStateLiveData.observe(viewLifecycleOwner) {
@@ -71,25 +81,13 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
     }
 
     private fun initRegionRecyclerView() {
-        val onClickDebounce: (Region) -> Unit =
-            debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) {
-                onRegionClick(it)
-            }
-        regionAdapter = RegionAdapter(onClickDebounce)
         binding.regionRecyclerView.adapter = regionAdapter
         binding.regionRecyclerView.layoutManager = LinearLayoutManager(requireActivity())
     }
 
     private fun onRegionClick(region: Region) {
-        setFragmentResult(
-            REQUEST_KEY_REGION,
-            bundleOf(
-                "ID" to region.id,
-                "NAME" to region.name
-            )
-        )
-        findNavController().navigateUp()
-
+        selectedRegion = region
+        viewModel.getCountryByRegion(region)
     }
 
     private fun render(state: RegionSelectionState) {
@@ -98,29 +96,52 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
                 renderContent(state.regions)
             }
 
-            RegionSelectionState.Empty -> {
+            is RegionSelectionState.Empty -> {
                 renderEmptiness()
             }
 
-            RegionSelectionState.Error -> {
+            is RegionSelectionState.Error -> {
                 renderError()
             }
 
-            RegionSelectionState.NoInternet -> {
+            is RegionSelectionState.NoInternet -> {
                 renderNoInternet()
             }
 
-            RegionSelectionState.Loading -> {
+            is RegionSelectionState.Loading -> {
                 renderLoading()
             }
+
+            is RegionSelectionState.RegionSelected -> {
+                returnFragmentResult(state.country)
+            }
         }
+    }
+
+    private fun returnFragmentResult(country: Region) {
+        setFragmentResult(
+            AreaSelectionFragment.REQUEST_REGION_KEY,
+            AreaSelectionFragment.createArgsRegionSelection(
+                selectedRegion?.id ?: "",
+                selectedRegion?.name ?: ""
+            )
+        )
+
+        val countryId = requireArguments().getString(ARGS_COUNTRY_ID, "").toString()
+        if (countryId.isEmpty()) {
+            setFragmentResult(
+                AreaSelectionFragment.REQUEST_COUNTRY_KEY,
+                AreaSelectionFragment.createArgsCountrySelection(country.id, country.name)
+            )
+        }
+        findNavController().navigateUp()
     }
 
     private fun renderContent(regions: List<Region>) {
         binding.regionRecyclerView.isVisible = true
         binding.llErrorPlaceholder.isVisible = false
         binding.progressBar.isVisible = false
-        regionAdapter?.setItems(regions)
+        regionAdapter.setItems(regions)
     }
 
     private fun renderEmptiness() {
@@ -137,6 +158,7 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
         binding.progressBar.isVisible = false
         binding.imageError.setImageResource(R.drawable.png_no_regions)
         binding.textError.setText(R.string.failed_to_retrieve_list)
+        binding.inputEditText.isEnabled = false
     }
 
     private fun renderNoInternet() {
@@ -145,6 +167,7 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
         binding.progressBar.isVisible = false
         binding.imageError.setImageResource(R.drawable.png_no_internet)
         binding.textError.setText(R.string.no_internet)
+        binding.inputEditText.isEnabled = false
     }
 
     private fun renderLoading() {
@@ -156,7 +179,6 @@ class RegionSelectionFragment : BindingFragment<FragmentRegionSelectionBinding>(
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 0L
         private const val ARGS_COUNTRY_ID = "ARGS_COUNTRY_ID"
-        const val REQUEST_KEY_REGION = "REQUEST_KEY_REGION"
 
         fun createArgs(countryId: String): Bundle = bundleOf(
             ARGS_COUNTRY_ID to countryId,

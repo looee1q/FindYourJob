@@ -1,5 +1,6 @@
 package ru.practicum.android.diploma.ui.filter
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -42,13 +43,11 @@ class FilterSettingsFragment : BindingFragment<FragmentFilterSettingsBinding>() 
         binding.areaField.arrowForwardButton.setOnClickListener {
             if (binding.areaField.arrowForwardButton.isSelected) {
                 viewModel.deleteAreaInFilterParameters()
-                cleanArea()
             }
         }
         binding.industryField.arrowForwardButton.setOnClickListener {
             if (binding.industryField.arrowForwardButton.isSelected) {
                 viewModel.deleteIndustryFilterParameters()
-                cleanIndustry()
             }
         }
         binding.inputEditText.doOnTextChanged { text, _, _, _ ->
@@ -82,6 +81,9 @@ class FilterSettingsFragment : BindingFragment<FragmentFilterSettingsBinding>() 
         viewModel.initialState.observe(viewLifecycleOwner) {
             if (checkIfTheStateIsDefault(it)) {
                 hideButtons()
+                if (viewModel.filterParameters.value != null) {
+                    viewModel.deleteFilterParameters()
+                }
             } else {
                 showButtons()
             }
@@ -158,6 +160,29 @@ class FilterSettingsFragment : BindingFragment<FragmentFilterSettingsBinding>() 
     private fun renderSalary(salary: String) {
         binding.inputEditText.setText(salary)
         viewModel.isSalaryChosen(value = true)
+        val statesForFloatingHint = if (salary.isNullOrBlank()) {
+            arrayOf(
+                intArrayOf(android.R.attr.state_focused),
+                intArrayOf(-android.R.attr.state_focused),
+            )
+        } else {
+            arrayOf(
+                intArrayOf(android.R.attr.state_focused),
+                intArrayOf(-android.R.attr.state_focused),
+            )
+        }
+        val colorsForFloatingHint = if (salary.isNullOrBlank()) {
+            intArrayOf(
+                resources.getColor(R.color.blue, null),
+                resources.getColor(R.color.gray_day_white_night, null),
+            )
+        } else {
+            intArrayOf(
+                resources.getColor(R.color.blue, null),
+                resources.getColor(R.color.black, null),
+            )
+        }
+        binding.textInputLayout.defaultHintTextColor = ColorStateList(statesForFloatingHint, colorsForFloatingHint)
     }
 
     private fun cleanArea() {
@@ -189,10 +214,10 @@ class FilterSettingsFragment : BindingFragment<FragmentFilterSettingsBinding>() 
     }
 
     private fun showButtons() {
-        binding.buttonsConstraintLayout.visibility = View.VISIBLE
+        binding.buttonsConstraintLayout.isVisible = true
     }
 
     private fun hideButtons() {
-        binding.buttonsConstraintLayout.visibility = View.GONE
+        binding.buttonsConstraintLayout.isVisible = false
     }
 }

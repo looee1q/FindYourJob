@@ -11,7 +11,6 @@ class IndustryAdapter(
 ) : RecyclerView.Adapter<IndustryViewHolder>() {
 
     private val industries = mutableListOf<Industry>()
-    private val originalList: MutableList<Industry> = ArrayList()
     private var selectedPosition = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IndustryViewHolder {
@@ -23,8 +22,8 @@ class IndustryAdapter(
     override fun onBindViewHolder(holder: IndustryViewHolder, position: Int) {
         holder.bind(industries[position], position == selectedPosition)
 
-        holder.binding.rbIndustryName.setOnCheckedChangeListener { _, b ->
-            if (b) {
+        holder.binding.rbIndustryName.setOnClickListener {
+            if (position != selectedPosition) {
                 itemClickListener.onIndustryClick(industries[position], position)
             }
         }
@@ -34,35 +33,10 @@ class IndustryAdapter(
         return industries.size
     }
 
-    fun setIndustryList(newIndustryList: List<Industry>, oldPos: Int, newPos: Int) {
-        if (industries.isEmpty()) {
-            industries.addAll(newIndustryList)
-        }
-        selectedPosition = newPos
-        if (newPos == -1) {
-            notifyItemRangeInserted(0, industries.size - 1)
-        }
-        if (oldPos > -1) {
-            notifyItemChanged(oldPos)
-        }
-        originalList.clear()
-        originalList.addAll(newIndustryList)
-    }
-
-    fun filter(searchQuery: String?) {
-        if (searchQuery.isNullOrEmpty()) {
-            updateDisplayList(originalList)
-        } else {
-            val filteredList = originalList.filter {
-                it.name.contains(searchQuery, true)
-            }
-            updateDisplayList(filteredList)
-        }
-    }
-
-    private fun updateDisplayList(updatedList: List<Industry>) {
+    fun setIndustryList(newIndustryList: List<Industry>, newSelectedPos: Int) {
         industries.clear()
-        industries.addAll(updatedList)
+        industries.addAll(newIndustryList)
+        selectedPosition = newSelectedPos
         notifyDataSetChanged()
     }
 

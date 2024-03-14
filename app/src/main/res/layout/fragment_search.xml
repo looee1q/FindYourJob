@@ -112,7 +112,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_0dp"
         android:layout_marginTop="@dimen/_8dp"
-        android:clipToPadding="false"
         android:paddingHorizontal="@dimen/_16dp"
         android:paddingTop="@dimen/_32dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -121,7 +120,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/InputEditText"
         app:layout_constraintVertical_bias="0.0"
-        app:layout_goneMarginTop="@dimen/_80dp"
         tools:itemCount="5"
         tools:listitem="@layout/item_found_vacancy" />
 

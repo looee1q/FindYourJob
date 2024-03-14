@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
@@ -18,6 +18,7 @@ import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.presentation.selections.country.CountrySelectionViewModel
 import ru.practicum.android.diploma.presentation.selections.country.state.CountrySelectionState
 import ru.practicum.android.diploma.ui.fragment.BindingFragment
+import ru.practicum.android.diploma.ui.selections.area.AreaSelectionFragment
 import ru.practicum.android.diploma.ui.selections.country.adapter.CountryAdapter
 import ru.practicum.android.diploma.util.debounce
 
@@ -25,7 +26,13 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
 
     private val viewModel by viewModel<CountrySelectionViewModel>()
 
-    private var countryAdapter: CountryAdapter? = null
+    private val countryAdapter by lazy {
+        val onCountryClickDebounce: (Country) -> Unit =
+            debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) {
+                onCountryClick(it)
+            }
+        CountryAdapter(onCountryClickDebounce)
+    }
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -68,26 +75,18 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
     }
 
     private fun initCountryRecyclerView() {
-        val onCountryClickDebounce: (Country) -> Unit =
-            debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) {
-                onCountryClick(it)
-            }
-        countryAdapter = CountryAdapter(onCountryClickDebounce)
         binding.countryRecyclerView.adapter = countryAdapter
         binding.countryRecyclerView.layoutManager = LinearLayoutManager(requireActivity())
     }
 
     private fun onBackButtonClick() {
-        requireActivity().supportFragmentManager.popBackStackImmediate()
+        findNavController().navigateUp()
     }
 
     private fun onCountryClick(country: Country) {
         setFragmentResult(
-            REQUEST_KEY,
-            bundleOf(
-                "ID" to country.id,
-                "NAME" to country.name
-            )
+            AreaSelectionFragment.REQUEST_COUNTRY_KEY,
+            AreaSelectionFragment.createArgsCountrySelection(country.id, country.name)
         )
         onBackButtonClick()
     }
@@ -95,15 +94,7 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
     private fun renderCountrySelectionState(state: CountrySelectionState) {
         when (state) {
             is CountrySelectionState.Content -> {
-                showCountryRecyclerView()
-                hideLoader()
-                hideLLErrorServer()
-                countryAdapter?.let {
-                    it.countries.clear()
-                    it.countries.addAll(state.countries)
-                    it.notifyDataSetChanged()
-                }
-
+                showContent(state.countries)
             }
 
             is CountrySelectionState.Empty -> {
@@ -130,15 +121,6 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
         showLLErrorServer(
             imageResource = R.drawable.empty_favorites,
             titleResource = R.string.countries_are_empty
-        )
-    }
-
-    private fun renderError() {
-        hideCountryRecyclerView()
-        hideLoader()
-        showLLErrorServer(
-            imageResource = R.drawable.png_no_regions,
-            titleResource = R.string.error_no_region
         )
     }
 
@@ -183,8 +165,25 @@ class CountrySelectionFragment : BindingFragment<FragmentCountrySelectionBinding
         binding.progressBar.visibility = View.GONE
     }
 
+    private fun showContent(countries: List<Country>) {
+        showCountryRecyclerView()
+        hideLoader()
+        hideLLErrorServer()
+        countryAdapter.countries.clear()
+        countryAdapter.countries.addAll(countries)
+        countryAdapter.notifyDataSetChanged()
+    }
+
+    private fun renderError() {
+        hideCountryRecyclerView()
+        hideLoader()
+        showLLErrorServer(
+            imageResource = R.drawable.png_no_regions,
+            titleResource = R.string.failed_to_retrieve_list
+        )
+    }
+
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
-        const val REQUEST_KEY = "REQUEST_KEY"
     }
 }
