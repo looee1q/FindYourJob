@@ -12,6 +12,9 @@
 + Room
 + SharedPreferences
 + Retrofit
++ LiveData
++ Glide
++ XML
 
 # Техническое задание
 
